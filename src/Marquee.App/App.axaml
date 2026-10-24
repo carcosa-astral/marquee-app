@@ -1,0 +1,39 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             xmlns:views="using:Marquee.App.Views"
+             x:Class="Marquee.App.App"
+             RequestedThemeVariant="Dark">
+
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="avares://Marquee/Theme/Nord.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="avares://Marquee/Theme/Styles.axaml" />
+  </Application.Styles>
+
+  <!-- Each view model is shown by its matching view. -->
+  <Application.DataTemplates>
+    <DataTemplate DataType="vm:MainWindowViewModel">
+      <ContentControl Content="{Binding Current}" />
+    </DataTemplate>
+    <DataTemplate DataType="vm:SetupViewModel">
+      <views:SetupView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:ShellViewModel">
+      <views:ShellView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:PageViewModel">
+      <views:PageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:StartupErrorViewModel">
+      <views:StartupErrorView />
+    </DataTemplate>
+  </Application.DataTemplates>
+</Application>

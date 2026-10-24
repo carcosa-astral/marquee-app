@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.StartupErrorView"
+             x:DataType="vm:StartupErrorViewModel">
+  <StackPanel Width="640" Spacing="14" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Classes="h1" Text="Marquee could not open your diary" TextWrapping="Wrap" />
+    <TextBlock Classes="subtle" TextWrapping="Wrap"
+               Text="Check that the Marquee folder is not read-only and that no other copy of Marquee is using it." />
+    <Border Classes="card" Padding="20,16">
+      <StackPanel Spacing="8">
+        <SelectableTextBlock Foreground="{StaticResource TextStrongBrush}" TextWrapping="Wrap" Text="{Binding Folder}" />
+        <SelectableTextBlock Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Message}" />
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>
