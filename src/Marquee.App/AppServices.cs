@@ -16,6 +16,7 @@ public sealed class AppServices
         Watches = new WatchStore(database);
         Theaters = new TheaterStore(database);
         Companions = new CompanionStore(database);
+        Reset = new ResetService(database);
 
         var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
         var version = typeof(AppServices).Assembly.GetName().Version?.ToString(3) ?? "0";
@@ -35,6 +36,7 @@ public sealed class AppServices
     public WatchStore Watches { get; }
     public TheaterStore Theaters { get; }
     public CompanionStore Companions { get; }
+    public ResetService Reset { get; }
     public MetadataService Metadata { get; }
     public ImageDownloader Downloader { get; }
     public ImageLoader Images { get; }

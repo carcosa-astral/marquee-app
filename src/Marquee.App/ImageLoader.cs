@@ -12,6 +12,9 @@ public sealed class ImageLoader(HttpClient http, MarqueeFolder folder)
     // Keyed by size too, so a small diary thumbnail is never reused for a large library poster.
     private readonly Dictionary<string, Bitmap> _cache = [];
 
+    /// <summary>Forgets every loaded image, for example after erasing all data.</summary>
+    public void Clear() => _cache.Clear();
+
     public async Task<Bitmap?> LoadRemoteAsync(string? url, int width)
     {
         if (url is null)

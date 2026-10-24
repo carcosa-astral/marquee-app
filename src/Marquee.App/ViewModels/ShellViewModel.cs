@@ -13,7 +13,8 @@ public partial class ShellViewModel : ViewModelBase
     private readonly AppServices _services;
     private readonly SearchPageViewModel _search;
 
-    public ShellViewModel(AppServices services)
+    /// <param name="restartSetup">Shows the first-run screen again, after settings were erased.</param>
+    public ShellViewModel(AppServices services, Action restartSetup)
     {
         _services = services;
         _search = new SearchPageViewModel(services, titleId => OpenLog(titleId, null), OpenLogPending);
@@ -40,7 +41,13 @@ public partial class ShellViewModel : ViewModelBase
         FooterItems =
         [
             Nav("Export JSON", Icons.Export, null, Pages.Soon("Export JSON", "Save your whole diary as one readable Marquee JSON file.", "0.8.0")),
-            Nav("Settings", Icons.Settings, null, new SettingsPageViewModel(services)),
+            Nav("Settings", Icons.Settings, null, new SettingsPageViewModel(services, settingsErased =>
+            {
+                if (settingsErased)
+                    restartSetup();
+                else
+                    RefreshCounts();
+            })),
         ];
 
         RefreshCounts();

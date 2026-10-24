@@ -7,11 +7,19 @@ namespace Marquee.App.ViewModels;
 /// <summary>Folder locations, the TMDB key, the version and attribution.</summary>
 public sealed partial class SettingsPageViewModel : PageViewModel
 {
-    private readonly SettingsStore _settings;
+    /// <summary>What must be typed to enable the erase button.</summary>
+    public const string EraseWord = "ERASE";
 
-    public SettingsPageViewModel(AppServices services)
+    private readonly AppServices _services;
+    private readonly SettingsStore _settings;
+    private readonly Action<bool> _onErased;
+
+    /// <param name="onErased">Called after erasing; true when settings were erased too and setup should run again.</param>
+    public SettingsPageViewModel(AppServices services, Action<bool> onErased)
     {
+        _services = services;
         _settings = services.Settings;
+        _onErased = onErased;
         var folder = services.Folder;
         Details =
         [
@@ -38,6 +46,48 @@ public sealed partial class SettingsPageViewModel : PageViewModel
     {
         TmdbKey = _settings.Get(SettingsStore.TmdbApiKey) ?? "";
         KeyStatus = null;
+        EraseConfirm = "";
+        EraseError = null;
+    }
+
+    // ----- Erase all data -----
+
+    [ObservableProperty]
+    public partial bool BackupBeforeErase { get; set; } = true;
+
+    [ObservableProperty]
+    public partial bool EraseSettingsToo { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(EraseCommand))]
+    public partial string EraseConfirm { get; set; } = "";
+
+    [ObservableProperty]
+    public partial string? EraseStatus { get; set; }
+
+    [ObservableProperty]
+    public partial string? EraseError { get; set; }
+
+    private bool CanErase() => string.Equals(EraseConfirm.Trim(), EraseWord, StringComparison.Ordinal);
+
+    [RelayCommand(CanExecute = nameof(CanErase))]
+    private void Erase()
+    {
+        try
+        {
+            var backup = _services.Reset.EraseAll(BackupBeforeErase, EraseSettingsToo);
+            _services.Images.Clear();
+            EraseConfirm = "";
+            EraseError = null;
+            EraseStatus = backup is null
+                ? "Everything was erased."
+                : $"Everything was erased. A backup copy was saved to {backup}";
+            _onErased(EraseSettingsToo);
+        }
+        catch (Exception ex)
+        {
+            EraseError = "Could not erase: " + ex.Message;
+        }
     }
 
     [RelayCommand]

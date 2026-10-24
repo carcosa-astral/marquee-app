@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Theaters page: your theaters with visits, last visit and average rating, a detail panel with recent visits, and add and edit.
 - Theaters and companions can be created on the spot while logging. Nothing is preloaded.
 - Log a watch works from the top bar, from search results and from library posters.
+- "Erase all data" in Settings starts Marquee over. You type ERASE to confirm, a backup copy goes to `backups/` first (on by default), and you can also erase settings and the TMDB key to see the setup screen again.
 
 ### Changed
 

@@ -10,13 +10,13 @@ public partial class MainWindowViewModel : ViewModelBase
     public MainWindowViewModel(AppServices services)
     {
         _services = services;
-        Current = services.Settings.IsSetupCompleted
-            ? new ShellViewModel(services)
-            : new SetupViewModel(services.Folder, services.Settings, OpenShell);
+        Current = services.Settings.IsSetupCompleted ? NewShell() : NewSetup();
     }
 
     [ObservableProperty]
     public partial ViewModelBase Current { get; set; }
 
-    private void OpenShell() => Current = new ShellViewModel(_services);
+    private ShellViewModel NewShell() => new(_services, () => Current = NewSetup());
+
+    private SetupViewModel NewSetup() => new(_services.Folder, _services.Settings, () => Current = NewShell());
 }
