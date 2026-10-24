@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-24
+
 ### Added
 
 - "Add a title" search page that searches TMDB and AniList at the same time, with Movies, TV and Anime filters.
@@ -40,5 +42,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings page showing folder locations, the version and TMDB and AniList attribution.
 - Tests for folder resolution, migrations, settings and that nothing is written outside the Marquee folder.
 
-[Unreleased]: https://github.com/carcosa-astral/marquee-app/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/carcosa-astral/marquee-app/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/carcosa-astral/marquee-app/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/carcosa-astral/marquee-app/releases/tag/v0.1.0
