@@ -1,0 +1,20 @@
+<!-- A page for a section that arrives in a later milestone. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.PlaceholderPageView"
+             x:DataType="vm:PlaceholderPageViewModel">
+  <StackPanel Margin="32,28,32,32" Spacing="22">
+    <StackPanel Spacing="10">
+      <TextBlock Classes="h1" Text="{Binding Title}" />
+      <TextBlock Classes="subtle" FontSize="15" TextWrapping="Wrap" Text="{Binding Description}" />
+    </StackPanel>
+
+    <Border Classes="card" Padding="24,22" MaxWidth="720" HorizontalAlignment="Left">
+      <StackPanel Spacing="6">
+        <TextBlock Classes="h2" Text="{Binding CardTitle}" />
+        <TextBlock Classes="subtle" TextWrapping="Wrap" Text="{Binding CardText}" />
+      </StackPanel>
+    </Border>
+  </StackPanel>
+</UserControl>

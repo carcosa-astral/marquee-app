@@ -29,7 +29,7 @@ public partial class App : Application
         {
             var database = new MarqueeDatabase(folder);
             database.Initialize();
-            return new MainWindowViewModel(database, new SettingsStore(database));
+            return new MainWindowViewModel(new AppServices(database));
         }
         catch (Exception ex)
         {

@@ -1,25 +1,22 @@
 using CommunityToolkit.Mvvm.ComponentModel;
-using Marquee.Data;
 
 namespace Marquee.App.ViewModels;
 
 /// <summary>Chooses between the first-run screen and the main shell.</summary>
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly MarqueeDatabase _database;
-    private readonly SettingsStore _settings;
+    private readonly AppServices _services;
 
-    public MainWindowViewModel(MarqueeDatabase database, SettingsStore settings)
+    public MainWindowViewModel(AppServices services)
     {
-        _database = database;
-        _settings = settings;
-        Current = settings.IsSetupCompleted
-            ? new ShellViewModel(database, settings)
-            : new SetupViewModel(database.Folder, settings, OpenShell);
+        _services = services;
+        Current = services.Settings.IsSetupCompleted
+            ? new ShellViewModel(services)
+            : new SetupViewModel(services.Folder, services.Settings, OpenShell);
     }
 
     [ObservableProperty]
     public partial ViewModelBase Current { get; set; }
 
-    private void OpenShell() => Current = new ShellViewModel(_database, _settings);
+    private void OpenShell() => Current = new ShellViewModel(_services);
 }

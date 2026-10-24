@@ -19,6 +19,7 @@ public class Title : Entity
     public string? Status { get; set; }
     public string? PosterPath { get; set; }
     public string? BackdropPath { get; set; }
+    public TmdbType? TmdbType { get; set; }
     public int? TmdbId { get; set; }
     public int? AniListId { get; set; }
     public int? MalId { get; set; }

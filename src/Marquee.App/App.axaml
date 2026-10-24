@@ -29,8 +29,17 @@
     <DataTemplate DataType="vm:ShellViewModel">
       <views:ShellView />
     </DataTemplate>
-    <DataTemplate DataType="vm:PageViewModel">
-      <views:PageView />
+    <DataTemplate DataType="vm:PlaceholderPageViewModel">
+      <views:PlaceholderPageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:SearchPageViewModel">
+      <views:SearchPageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:LibraryPageViewModel">
+      <views:LibraryPageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:SettingsPageViewModel">
+      <views:SettingsPageView />
     </DataTemplate>
     <DataTemplate DataType="vm:StartupErrorViewModel">
       <views:StartupErrorView />

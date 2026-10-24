@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- "Add a title" search page that searches TMDB and AniList at the same time, with Movies, TV and Anime filters.
+- TMDB client (accepts the API key or the read access token) and AniList client (no key needed).
+- Results that are the same title on both sources are matched by MAL id, or by title, year and format, and shown as one merged result.
+- Adding a title saves its details, genres, directors, cast and voice actors, seasons and episodes, and which source each field came from.
+- Anime uses AniList first, with TMDB filling gaps such as backdrops and cast photos.
+- Posters, backdrops and person photos are saved to `data/images/`.
+- Movies, TV and Anime library pages show a poster grid.
+- The TMDB key can be added or changed in Settings.
+- Ctrl K jumps to the search box.
+
+### Changed
+
+- Titles now store the TMDB type (movie or TV), because TMDB reuses the same id numbers for both. Applied by a new database migration.
+
 ## [0.1.0] - 2026-10-24
 
 ### Added

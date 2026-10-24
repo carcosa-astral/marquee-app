@@ -1,0 +1,48 @@
+<!-- Settings for 0.2.0: the TMDB key, folder locations and attribution. The full Settings mock arrives in 0.8.0. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.SettingsPageView"
+             x:DataType="vm:SettingsPageViewModel">
+  <StackPanel Margin="32,28,32,32" Spacing="22" MaxWidth="900" HorizontalAlignment="Left">
+    <StackPanel Spacing="10">
+      <TextBlock Classes="h1" Text="Settings" />
+      <TextBlock Classes="subtle" FontSize="15" TextWrapping="Wrap"
+                 Text="Your metadata key and Marquee folder. Backups, appearance and import arrive in 0.8.0." />
+    </StackPanel>
+
+    <Border Classes="card" Padding="24,22">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="Metadata" />
+        <TextBlock Classes="label" Text="TMDB API key" />
+        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+          <TextBox Text="{Binding TmdbKey}" PlaceholderText="Paste your key">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding SaveKeyCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+          <Button Grid.Column="1" Classes="primary" Content="Save" Command="{Binding SaveKeyCommand}" />
+        </Grid>
+        <TextBlock Classes="muted small" TextWrapping="Wrap"
+                   Text="Free from your TMDB account. Either the API key or the read access token works. Saved inside your Marquee folder only." />
+        <TextBlock Foreground="{StaticResource WatchedBrush}" FontSize="13" Text="{Binding KeyStatus}"
+                   IsVisible="{Binding KeyStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      </StackPanel>
+    </Border>
+
+    <Border Classes="card" Padding="24,18">
+      <ItemsControl ItemsSource="{Binding Details}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:DetailRow">
+            <Grid ColumnDefinitions="160,*" ColumnSpacing="16" Margin="0,6">
+              <TextBlock Classes="muted" Text="{Binding Label}" />
+              <SelectableTextBlock Grid.Column="1" Foreground="{StaticResource TextStrongBrush}" TextWrapping="Wrap" Text="{Binding Value}" />
+            </Grid>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </Border>
+
+    <TextBlock Classes="muted small" TextWrapping="Wrap" Text="{Binding Attribution}" />
+  </StackPanel>
+</UserControl>

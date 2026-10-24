@@ -72,9 +72,11 @@
       <Border DockPanel.Dock="Top" Height="72" Padding="32,0"
               BorderBrush="{StaticResource DividerBrush}" BorderThickness="0,0,0,1">
         <Grid ColumnDefinitions="420,*,Auto">
-          <TextBox VerticalAlignment="Center" IsEnabled="False"
-                   PlaceholderText="Search titles, people, your notes"
-                   ToolTip.Tip="Search arrives in 0.2.0" ToolTip.ShowOnDisabled="True">
+          <TextBox x:Name="TopSearch" VerticalAlignment="Center" Text="{Binding TopQuery}"
+                   PlaceholderText="Search titles to add">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding OpenSearchCommand}" />
+            </TextBox.KeyBindings>
             <TextBox.InnerLeftContent>
               <Viewbox Width="16" Height="16" Margin="2,0,8,0">
                 <Canvas Width="24" Height="24">

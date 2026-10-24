@@ -1,0 +1,110 @@
+<!-- Add a title. Matches docs/design/mocks/Search.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             xmlns:app="using:Marquee.App"
+             x:Class="Marquee.App.Views.SearchPageView"
+             x:DataType="vm:SearchPageViewModel">
+  <StackPanel Margin="32,28,32,32" Spacing="22">
+
+    <StackPanel Spacing="14">
+      <TextBlock Classes="h1" FontSize="34" Text="Add a title" />
+      <TextBox x:Name="QueryBox" Text="{Binding Query}" Height="52" FontSize="18" CornerRadius="12"
+               BorderBrush="{StaticResource AccentBrush}" Padding="4,0,16,0"
+               PlaceholderText="Search movies, TV and anime">
+        <TextBox.InnerLeftContent>
+          <Viewbox Width="18" Height="18" Margin="14,0,8,0">
+            <Canvas Width="24" Height="24">
+              <Path Classes="icon" Data="{x:Static app:Icons.Search}" Stroke="{StaticResource TextMutedBrush}" StrokeThickness="2" />
+            </Canvas>
+          </Viewbox>
+        </TextBox.InnerLeftContent>
+        <TextBox.KeyBindings>
+          <KeyBinding Gesture="Enter" Command="{Binding SearchNowCommand}" />
+        </TextBox.KeyBindings>
+      </TextBox>
+
+      <Grid ColumnDefinitions="Auto,*,Auto">
+        <StackPanel Orientation="Horizontal" Spacing="6">
+          <Button Classes="chip" Classes.active="{Binding IsAll}" Content="All"
+                  Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:SearchFilter.All}" />
+          <Button Classes="chip" Classes.active="{Binding IsMovies}" Content="Movies"
+                  Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:SearchFilter.Movies}" />
+          <Button Classes="chip" Classes.active="{Binding IsTv}" Content="TV"
+                  Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:SearchFilter.Tv}" />
+          <Button Classes="chip" Classes.active="{Binding IsAnime}" Content="Anime"
+                  Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:SearchFilter.Anime}" />
+          <Button Classes="chip" Content="People" IsEnabled="False"
+                  ToolTip.Tip="People search arrives in 0.6.0" ToolTip.ShowOnDisabled="True" />
+        </StackPanel>
+        <TextBlock Grid.Column="2" Classes="muted small" VerticalAlignment="Center" Text="{Binding SourcesText}" />
+      </Grid>
+    </StackPanel>
+
+    <StackPanel Spacing="12">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock Classes="section" Text="{Binding CountText}" IsVisible="{Binding CountText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <TextBlock Classes="section" Text="SEARCHING..." IsVisible="{Binding IsSearching}" />
+      </StackPanel>
+
+      <TextBlock Foreground="{StaticResource WarningBrush}" FontSize="13" TextWrapping="Wrap" Text="{Binding Problem}"
+                 IsVisible="{Binding Problem, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      <TextBlock Classes="muted" FontSize="13" Text="{Binding Hint}"
+                 IsVisible="{Binding Hint, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <ItemsControl ItemsSource="{Binding Results}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Spacing="12" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:SearchResultViewModel">
+            <Border Classes="card" CornerRadius="14" Padding="16">
+              <Grid ColumnDefinitions="72,*,Auto" ColumnSpacing="18">
+
+                <Border Classes="poster" Width="72" Height="108" VerticalAlignment="Top">
+                  <Panel>
+                    <TextBlock Classes="brand" FontSize="11" Margin="8" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                    <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                  </Panel>
+                </Border>
+
+                <StackPanel Grid.Column="1" Spacing="6" VerticalAlignment="Center">
+                  <WrapPanel ItemSpacing="10" LineSpacing="4">
+                    <TextBlock Classes="brand" FontSize="20" Text="{Binding Name}" TextTrimming="CharacterEllipsis" MaxWidth="560" />
+                    <TextBlock Classes="muted" VerticalAlignment="Center" Text="{Binding YearText}" />
+                    <Border Classes="pill" Classes.movie="{Binding IsMovie}" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}">
+                      <TextBlock Text="{Binding KindLabel}" />
+                    </Border>
+                  </WrapPanel>
+                  <TextBlock Classes="subtle" FontSize="13" Text="{Binding Meta}" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Classes="muted" FontSize="13" Text="{Binding Overview}" TextWrapping="Wrap" MaxLines="2" TextTrimming="CharacterEllipsis" />
+                  <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,2,0,0">
+                    <Border Classes="pill anilist" IsVisible="{Binding FromAniList}"><TextBlock Text="AniList" /></Border>
+                    <Border Classes="pill tmdb" IsVisible="{Binding FromTmdb}"><TextBlock Text="TMDB" /></Border>
+                    <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" VerticalAlignment="Center"
+                               Text="Matched across both sources and merged" IsVisible="{Binding IsMerged}" />
+                  </StackPanel>
+                  <TextBlock FontSize="12" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                             IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Spacing="8" VerticalAlignment="Center" MinWidth="140">
+                  <Button Classes="primary" Height="36" FontSize="13" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                          Content="Log a watch" IsEnabled="False"
+                          ToolTip.Tip="Logging arrives in 0.3.0" ToolTip.ShowOnDisabled="True" />
+                  <Button Classes="secondary" HorizontalAlignment="Stretch"
+                          Content="{Binding AddLabel}" Command="{Binding AddCommand}" />
+                </StackPanel>
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <TextBlock Classes="muted" FontSize="13" TextWrapping="Wrap" IsVisible="{Binding CountText, Converter={x:Static ObjectConverters.IsNotNull}}"
+                 Text="Not the right one? Fixing a wrong match and adding titles by hand arrive in 0.4.0." />
+    </StackPanel>
+  </StackPanel>
+</UserControl>

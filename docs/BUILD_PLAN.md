@@ -62,7 +62,7 @@ Resolve the root from `AppContext.BaseDirectory`. On macOS, an `.app` bundle mak
 
 Use string GUIDs as primary keys so exports can be merged cleanly.
 
-- **Title**: id, kind (`movie`, `tv`, `anime`), format (`movie`, `series`, `ova`, `ona`, `special`, `film`), name, original name, year, runtime, overview, release date, status, poster and backdrop paths, external ids (`tmdb_id`, `anilist_id`, `mal_id`, `imdb_id`).
+- **Title**: id, kind (`movie`, `tv`, `anime`), format (`movie`, `series`, `ova`, `ona`, `special`, `film`), name, original name, year, runtime, overview, release date, status, poster and backdrop paths, external ids (`tmdb_type`, `tmdb_id`, `anilist_id`, `mal_id`, `imdb_id`). TMDB ids are only unique together with `tmdb_type` (`movie` or `tv`).
 - **Season** and **Episode**: belong to a Title. Anime series may have a flat episode list with one season.
 - **Person**: name, birth and death dates, bio, photo path, external ids.
 - **Credit**: Title, Person, role (`director`, `actor`, `voice`), character name, order.

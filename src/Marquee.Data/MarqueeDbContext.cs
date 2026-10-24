@@ -32,13 +32,14 @@ public class MarqueeDbContext(DbContextOptions<MarqueeDbContext> options) : DbCo
         builder.Properties<WatchPlace>().HaveConversion<LowercaseEnumConverter<WatchPlace>>();
         builder.Properties<IceState>().HaveConversion<LowercaseEnumConverter<IceState>>();
         builder.Properties<MetadataSource>().HaveConversion<LowercaseEnumConverter<MetadataSource>>();
+        builder.Properties<TmdbType>().HaveConversion<LowercaseEnumConverter<TmdbType>>();
     }
 
     protected override void OnModelCreating(ModelBuilder b)
     {
         b.Entity<Title>(e =>
         {
-            e.HasIndex(t => t.TmdbId);
+            e.HasIndex(t => new { t.TmdbType, t.TmdbId });
             e.HasIndex(t => t.AniListId);
             e.HasIndex(t => t.MalId);
             e.HasIndex(t => t.Name);
@@ -46,6 +47,13 @@ public class MarqueeDbContext(DbContextOptions<MarqueeDbContext> options) : DbCo
 
         b.Entity<Season>().HasIndex(s => new { s.TitleId, s.Number });
         b.Entity<Episode>().HasIndex(ep => new { ep.SeasonId, ep.Number });
+
+        b.Entity<Person>(e =>
+        {
+            e.HasIndex(p => p.TmdbId);
+            e.HasIndex(p => p.AniListId);
+            e.HasIndex(p => p.Name);
+        });
 
         b.Entity<Credit>(e =>
         {
