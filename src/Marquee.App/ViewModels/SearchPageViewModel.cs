@@ -12,7 +12,7 @@ namespace Marquee.App.ViewModels;
 public enum SearchFilter { All, Movies, Tv, Anime }
 
 /// <summary>"Add a title": searches TMDB and AniList together and adds results to the library.</summary>
-public sealed partial class SearchPageViewModel(AppServices services, Action onLibraryChanged) : PageViewModel
+public sealed partial class SearchPageViewModel(AppServices services, Action onLibraryChanged, Action<string> logWatch) : PageViewModel
 {
     private static readonly TimeSpan TypingDelay = TimeSpan.FromMilliseconds(450);
 
@@ -101,7 +101,7 @@ public sealed partial class SearchPageViewModel(AppServices services, Action onL
             _searched = true;
             var library = services.Titles.GetLibraryIds();
             _all = outcome.Results
-                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, onLibraryChanged))
+                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, onLibraryChanged, logWatch))
                 .ToList();
             // A missing TMDB key is already explained next to the search box.
             var problems = new[] { outcome.AniListProblem, services.Metadata.HasTmdbKey ? outcome.TmdbProblem : null }.OfType<string>().ToList();
@@ -148,13 +148,15 @@ public sealed partial class SearchResultViewModel : ViewModelBase
     private readonly SearchResult _result;
     private readonly AppServices _services;
     private readonly Action _onLibraryChanged;
+    private readonly Action<string> _logWatch;
     private bool _posterRequested;
 
-    public SearchResultViewModel(SearchResult result, bool inLibrary, AppServices services, Action onLibraryChanged)
+    public SearchResultViewModel(SearchResult result, bool inLibrary, AppServices services, Action onLibraryChanged, Action<string> logWatch)
     {
         _result = result;
         _services = services;
         _onLibraryChanged = onLibraryChanged;
+        _logWatch = logWatch;
         IsInLibrary = inLibrary;
 
         var hit = result.Primary;
@@ -190,7 +192,7 @@ public sealed partial class SearchResultViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(AddLabel))]
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
+    [NotifyCanExecuteChangedFor(nameof(AddCommand), nameof(LogCommand))]
     public partial bool IsAdding { get; set; }
 
     [ObservableProperty]
@@ -209,7 +211,20 @@ public sealed partial class SearchResultViewModel : ViewModelBase
     private bool CanAdd() => !IsInLibrary && !IsAdding;
 
     [RelayCommand(CanExecute = nameof(CanAdd))]
-    private async Task Add()
+    private Task Add() => AddToLibraryAsync();
+
+    /// <summary>Adds the title first when needed, then opens the Log a watch dialog for it.</summary>
+    [RelayCommand(CanExecute = nameof(CanLog))]
+    private async Task Log()
+    {
+        var id = IsInLibrary ? _services.Titles.FindId(_result) : await AddToLibraryAsync();
+        if (id is not null)
+            _logWatch(id);
+    }
+
+    private bool CanLog() => !IsAdding;
+
+    private async Task<string?> AddToLibraryAsync()
     {
         IsAdding = true;
         Error = null;
@@ -217,17 +232,20 @@ public sealed partial class SearchResultViewModel : ViewModelBase
         {
             var fetched = await _services.Metadata.FetchAsync(_result);
             var images = await _services.Downloader.SaveAllAsync(fetched);
-            await Task.Run(() => _services.Titles.Save(fetched, images));
+            var title = await Task.Run(() => _services.Titles.Save(fetched, images));
             IsInLibrary = true;
             _onLibraryChanged();
+            return title.Id;
         }
         catch (MetadataException ex)
         {
             Error = ex.Message;
+            return null;
         }
         catch (Exception ex)
         {
             Error = "Could not add this title: " + ex.Message;
+            return null;
         }
         finally
         {

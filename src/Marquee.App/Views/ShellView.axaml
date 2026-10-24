@@ -32,6 +32,7 @@
     </Style>
   </UserControl.Styles>
 
+  <Panel>
   <Grid ColumnDefinitions="232,*">
 
     <!-- Sidebar -->
@@ -91,8 +92,7 @@
             </TextBox.InnerRightContent>
           </TextBox>
 
-          <Button Grid.Column="2" Classes="primary" IsEnabled="False"
-                  ToolTip.Tip="Logging arrives in 0.3.0" ToolTip.ShowOnDisabled="True">
+          <Button Grid.Column="2" Classes="primary" Command="{Binding LogWatchCommand}">
             <StackPanel Orientation="Horizontal" Spacing="8">
               <Viewbox Width="16" Height="16" VerticalAlignment="Center">
                 <Canvas Width="24" Height="24">
@@ -111,4 +111,13 @@
       </ScrollViewer>
     </DockPanel>
   </Grid>
+
+  <!-- Dialogs open over the page. Clicking outside does not close them, so nothing typed is lost. -->
+  <Panel IsVisible="{Binding Dialog, Converter={x:Static ObjectConverters.IsNotNull}}">
+    <Border Background="{StaticResource ScrimBrush}" />
+    <ScrollViewer>
+      <ContentControl Content="{Binding Dialog}" Margin="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    </ScrollViewer>
+  </Panel>
+  </Panel>
 </UserControl>

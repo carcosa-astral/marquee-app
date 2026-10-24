@@ -92,8 +92,7 @@
 
                 <StackPanel Grid.Column="2" Spacing="8" VerticalAlignment="Center" MinWidth="140">
                   <Button Classes="primary" Height="36" FontSize="13" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-                          Content="Log a watch" IsEnabled="False"
-                          ToolTip.Tip="Logging arrives in 0.3.0" ToolTip.ShowOnDisabled="True" />
+                          Content="Log a watch" Command="{Binding LogCommand}" />
                   <Button Classes="secondary" HorizontalAlignment="Stretch"
                           Content="{Binding AddLabel}" Command="{Binding AddCommand}" />
                 </StackPanel>

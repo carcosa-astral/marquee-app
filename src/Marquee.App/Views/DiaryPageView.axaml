@@ -1,0 +1,105 @@
+<!-- Diary. Matches docs/design/mocks/Diary.dc.html. The Posters view arrives with the 0.9.0 polish. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.DiaryPageView"
+             x:DataType="vm:DiaryPageViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.col">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="LetterSpacing" Value="0.9" />
+      <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Margin="32,28,32,32" Spacing="22">
+
+    <!-- Header -->
+    <Grid ColumnDefinitions="Auto,*,Auto">
+      <StackPanel Spacing="4" VerticalAlignment="Bottom">
+        <TextBlock Classes="section" Text="{Binding TotalText}" />
+        <TextBlock Classes="h1" Text="Diary" />
+      </StackPanel>
+      <Border Grid.Column="2" Classes="inset" Height="40" Padding="6,0" VerticalAlignment="Bottom">
+        <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+          <Button Classes="segment" Width="30" Height="30" Content="‹" FontSize="18" Command="{Binding PreviousYearCommand}" ToolTip.Tip="Previous year" />
+          <TextBlock Classes="brand" FontSize="16" MinWidth="48" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding YearText}" />
+          <Button Classes="segment" Width="30" Height="30" Content="›" FontSize="18" Command="{Binding NextYearCommand}" ToolTip.Tip="Next year" />
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <!-- Filters -->
+    <StackPanel Orientation="Horizontal" Spacing="10">
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Button Classes="chip" Classes.active="{Binding IsAll}" Content="All" Command="{Binding SetKindCommand}" CommandParameter="{x:Static vm:SearchFilter.All}" />
+        <Button Classes="chip" Classes.active="{Binding IsMovies}" Content="Movies" Command="{Binding SetKindCommand}" CommandParameter="{x:Static vm:SearchFilter.Movies}" />
+        <Button Classes="chip" Classes.active="{Binding IsTv}" Content="TV" Command="{Binding SetKindCommand}" CommandParameter="{x:Static vm:SearchFilter.Tv}" />
+        <Button Classes="chip" Classes.active="{Binding IsAnime}" Content="Anime" Command="{Binding SetKindCommand}" CommandParameter="{x:Static vm:SearchFilter.Anime}" />
+      </StackPanel>
+      <Border Width="1" Height="20" Background="{StaticResource CardBorderBrush}" VerticalAlignment="Center" />
+      <StackPanel Orientation="Horizontal" Spacing="6">
+        <Button Classes="chip" Classes.active="{Binding TheaterOnly}" Content="Theater only" Command="{Binding ToggleTheaterOnlyCommand}" />
+        <Button Classes="chip" Classes.active="{Binding RewatchesOnly}" Content="Rewatches" Command="{Binding ToggleRewatchesOnlyCommand}" />
+        <Button Classes="chip" Classes.active="{Binding WithNoteOnly}" Content="Has a note" Command="{Binding ToggleWithNoteOnlyCommand}" />
+      </StackPanel>
+    </StackPanel>
+
+    <Border Classes="card" Padding="24,22" MaxWidth="720" HorizontalAlignment="Left"
+            IsVisible="{Binding EmptyText, Converter={x:Static ObjectConverters.IsNotNull}}">
+      <TextBlock Classes="subtle" TextWrapping="Wrap" Text="{Binding EmptyText}" />
+    </Border>
+
+    <StackPanel IsVisible="{Binding EmptyText, Converter={x:Static ObjectConverters.IsNull}}">
+      <!-- Column headings -->
+      <Grid ColumnDefinitions="44,36,*,96,230,60,250" ColumnSpacing="16" Margin="12,0,12,0">
+        <TextBlock Classes="col" Text="DAY" />
+        <TextBlock Grid.Column="2" Classes="col" Text="TITLE" />
+        <TextBlock Grid.Column="3" Classes="col" Text="TYPE" />
+        <TextBlock Grid.Column="4" Classes="col" Text="WHERE" />
+        <TextBlock Grid.Column="5" Classes="col" Text="RATING" TextAlignment="Right" />
+        <TextBlock Grid.Column="6" Classes="col" Text="NOTE" />
+      </Grid>
+
+      <ItemsControl ItemsSource="{Binding Rows}" Margin="0,2,0,0">
+        <ItemsControl.DataTemplates>
+          <DataTemplate DataType="vm:DiaryMonthHeader">
+            <StackPanel Orientation="Horizontal" Spacing="12" Height="44" Margin="12,0">
+              <TextBlock Classes="brand" FontSize="18" VerticalAlignment="Bottom" Margin="0,0,0,8" Text="{Binding Label}" />
+              <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,9" Text="{Binding Count}" />
+            </StackPanel>
+          </DataTemplate>
+          <DataTemplate DataType="vm:DiaryEntryViewModel">
+            <Button Classes="row" Height="60" Command="{Binding OpenCommand}" ToolTip.Tip="Edit this entry">
+              <Grid ColumnDefinitions="44,36,*,96,230,60,250" ColumnSpacing="16">
+                <TextBlock Classes="brand" FontSize="20" Foreground="{StaticResource AccentBrush}" VerticalAlignment="Center" Text="{Binding Day}" />
+                <Border Grid.Column="1" Classes="poster" Width="36" Height="52" CornerRadius="4">
+                  <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                </Border>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" ClipToBounds="True">
+                  <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}"
+                             TextTrimming="CharacterEllipsis" MaxWidth="300" />
+                  <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding Sub}" />
+                  <Border Classes="pill rewatch" IsVisible="{Binding IsRewatch}">
+                    <TextBlock Text="REWATCH" />
+                  </Border>
+                </StackPanel>
+                <Border Grid.Column="3" Classes="pill" HorizontalAlignment="Left"
+                        Classes.movie="{Binding IsMovie}" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}">
+                  <TextBlock Text="{Binding KindLabel}" />
+                </Border>
+                <StackPanel Grid.Column="4" VerticalAlignment="Center">
+                  <TextBlock FontSize="13" Text="{Binding Where}" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Classes="muted small" Text="{Binding WhereDetail}" TextTrimming="CharacterEllipsis" />
+                </StackPanel>
+                <TextBlock Grid.Column="5" Foreground="{StaticResource RatingBrush}" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding RatingText}" />
+                <TextBlock Grid.Column="6" Classes="subtle" FontSize="13" VerticalAlignment="Center" Text="{Binding Note}" TextTrimming="CharacterEllipsis" />
+              </Grid>
+            </Button>
+          </DataTemplate>
+        </ItemsControl.DataTemplates>
+      </ItemsControl>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

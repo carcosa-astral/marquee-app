@@ -27,8 +27,8 @@ public static class Pages
     {
         Title = "Home",
         Description = "Continue watching, what is in progress, and your year so far.",
-        CardTitle = "Start by adding a title",
-        CardText = "Use the search box at the top (Ctrl K) to find movies, TV and anime. Logging watches arrives in 0.3.0, and this page fills up from there.",
+        CardTitle = "Start by logging a watch",
+        CardText = "Use the search box at the top (Ctrl K) to find a title, then Log a watch. Your entries show in the Diary. This page fills up in a later milestone.",
     };
 
     public static PlaceholderPageViewModel Soon(string title, string description, string milestone) => new()

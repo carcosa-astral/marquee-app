@@ -41,6 +41,18 @@
     <DataTemplate DataType="vm:SettingsPageViewModel">
       <views:SettingsPageView />
     </DataTemplate>
+    <DataTemplate DataType="vm:LogWatchViewModel">
+      <views:LogWatchView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:TheaterFormViewModel">
+      <views:TheaterFormView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:DiaryPageViewModel">
+      <views:DiaryPageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:TheatersPageViewModel">
+      <views:TheatersPageView />
+    </DataTemplate>
     <DataTemplate DataType="vm:StartupErrorViewModel">
       <views:StartupErrorView />
     </DataTemplate>

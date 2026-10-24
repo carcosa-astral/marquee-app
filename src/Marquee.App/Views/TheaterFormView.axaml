@@ -1,0 +1,71 @@
+<!-- Add or edit a theater. Matches the "Add a theater" panel in docs/design/mocks/LogWatch.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.TheaterFormView"
+             x:DataType="vm:TheaterFormViewModel">
+  <Border Classes="dialog" Width="420" Padding="24" BorderBrush="{StaticResource AccentBrush}">
+    <StackPanel Spacing="16">
+      <StackPanel Spacing="2">
+        <TextBlock Classes="section" Foreground="{StaticResource AccentBrush}" Text="{Binding Kicker}" />
+        <TextBlock Classes="brand" FontSize="22" Text="{Binding Heading}" />
+      </StackPanel>
+
+      <StackPanel Spacing="6">
+        <TextBlock Classes="label" Text="Name" />
+        <TextBox Text="{Binding Name}" />
+      </StackPanel>
+
+      <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="City" />
+          <TextBox Text="{Binding City}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="6">
+          <TextBlock Classes="label">
+            <Run Text="Chain" />
+            <Run Text="(optional)" FontWeight="Normal" Foreground="{StaticResource TextMutedBrush}" />
+          </TextBlock>
+          <TextBox Text="{Binding Chain}" PlaceholderText="Independent" />
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Spacing="6">
+        <TextBlock Classes="label" Text="Formats it offers" />
+        <WrapPanel ItemSpacing="6" LineSpacing="6">
+          <ItemsControl ItemsSource="{Binding Formats}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <WrapPanel ItemSpacing="6" LineSpacing="6" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:FormatChoice">
+                <Button Classes="option round" Classes.active="{Binding IsSelected}" Content="{Binding Name}" Command="{Binding ToggleCommand}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Classes="option round add" Content="Add format" Command="{Binding StartAddingFormatCommand}"
+                  IsVisible="{Binding !IsAddingFormat}" />
+          <TextBox Width="140" MinHeight="32" Height="32" Text="{Binding NewFormat}" PlaceholderText="Format, then Enter"
+                   IsVisible="{Binding IsAddingFormat}">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding AddFormatCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+        </WrapPanel>
+      </StackPanel>
+
+      <TextBlock FontSize="13" Classes="subtle" TextWrapping="Wrap"
+                 Text="Theaters live in your own Marquee file. Anyone using their own copy builds their own list, and nothing comes preloaded." />
+
+      <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+        <Button Classes="secondary" Height="40" Padding="18,0" FontSize="14" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" />
+        <Button Classes="primary" Height="40" Padding="20,0" Content="{Binding SaveLabel}" Command="{Binding SaveCommand}" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

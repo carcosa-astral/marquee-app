@@ -17,6 +17,37 @@ public sealed class TitleStore(MarqueeDatabase database)
             rows.Where(r => r.AniListId is not null).Select(r => r.AniListId!.Value).ToHashSet());
     }
 
+    /// <summary>The saved title for a search result, if it is already in the library.</summary>
+    public string? FindId(SearchResult result)
+    {
+        using var db = database.CreateContext();
+        if (result.AniList is { } al && db.Titles.FirstOrDefault(t => t.AniListId == al.Id) is { } byAniList)
+            return byAniList.Id;
+        if (result.Tmdb is { TmdbType: { } type } tmdb && db.Titles.FirstOrDefault(t => t.TmdbId == tmdb.Id && t.TmdbType == type) is { } byTmdb)
+            return byTmdb.Id;
+        return null;
+    }
+
+    /// <summary>Every title in the library, for picking one in the Log a watch dialog.</summary>
+    public List<Title> ListAll()
+    {
+        using var db = database.CreateContext();
+        return db.Titles.AsNoTracking().ToList().OrderBy(t => t.Name, StringComparer.CurrentCultureIgnoreCase).ToList();
+    }
+
+    /// <summary>A title with its seasons and episodes in order.</summary>
+    public Title? GetWithEpisodes(string titleId)
+    {
+        using var db = database.CreateContext();
+        var title = db.Titles.AsNoTracking().Include(t => t.Seasons).ThenInclude(s => s.Episodes).FirstOrDefault(t => t.Id == titleId);
+        if (title is null)
+            return null;
+        title.Seasons = title.Seasons.OrderBy(s => s.Number).ToList();
+        foreach (var season in title.Seasons)
+            season.Episodes = season.Episodes.OrderBy(e => e.Number).ToList();
+        return title;
+    }
+
     public List<Title> List(TitleKind kind)
     {
         using var db = database.CreateContext();

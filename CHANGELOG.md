@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Log a watch dialog: date (with Today and Yesterday), optional start time, half-star rating, rewatch, where you watched, theater details (screen, seat, format), service, who you watched with, and a note.
+- For TV and anime, the dialog picks a season and episode and suggests the next unwatched one.
+- Rewatch switches on by itself when you have seen the title or episode before, and shows when you first saw it.
+- Diary page: entries by month for one year at a time, with Movies, TV and Anime filters plus Theater only, Rewatches and Has a note. Click an entry to edit or delete it.
+- Theaters page: your theaters with visits, last visit and average rating, a detail panel with recent visits, and add and edit.
+- Theaters and companions can be created on the spot while logging. Nothing is preloaded.
+- Log a watch works from the top bar, from search results (adding the title first if needed) and from library posters.
+
 ## [0.2.0] - 2026-10-24
 
 ### Added

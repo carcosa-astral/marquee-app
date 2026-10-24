@@ -1,0 +1,153 @@
+<!-- Theaters. Matches docs/design/mocks/Theaters.dc.html. Merging theaters arrives later. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.TheatersPageView"
+             x:DataType="vm:TheatersPageViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.col">
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="LetterSpacing" Value="0.9" />
+      <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+    </Style>
+    <Style Selector="TextBlock.stat">
+      <Setter Property="FontFamily" Value="{StaticResource HeadingFont}" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontSize" Value="26" />
+      <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Margin="32,28,32,32" Spacing="24">
+
+    <!-- Header -->
+    <Grid ColumnDefinitions="Auto,*,Auto">
+      <StackPanel Spacing="4" VerticalAlignment="Bottom">
+        <TextBlock Classes="section" Text="{Binding SummaryText}" />
+        <TextBlock Classes="h1" Text="Theaters" />
+      </StackPanel>
+      <Button Grid.Column="2" Classes="primary" VerticalAlignment="Bottom" Content="Add a theater" Command="{Binding AddCommand}" />
+    </Grid>
+
+    <Border Classes="card" Padding="24,22" MaxWidth="720" HorizontalAlignment="Left" IsVisible="{Binding IsEmpty}">
+      <TextBlock Classes="subtle" TextWrapping="Wrap"
+                 Text="No theaters yet. Add one here, or type a new theater while logging a watch and it is added for you." />
+    </Border>
+
+    <Grid ColumnDefinitions="*,380" ColumnSpacing="24" IsVisible="{Binding !IsEmpty}">
+
+      <!-- List -->
+      <Border Classes="card" CornerRadius="14" VerticalAlignment="Top" ClipToBounds="True">
+        <StackPanel>
+          <Grid ColumnDefinitions="*,170,56,76,60" ColumnSpacing="14" Height="44" Margin="18,0">
+            <TextBlock Classes="col" Text="THEATER" />
+            <TextBlock Grid.Column="1" Classes="col" Text="FORMATS" />
+            <TextBlock Grid.Column="2" Classes="col" Text="VISITS" TextAlignment="Right" />
+            <TextBlock Grid.Column="3" Classes="col" Text="LAST VISIT" TextAlignment="Right" />
+            <TextBlock Grid.Column="4" Classes="col" Text="AVG" TextAlignment="Right" />
+          </Grid>
+          <ItemsControl ItemsSource="{Binding Rows}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:TheaterRowViewModel">
+                <Button Classes="row" Classes.selected="{Binding IsSelected}" Height="72" Padding="18,0"
+                        BorderBrush="{StaticResource CardBorderBrush}" Command="{Binding OpenCommand}">
+                  <Grid ColumnDefinitions="*,170,56,76,60" ColumnSpacing="14">
+                    <StackPanel VerticalAlignment="Center">
+                      <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                      <TextBlock Classes="muted small" Text="{Binding Place}" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Classes="subtle small" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding FormatsText}" />
+                    <TextBlock Grid.Column="2" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding Visits}" />
+                    <TextBlock Grid.Column="3" Classes="subtle" FontSize="13" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding LastVisit}" />
+                    <TextBlock Grid.Column="4" FontSize="13" Foreground="{StaticResource RatingBrush}" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding Average}" />
+                  </Grid>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Border BorderBrush="{StaticResource QuietBorderBrush}" BorderThickness="0,1,0,0" Height="60" Padding="18,0">
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <Button Classes="segment" Padding="0" Background="Transparent" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" FontSize="14"
+                      Content="Add a theater" Command="{Binding AddCommand}" />
+              <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center"
+                         Text="Theaters also get created when you type a new one while logging a watch." />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Border>
+
+      <!-- Detail -->
+      <Border Grid.Column="1" Classes="card" CornerRadius="14" Padding="22" BorderBrush="{StaticResource AccentBrush}"
+              VerticalAlignment="Top" IsVisible="{Binding HasSelection}">
+        <StackPanel Spacing="18">
+          <StackPanel Spacing="6">
+            <TextBlock Classes="section" Text="SELECTED" />
+            <TextBlock Classes="brand" FontSize="26" TextWrapping="Wrap" Text="{Binding Selected.Name, FallbackValue=''}" />
+            <TextBlock Classes="subtle" FontSize="13" Text="{Binding Selected.Place, FallbackValue=''}" />
+            <ItemsControl ItemsSource="{Binding Selected.Formats, FallbackValue={x:Null}}" Margin="0,4,0,0">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel ItemSpacing="6" LineSpacing="6" />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                  <Border CornerRadius="999" Padding="10,3" Background="{StaticResource CardBorderBrush}">
+                    <TextBlock FontSize="12" Foreground="{StaticResource TextStrongBrush}" Text="{Binding}" />
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <UniformGrid Columns="3" ColumnSpacing="10">
+            <StackPanel>
+              <TextBlock Classes="stat" Text="{Binding Selected.Visits, FallbackValue=''}" />
+              <TextBlock Classes="muted small" Text="visits" />
+            </StackPanel>
+            <StackPanel>
+              <TextBlock Classes="stat" Text="{Binding Selected.Average, FallbackValue=''}" />
+              <TextBlock Classes="muted small" Text="avg rating" />
+            </StackPanel>
+            <StackPanel>
+              <TextBlock Classes="stat" Text="{Binding Selected.FirstVisitYear, FallbackValue=''}" />
+              <TextBlock Classes="muted small" Text="first visit" />
+            </StackPanel>
+          </UniformGrid>
+
+          <StackPanel Spacing="2">
+            <TextBlock Classes="section" Text="RECENT VISITS" Margin="0,0,0,6" />
+            <TextBlock Classes="muted" FontSize="13" Text="No visits logged yet." IsVisible="{Binding HasNoVisits}" />
+            <ItemsControl ItemsSource="{Binding RecentVisits}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:VisitViewModel">
+                  <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,1,0,0" Height="48">
+                    <Grid ColumnDefinitions="28,*,Auto" ColumnSpacing="12" VerticalAlignment="Center">
+                      <Border Classes="poster" Width="28" Height="40" CornerRadius="3">
+                        <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                      </Border>
+                      <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Classes="muted small" Text="{Binding Detail}" />
+                      </StackPanel>
+                      <TextBlock Grid.Column="2" FontSize="13" Foreground="{StaticResource RatingBrush}" VerticalAlignment="Center" Text="{Binding RatingText}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+
+          <StackPanel Orientation="Horizontal" Spacing="8">
+            <Button Classes="secondary" Content="Edit" Command="{Binding EditCommand}" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <TextBlock Classes="muted" FontSize="13" MaxWidth="760" HorizontalAlignment="Left" TextWrapping="Wrap"
+               Text="Marquee ships with no theaters. Everything here lives in your own file, so anyone running their own copy builds a separate list." />
+  </StackPanel>
+</UserControl>

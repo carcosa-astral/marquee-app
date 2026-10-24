@@ -23,12 +23,15 @@
       <ItemsControl.ItemTemplate>
         <DataTemplate x:DataType="vm:LibraryItemViewModel">
           <StackPanel Width="148" Spacing="7">
-            <Border Classes="poster" Width="148" Height="222" CornerRadius="7">
-              <Panel>
-                <TextBlock Classes="brand" FontSize="13" Margin="10" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
-                <Image Source="{Binding Poster}" Stretch="UniformToFill" />
-              </Panel>
-            </Border>
+            <Button Classes="segment" Padding="0" Width="148" Height="222" CornerRadius="7" Background="Transparent"
+                    Command="{Binding OpenCommand}" ToolTip.Tip="Log a watch">
+              <Border Classes="poster" Width="148" Height="222" CornerRadius="7">
+                <Panel>
+                  <TextBlock Classes="brand" FontSize="13" Margin="10" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                  <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                </Panel>
+              </Border>
+            </Button>
             <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}"
                        Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip.Tip="{Binding Name}" />
             <TextBlock Classes="muted small" Margin="0,-4,0,0" Text="{Binding Details}" />

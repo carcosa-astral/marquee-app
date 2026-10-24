@@ -126,6 +126,135 @@
     <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
   </Style>
 
+  <!-- Accent outline button, such as "Add a theater" in the log dialog -->
+  <Style Selector="Button.accentOutline">
+    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Padding" Value="14,0" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.accentOutline:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+  </Style>
+
+  <!-- Segmented control: a row of choices on a raised strip, one selected -->
+  <Style Selector="Border.segments">
+    <Setter Property="Background" Value="{StaticResource RaisedBackgroundBrush}" />
+    <Setter Property="CornerRadius" Value="10" />
+    <Setter Property="Padding" Value="4" />
+  </Style>
+  <Style Selector="Button.segment">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="Foreground" Value="{StaticResource TextNavBrush}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="CornerRadius" Value="7" />
+    <Setter Property="Height" Value="34" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.segment:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+  </Style>
+  <Style Selector="Button.segment.active">
+    <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.segment.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+  </Style>
+
+  <!-- Option buttons: formats and similar choices. Add "round" for pill shapes. -->
+  <Style Selector="Button.option">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource TextNavBrush}" />
+    <Setter Property="CornerRadius" Value="8" />
+    <Setter Property="Height" Value="40" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.option.round">
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Height" Value="32" />
+  </Style>
+  <Style Selector="Button.option:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+  </Style>
+  <Style Selector="Button.option.active">
+    <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource SelectedBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.option.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource SelectedBrush}" />
+  </Style>
+  <Style Selector="Button.option.add">
+    <Setter Property="Foreground" Value="{StaticResource TextSubtleBrush}" />
+  </Style>
+
+  <!-- Inputs that use Fluent templates: match the text boxes -->
+  <Style Selector="ComboBox, CalendarDatePicker, AutoCompleteBox">
+    <Setter Property="CornerRadius" Value="8" />
+  </Style>
+  <Style Selector="AutoCompleteBox /template/ TextBox">
+    <Setter Property="CornerRadius" Value="8" />
+  </Style>
+
+  <!-- Table rows that open something, such as diary entries and theaters -->
+  <Style Selector="Button.row">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+    <Setter Property="BorderThickness" Value="0,1,0,0" />
+    <Setter Property="CornerRadius" Value="0" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.row:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource RaisedBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource DividerBrush}" />
+  </Style>
+  <Style Selector="Button.row.selected">
+    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+  </Style>
+  <Style Selector="Button.row.selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+  </Style>
+  <Style Selector="Border.pill.rewatch"><Setter Property="Background" Value="{StaticResource AnimeSoftBrush}" /><Setter Property="Padding" Value="6,2" /></Style>
+  <Style Selector="Border.pill.rewatch > TextBlock"><Setter Property="Foreground" Value="{StaticResource WatchlistBrush}" /><Setter Property="FontSize" Value="10" /><Setter Property="FontWeight" Value="SemiBold" /><Setter Property="LetterSpacing" Value="0.4" /></Style>
+
+  <!-- Dialog surface -->
+  <Style Selector="Border.dialog">
+    <Setter Property="Background" Value="{StaticResource AppBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource DialogBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="18" />
+    <Setter Property="BoxShadow" Value="{StaticResource DialogShadow}" />
+  </Style>
+
   <!-- Filter chips -->
   <Style Selector="Button.chip">
     <Setter Property="Background" Value="Transparent" />

@@ -15,12 +15,12 @@ public partial class ShellViewModel : ViewModelBase
     public ShellViewModel(AppServices services)
     {
         _services = services;
-        _search = new SearchPageViewModel(services, RefreshCounts);
+        _search = new SearchPageViewModel(services, RefreshCounts, titleId => OpenLog(titleId, null));
 
         MainItems =
         [
             Nav("Home", Icons.Home, null, Pages.Home()),
-            Nav("Diary", Icons.Diary, db => db.Watches.Count(), Pages.Soon("Diary", "Every watch, grouped by month, with filters.", "0.3.0")),
+            Nav("Diary", Icons.Diary, db => db.Watches.Count(), new DiaryPageViewModel(services, watchId => OpenLog(null, watchId))),
             Nav("Watchlist", Icons.Watchlist, db => db.Watchlist.Count(), Pages.Soon("Watchlist", "Titles coming soon and titles out now that you have not seen.", "0.5.0")),
             Nav("On Ice", Icons.OnIce, db => db.OnIce.Count(), Pages.Soon("On Ice", "Things you paused or dropped, with where you stopped and why.", "0.5.0")),
             Nav("People", Icons.People, null, Pages.Soon("People", "Actors and directors you have watched, most watched first.", "0.6.0")),
@@ -29,12 +29,12 @@ public partial class ShellViewModel : ViewModelBase
         LibraryItems =
         [
             Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie),
-                new LibraryPageViewModel(services, TitleKind.Movie, "Movies", "No movies yet. Search at the top to add one.")),
+                new LibraryPageViewModel(services, TitleKind.Movie, titleId => OpenLog(titleId, null), "Movies", "No movies yet. Search at the top to add one.")),
             Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv),
-                new LibraryPageViewModel(services, TitleKind.Tv, "TV", "No TV shows yet. Search at the top to add one.")),
+                new LibraryPageViewModel(services, TitleKind.Tv, titleId => OpenLog(titleId, null), "TV", "No TV shows yet. Search at the top to add one.")),
             Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime),
-                new LibraryPageViewModel(services, TitleKind.Anime, "Anime", "No anime yet. Search at the top to add series, films, OVAs and more.")),
-            Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), Pages.Soon("Theaters", "The theaters you add, with visits, formats and ratings.", "0.3.0")),
+                new LibraryPageViewModel(services, TitleKind.Anime, titleId => OpenLog(titleId, null), "Anime", "No anime yet. Search at the top to add series, films, OVAs and more.")),
+            Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), new TheatersPageViewModel(services, OpenTheaterForm)),
         ];
         FooterItems =
         [
@@ -54,6 +54,28 @@ public partial class ShellViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial PageViewModel? CurrentPage { get; set; }
+
+    /// <summary>The open dialog (Log a watch or a theater form), shown over the page. Null when none is open.</summary>
+    [ObservableProperty]
+    public partial ViewModelBase? Dialog { get; set; }
+
+    [RelayCommand]
+    private void LogWatch() => OpenLog(null, null);
+
+    private void OpenLog(string? titleId, string? watchId) =>
+        Dialog = new LogWatchViewModel(_services, titleId, watchId, CloseDialog);
+
+    private void OpenTheaterForm(Theater? theater) =>
+        Dialog = new TheaterFormViewModel(_services.Theaters, theater, saved => CloseDialog(saved is not null));
+
+    private void CloseDialog(bool changed)
+    {
+        Dialog = null;
+        if (!changed)
+            return;
+        RefreshCounts();
+        CurrentPage?.OnShown();
+    }
 
     /// <summary>The top bar search box.</summary>
     [ObservableProperty]
