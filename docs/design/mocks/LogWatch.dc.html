@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Log a watch</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#232831}
+button,input,select,textarea{font-family:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #88C0D0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:1440px;height:900px;box-sizing:border-box;position:relative;overflow:hidden;background:#232831;color:#E5E9F0;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;line-height:1.4;display:flex;align-items:center;justify-content:center;gap:28px">
+
+  <!-- Log a watch dialog -->
+  <section aria-label="Log a watch" style="width:700px;box-sizing:border-box;border-radius:18px;background:#2E3440;border:1px solid #4C566A;box-shadow:0 30px 80px rgba(0,0,0,0.5);padding:26px 28px;display:flex;flex-direction:column;gap:18px">
+
+    <div style="display:flex;align-items:center;gap:16px">
+      <div style="width:44px;height:64px;flex-shrink:0;border-radius:5px;background:linear-gradient(160deg,#D08770 0%,#7A4F4A 52%,#2E3440 100%)"></div>
+      <div style="flex-grow:1;display:flex;flex-direction:column">
+        <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">Log a watch</span>
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:24px;letter-spacing:-0.01em;color:#ECEFF4">Heat <span style="font-weight:500;color:#98A3B8;font-size:18px">1995</span></span>
+      </div>
+      <button type="button" style="height:32px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Change title</button>
+    </div>
+
+    <!-- Date -->
+    <div style="display:flex;gap:16px">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <label for="date" style="font-size:12px;font-weight:600;color:#B8C2D4">Date seen</label>
+        <div style="display:flex;gap:8px">
+          <input id="date" type="text" value="Sat, Oct 24, 2026" style="flex-grow:1;min-width:0;height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #88C0D0;background:#3B4252;color:#ECEFF4;font-size:14px">
+          <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Today</button>
+          <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Yesterday</button>
+        </div>
+      </div>
+      <div style="width:150px;display:flex;flex-direction:column;gap:6px">
+        <label for="time" style="font-size:12px;font-weight:600;color:#B8C2D4">Start time <span style="font-weight:400;color:#98A3B8">(optional)</span></label>
+        <input id="time" type="text" value="7:30 PM" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+      </div>
+    </div>
+
+    <!-- Rating and rewatch -->
+    <div style="display:flex;align-items:center;gap:20px">
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:600;color:#B8C2D4">Rating</span>
+        <div style="display:flex;align-items:center;gap:4px" role="img" aria-label="4.5 out of 5 stars">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#EBCB8B" fill-opacity="0.45" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+          <span style="margin-left:8px;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#ECEFF4">4.5</span>
+        </div>
+      </div>
+      <div style="flex-grow:1"></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:#3B4252">
+        <div style="width:36px;height:20px;border-radius:999px;background:#A3BE8C;position:relative"><div style="position:absolute;right:2px;top:2px;width:16px;height:16px;border-radius:50%;background:#2E3440"></div></div>
+        <div style="display:flex;flex-direction:column">
+          <span style="font-weight:600;color:#ECEFF4">Rewatch</span>
+          <span style="font-size:12px;color:#A9B3C5">First seen Mar 2024</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Where -->
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span style="font-size:12px;font-weight:600;color:#B8C2D4">Where you watched</span>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;padding:4px;border-radius:10px;background:#3B4252">
+        <button type="button" style="height:34px;border:0;border-radius:7px;background:#5E81AC;color:#ECEFF4;font-weight:600;font-size:13px;cursor:pointer">Theater</button>
+        <button type="button" style="height:34px;border:0;border-radius:7px;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Home</button>
+        <button type="button" style="height:34px;border:0;border-radius:7px;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Streaming</button>
+        <button type="button" style="height:34px;border:0;border-radius:7px;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Other</button>
+      </div>
+    </div>
+
+    <!-- Theater details -->
+    <div style="display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:12px;border:1px solid #434C5E;background:#343A47">
+      <div style="display:flex;gap:12px;align-items:flex-end">
+        <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+          <label for="theater" style="font-size:12px;font-weight:600;color:#B8C2D4">Theater</label>
+          <div style="position:relative;display:flex;align-items:center">
+            <input id="theater" type="text" value="The Grand Palace, Springfield" style="width:100%;height:40px;box-sizing:border-box;padding:0 36px 0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+            <svg style="position:absolute;right:12px" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#98A3B8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg>
+          </div>
+        </div>
+        <button type="button" style="height:40px;padding:0 14px;display:flex;align-items:center;gap:8px;border-radius:8px;border:1px solid #88C0D0;background:rgba(136,192,208,0.12);color:#88C0D0;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#88C0D0" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>
+          Add a theater
+        </button>
+      </div>
+      <div style="display:flex;gap:12px">
+        <div style="width:120px;display:flex;flex-direction:column;gap:6px">
+          <label for="screen" style="font-size:12px;font-weight:600;color:#B8C2D4">Screen</label>
+          <input id="screen" type="text" value="4" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+        </div>
+        <div style="width:120px;display:flex;flex-direction:column;gap:6px">
+          <label for="seat" style="font-size:12px;font-weight:600;color:#B8C2D4">Seat</label>
+          <input id="seat" type="text" value="H12" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+        </div>
+        <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+          <span style="font-size:12px;font-weight:600;color:#B8C2D4">Format</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:0;background:#5E81AC;color:#ECEFF4;font-weight:600;font-size:13px;cursor:pointer">35mm</button>
+            <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Standard</button>
+            <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">IMAX</button>
+            <button type="button" style="height:40px;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Dolby</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- With and notes -->
+    <div style="display:flex;gap:16px">
+      <div style="width:240px;display:flex;flex-direction:column;gap:6px">
+        <span style="font-size:12px;font-weight:600;color:#B8C2D4">Watched with</span>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-height:40px">
+          <span style="display:flex;align-items:center;gap:6px;height:30px;padding:0 10px;border-radius:999px;background:#434C5E;color:#ECEFF4;font-size:13px">Sam</span>
+          <button type="button" style="height:30px;padding:0 10px;border-radius:999px;border:1px dashed #4C566A;background:transparent;color:#B8C2D4;font-size:13px;cursor:pointer">Add person</button>
+        </div>
+      </div>
+      <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <label for="note" style="font-size:12px;font-weight:600;color:#B8C2D4">Note</label>
+        <textarea id="note" rows="2" style="resize:none;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px;line-height:1.4">Film print for the 30th anniversary. The coffee shop scene hits harder on a big screen.</textarea>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:4px">
+      <button type="button" style="height:42px;padding:0 20px;border-radius:10px;border:1px solid #4C566A;background:transparent;color:#E5E9F0;font-weight:500;font-size:14px;cursor:pointer">Cancel</button>
+      <button type="button" style="height:42px;padding:0 22px;border-radius:10px;border:0;background:#88C0D0;color:#2E3440;font-weight:600;font-size:14px;cursor:pointer">Save to diary</button>
+    </div>
+  </section>
+
+  <!-- Add a theater panel -->
+  <section aria-label="Add a theater" style="width:420px;box-sizing:border-box;align-self:center;border-radius:18px;background:#2E3440;border:1px solid #88C0D0;box-shadow:0 30px 80px rgba(0,0,0,0.5);padding:24px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#88C0D0">New theater</span>
+      <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:22px;color:#ECEFF4">Add a theater</h2>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <label for="tname" style="font-size:12px;font-weight:600;color:#B8C2D4">Name</label>
+      <input id="tname" type="text" value="Rialto Repertory" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #88C0D0;background:#3B4252;color:#ECEFF4;font-size:14px">
+    </div>
+    <div style="display:flex;gap:12px">
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <label for="tcity" style="font-size:12px;font-weight:600;color:#B8C2D4">City</label>
+        <input id="tcity" type="text" value="Springfield" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+      </div>
+      <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+        <label for="tchain" style="font-size:12px;font-weight:600;color:#B8C2D4">Chain <span style="font-weight:400;color:#98A3B8">(optional)</span></label>
+        <input id="tchain" type="text" placeholder="Independent" style="height:40px;box-sizing:border-box;padding:0 12px;border-radius:8px;border:1px solid #4C566A;background:#3B4252;color:#ECEFF4;font-size:14px">
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-size:12px;font-weight:600;color:#B8C2D4">Formats it offers</span>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:0;background:#5E81AC;color:#ECEFF4;font-weight:600;font-size:13px;cursor:pointer">35mm</button>
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:0;background:#5E81AC;color:#ECEFF4;font-weight:600;font-size:13px;cursor:pointer">Standard</button>
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">70mm</button>
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">IMAX</button>
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:1px solid #4C566A;background:transparent;color:#D8DEE9;font-size:13px;cursor:pointer">Dolby</button>
+        <button type="button" style="height:32px;padding:0 12px;border-radius:999px;border:1px dashed #4C566A;background:transparent;color:#B8C2D4;font-size:13px;cursor:pointer">Add format</button>
+      </div>
+    </div>
+    <p style="margin:0;font-size:13px;color:#A9B3C5">Theaters live in your own Marquee file. Anyone using their own copy builds their own list, and nothing comes preloaded.</p>
+    <div style="display:flex;justify-content:flex-end;gap:10px">
+      <button type="button" style="height:40px;padding:0 18px;border-radius:10px;border:1px solid #4C566A;background:transparent;color:#E5E9F0;font-size:14px;cursor:pointer">Cancel</button>
+      <button type="button" style="height:40px;padding:0 20px;border-radius:10px;border:0;background:#88C0D0;color:#2E3440;font-weight:600;font-size:14px;cursor:pointer">Add theater</button>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

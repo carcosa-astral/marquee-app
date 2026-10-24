@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TV show page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#2E3440}
+button,a{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #88C0D0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:1440px;height:1320px;box-sizing:border-box;display:flex;background:#2E3440;color:#E5E9F0;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;overflow:hidden">
+  <div style="width:232px;flex-shrink:0"><dc-import name="Sidebar" active="TV" h="1320" hint-size="232px,1320px"></dc-import></div>
+  <main style="flex-grow:1;min-width:0;display:flex;flex-direction:column">
+    <div style="width:1208px;height:72px;flex-shrink:0"><dc-import name="Topbar" hint-size="1208px,72px"></dc-import></div>
+
+    <div style="padding:24px 32px 32px;display:flex;flex-direction:column">
+
+      <div style="height:230px;border-radius:16px;border:1px solid #434C5E;background:radial-gradient(90% 150% at 85% 0%,rgba(180,142,173,0.4),rgba(180,142,173,0) 60%),radial-gradient(70% 120% at 5% 100%,rgba(94,129,172,0.35),rgba(94,129,172,0) 60%),linear-gradient(180deg,#3B4252,#2E3440);position:relative;overflow:hidden">
+        <span style="position:absolute;right:16px;top:14px;font-size:11px;color:#D8DEE9;background:rgba(46,52,64,0.7);padding:3px 9px;border-radius:999px">Backdrop from TMDB</span>
+      </div>
+
+      <div style="display:flex;gap:32px;margin-top:-96px;padding:0 28px;position:relative">
+
+        <div style="width:208px;flex-shrink:0;display:flex;flex-direction:column;gap:18px">
+          <div style="width:208px;height:312px;border-radius:10px;background:linear-gradient(160deg,#B48EAD 0%,#5E5A7E 52%,#2E3440 100%);border:1px solid #4C566A;box-shadow:0 18px 40px rgba(0,0,0,0.45);display:flex;align-items:flex-end;padding:16px;box-sizing:border-box">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:28px;line-height:1.05;color:#ECEFF4">Slow Horses</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">Whole show</span>
+            <div style="height:6px;border-radius:999px;background:#434C5E;overflow:hidden"><div style="width:89%;height:100%;background:#B48EAD"></div></div>
+            <span style="font-size:13px;color:#D8DEE9">16 of 18 episodes</span>
+            <span style="font-size:12px;color:#98A3B8">About 1.5 hours left</span>
+          </div>
+        </div>
+
+        <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:22px;padding-top:98px">
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(180,142,173,0.2);color:#B48EAD">TV</span>
+              <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(163,190,140,0.16);color:#A3BE8C">Watching</span>
+            </div>
+            <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:48px;line-height:1;letter-spacing:-0.02em;color:#ECEFF4">Slow Horses <span style="font-weight:500;color:#98A3B8;font-size:28px">2022</span></h1>
+            <p style="margin:0;color:#B8C2D4;font-size:14px">3 seasons logged · Spy thriller, Drama · Apple TV+ · English</p>
+            <p style="margin:0;color:#B8C2D4;font-size:14px">Based on the novels by Mick Herron</p>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center">
+            <button type="button" style="height:40px;padding:0 20px;border:0;border-radius:10px;background:#88C0D0;color:#2E3440;font-weight:600;font-size:14px;cursor:pointer">Log episode 5 of season 3</button>
+            <button type="button" style="height:40px;padding:0 16px;border:1px solid #4C566A;border-radius:10px;background:transparent;color:#E5E9F0;font-size:14px;cursor:pointer">Mark season watched</button>
+            <button type="button" style="height:40px;padding:0 16px;border:1px solid #4C566A;border-radius:10px;background:transparent;color:#E5E9F0;font-size:14px;cursor:pointer">Put on ice</button>
+          </div>
+
+          <section aria-label="Seasons" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{seasons}}" as="s" hint-placeholder-count="4">
+                <button type="button" style="display:flex;flex-direction:column;align-items:flex-start;gap:2px;height:56px;padding:0 16px;border-radius:10px;border:{{s.border}};background:{{s.bg}};color:#ECEFF4;cursor:pointer;justify-content:center">
+                  <span style="font-weight:600;font-size:14px">{{s.n}}</span>
+                  <span style="font-size:12px;color:{{s.sc}}">{{s.m}}</span>
+                </button>
+              </sc-for>
+            </div>
+            <div style="display:flex;align-items:baseline;gap:12px">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Season 3</h2>
+              <span style="font-size:13px;color:#A9B3C5">4 of 6 episodes watched</span>
+              <div style="flex-grow:1"></div>
+              <span style="font-size:12px;color:#98A3B8">Click a check to mark an episode</span>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{eps}}" as="e" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:16px;height:52px;border-top:1px solid #434C5E">
+                  <button type="button" aria-label="Toggle episode {{e.n}}" style="width:28px;height:28px;flex-shrink:0;border-radius:50%;border:{{e.cb}};background:{{e.cbg}};cursor:pointer;display:flex;align-items:center;justify-content:center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{e.ck}}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>
+                  </button>
+                  <span style="width:56px;color:#98A3B8;font-size:13px">Ep {{e.n}}</span>
+                  <span style="flex-grow:1;color:{{e.fg}}">Episode {{e.n}}</span>
+                  <span style="font-size:13px;color:#98A3B8">47 min</span>
+                  <span style="width:110px;text-align:right;font-size:13px;color:{{e.sc}}">{{e.s}}</span>
+                  <span style="width:44px;text-align:right;font-size:13px;color:#EBCB8B">{{e.r}}</span>
+                </div>
+              </sc-for>
+            </div>
+          </section>
+
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px">
+            <section aria-label="Cast" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Cast</h2>
+              <sc-for list="{{cast}}" as="c" hint-placeholder-count="5">
+                <a href="#" style="display:flex;align-items:center;gap:12px;text-decoration:none">
+                  <div style="width:40px;height:40px;flex-shrink:0;border-radius:50%;background:{{c.bg}};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#ECEFF4">{{c.i}}</div>
+                  <div style="display:flex;flex-direction:column;min-width:0;flex-grow:1">
+                    <span style="font-weight:600;color:#ECEFF4">{{c.n}}</span>
+                    <span style="font-size:12px;color:#98A3B8">{{c.r}}</span>
+                  </div>
+                  <span style="font-size:12px;color:{{c.sc}}">{{c.s}}</span>
+                </a>
+              </sc-for>
+            </section>
+            <section aria-label="Your rating by season" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Your ratings</h2>
+              <sc-for list="{{rate}}" as="r" hint-placeholder-count="3">
+                <div style="display:flex;align-items:center;gap:12px">
+                  <span style="width:80px;font-size:13px;color:#D8DEE9">{{r.n}}</span>
+                  <div style="flex-grow:1;height:8px;border-radius:999px;background:#434C5E;overflow:hidden"><div style="width:{{r.w}};height:100%;background:#B48EAD"></div></div>
+                  <span style="width:36px;text-align:right;font-size:14px;color:#EBCB8B">{{r.v}}</span>
+                </div>
+              </sc-for>
+              <span style="font-size:12px;color:#98A3B8">Season 3 is not rated yet. Rate it when you finish.</span>
+            </section>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1320}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const seasons = [
+      { n: 'Season 1', m: '6 of 6', sc: '#A3BE8C', border: '1px solid #434C5E', bg: 'transparent' },
+      { n: 'Season 2', m: '6 of 6', sc: '#A3BE8C', border: '1px solid #434C5E', bg: 'transparent' },
+      { n: 'Season 3', m: '4 of 6', sc: '#B48EAD', border: '2px solid #B48EAD', bg: 'rgba(180,142,173,0.12)' },
+      { n: 'Season 4', m: 'Not started', sc: '#98A3B8', border: '1px solid #434C5E', bg: 'transparent' }
+    ];
+    const eps = [];
+    for (let n = 1; n <= 6; n++) {
+      const done = n <= 4;
+      const next = n === 5;
+      eps.push({
+        n,
+        cb: done ? '1px solid #A3BE8C' : (next ? '2px solid #88C0D0' : '1px solid #4C566A'),
+        cbg: done ? '#A3BE8C' : 'transparent',
+        ck: done ? '#2E3440' : 'transparent',
+        fg: done ? '#D8DEE9' : (next ? '#ECEFF4' : '#A9B3C5'),
+        s: done ? 'Watched Oct ' + (n * 2 + 1) : (next ? 'Up next' : 'Not watched'),
+        sc: done ? '#A3BE8C' : (next ? '#88C0D0' : '#98A3B8'),
+        r: done ? ['4.0','4.5','4.0','4.5'][n - 1] : ''
+      });
+    }
+    const grad = (a) => 'linear-gradient(160deg,' + a + ',#2E3440)';
+    const cast = [
+      { n: 'Gary Oldman', r: 'Jackson Lamb', i: 'GO', bg: grad('#81A1C1'), s: '3 watched', sc: '#A3BE8C' },
+      { n: 'Jack Lowden', r: 'River Cartwright', i: 'JL', bg: grad('#88C0D0'), s: '2 watched', sc: '#A3BE8C' },
+      { n: 'Kristin Scott Thomas', r: 'Diana Taverner', i: 'KS', bg: grad('#B48EAD'), s: '4 watched', sc: '#A3BE8C' },
+      { n: 'Christopher Chung', r: 'Roddy Ho', i: 'CC', bg: grad('#D08770'), s: 'Not seen', sc: '#98A3B8' },
+      { n: 'Rosalind Eleazar', r: 'Shirley Dander', i: 'RE', bg: grad('#A3BE8C'), s: 'Not seen', sc: '#98A3B8' }
+    ];
+    const rate = [
+      { n: 'Season 1', v: '4.0', w: '80%' },
+      { n: 'Season 2', v: '4.5', w: '90%' },
+      { n: 'Season 3', v: '', w: '0%' }
+    ];
+    return { seasons, eps, cast, rate };
+  }
+}
+</script>
+</body>
+</html>
