@@ -1,0 +1,326 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Recap</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#2E3440}
+button,a{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #88C0D0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:1440px;height:1360px;box-sizing:border-box;display:flex;background:#2E3440;color:#E5E9F0;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;overflow:hidden">
+  <div style="width:232px;flex-shrink:0"><dc-import name="Sidebar" active="Recap" h="1360" hint-size="232px,1360px"></dc-import></div>
+  <main style="flex-grow:1;min-width:0;display:flex;flex-direction:column">
+    <div style="width:1208px;height:72px;flex-shrink:0"><dc-import name="Topbar" hint-size="1208px,72px"></dc-import></div>
+
+    <div style="padding:26px 32px 32px;display:flex;flex-direction:column;gap:22px">
+
+      <!-- Header with toggle -->
+      <div style="display:flex;align-items:flex-end;gap:20px">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">{{d.eyebrow}}</span>
+          <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:40px;line-height:1;letter-spacing:-0.02em;color:#ECEFF4">{{d.heading}}</h1>
+        </div>
+        <div style="flex-grow:1"></div>
+        <sc-if value="{{isYear}}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;align-items:center;gap:6px;height:40px;padding:0 6px;border-radius:10px;background:#3B4252">
+            <button type="button" aria-label="Previous year" style="width:30px;height:30px;border:0;border-radius:7px;background:transparent;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D8DEE9" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>
+            </button>
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px;min-width:48px;text-align:center;color:#ECEFF4">2026</span>
+            <button type="button" aria-label="Next year" style="width:30px;height:30px;border:0;border-radius:7px;background:transparent;cursor:pointer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#98A3B8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg>
+            </button>
+          </div>
+        </sc-if>
+        <div style="display:flex;gap:4px;padding:4px;border-radius:10px;background:#3B4252">
+          <button type="button" onClick="{{setYear}}" style="height:32px;padding:0 18px;border:0;border-radius:7px;background:{{yearBg}};color:{{yearFg}};font-weight:600;font-size:13px;cursor:pointer">Yearly</button>
+          <button type="button" onClick="{{setAll}}" style="height:32px;padding:0 18px;border:0;border-radius:7px;background:{{allBg}};color:{{allFg}};font-weight:600;font-size:13px;cursor:pointer">All time</button>
+        </div>
+      </div>
+
+      <!-- Headline numbers -->
+      <section aria-label="Totals" style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px">
+        <sc-for list="{{d.hero}}" as="h" hint-placeholder-count="5">
+          <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:16px 18px;display:flex;flex-direction:column;gap:2px">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:38px;line-height:1.05;letter-spacing:-0.02em;color:#ECEFF4">{{h.v}}</span>
+            <span style="font-size:13px;color:#A9B3C5">{{h.l}}</span>
+          </div>
+        </sc-for>
+      </section>
+
+      <!-- Activity chart -->
+      <section aria-label="Activity" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px 16px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:baseline;gap:12px">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">{{d.chartTitle}}</h2>
+          <span style="font-size:13px;color:#A9B3C5">{{d.chartNote}}</span>
+        </div>
+        <div style="position:relative;height:190px;margin-left:44px;margin-top:6px">
+          <sc-for list="{{d.ticks}}" as="t" hint-placeholder-count="5">
+            <div style="position:absolute;left:0;right:0;bottom:{{t.pct}};border-top:1px solid #434C5E">
+              <span style="position:absolute;left:-44px;top:-8px;width:36px;text-align:right;font-size:11px;color:#98A3B8">{{t.l}}</span>
+            </div>
+          </sc-for>
+          <div style="position:absolute;inset:0;display:flex;gap:10px;padding:0 6px">
+            <sc-for list="{{d.bars}}" as="b" hint-placeholder-count="12">
+              <div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+                <span style="font-size:12px;font-weight:600;color:{{b.lc}}">{{b.v}}</span>
+                <div style="width:70%;max-width:48px;height:{{b.h}};background:{{b.c}};border-radius:4px 4px 0 0"></div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;padding:0 6px;margin-left:44px">
+          <sc-for list="{{d.bars}}" as="b" hint-placeholder-count="12">
+            <span style="flex:1;min-width:0;text-align:center;font-size:12px;color:{{b.xc}}">{{b.x}}</span>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Genres, decades, ratings -->
+      <section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Top genres</h2>
+          <sc-for list="{{d.genres}}" as="g" hint-placeholder-count="6">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="width:70px;font-size:13px;color:#D8DEE9">{{g.n}}</span>
+              <div style="flex-grow:1;height:8px;border-radius:999px;background:#434C5E;overflow:hidden"><div style="width:{{g.w}};height:100%;background:#6C8FB5"></div></div>
+              <span style="width:28px;text-align:right;font-size:13px;color:#ECEFF4">{{g.v}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Films by decade</h2>
+          <div style="display:flex;gap:6px;height:150px;align-items:flex-end">
+            <sc-for list="{{d.decades}}" as="x" hint-placeholder-count="6">
+              <div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+                <span style="font-size:12px;font-weight:600;color:#ECEFF4">{{x.v}}</span>
+                <div style="width:100%;height:{{x.h}};background:{{x.c}};border-radius:3px 3px 0 0"></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:6px">
+            <sc-for list="{{d.decades}}" as="x" hint-placeholder-count="6">
+              <span style="flex:1;min-width:0;text-align:center;font-size:11px;color:#98A3B8">{{x.l}}</span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <div style="display:flex;align-items:baseline;justify-content:space-between">
+            <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">How you rated</h2>
+            <span style="font-size:13px;color:#A9B3C5">average {{d.avg}}</span>
+          </div>
+          <div style="display:flex;gap:5px;height:150px;align-items:flex-end">
+            <sc-for list="{{d.ratings}}" as="x" hint-placeholder-count="10">
+              <div style="flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px">
+                <span style="font-size:11px;color:#D8DEE9">{{x.v}}</span>
+                <div style="width:100%;height:{{x.h}};background:{{x.c}};border-radius:3px 3px 0 0"></div>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:5px">
+            <sc-for list="{{d.ratings}}" as="x" hint-placeholder-count="10">
+              <span style="flex:1;min-width:0;text-align:center;font-size:11px;color:#98A3B8">{{x.l}}</span>
+            </sc-for>
+          </div>
+        </div>
+      </section>
+
+      <!-- People and theaters -->
+      <section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Top directors</h2>
+          <sc-for list="{{d.directors}}" as="p" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;flex-shrink:0;border-radius:50%;background:#4C566A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#ECEFF4">{{p.i}}</div>
+              <span style="flex-grow:1;min-width:0;color:#ECEFF4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{p.n}}</span>
+              <span style="font-size:13px;color:#A9B3C5">{{p.v}} films</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Top actors</h2>
+          <sc-for list="{{d.actors}}" as="p" hint-placeholder-count="5">
+            <div style="display:flex;align-items:center;gap:10px">
+              <div style="width:30px;height:30px;flex-shrink:0;border-radius:50%;background:#4C566A;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#ECEFF4">{{p.i}}</div>
+              <span style="flex-grow:1;min-width:0;color:#ECEFF4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{p.n}}</span>
+              <span style="font-size:13px;color:#A9B3C5">{{p.v}} titles</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Top theaters</h2>
+          <sc-for list="{{d.theaters}}" as="t" hint-placeholder-count="5">
+            <div style="display:flex;flex-direction:column;gap:5px">
+              <div style="display:flex;align-items:baseline;gap:10px">
+                <span style="flex-grow:1;min-width:0;color:#ECEFF4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{t.n}}</span>
+                <span style="font-size:13px;color:#A9B3C5">{{t.v}} visits</span>
+              </div>
+              <div style="height:6px;border-radius:999px;background:#434C5E;overflow:hidden"><div style="width:{{t.w}};height:100%;background:#88C0D0"></div></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+
+      <!-- Highest rated and firsts -->
+      <section style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px">
+        <div style="grid-column:span 2;border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Highest rated</h2>
+          <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px">
+            <sc-for list="{{d.top}}" as="t" hint-placeholder-count="5">
+              <div style="display:flex;flex-direction:column;gap:6px;min-width:0">
+                <div style="aspect-ratio:2/3;border-radius:7px;background:{{t.bg}};display:flex;align-items:flex-end;padding:10px;box-sizing:border-box">
+                  <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:13px;line-height:1.12;color:#ECEFF4">{{t.t}}</span>
+                </div>
+                <span style="font-size:13px;color:#EBCB8B">{{t.r}}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:14px;min-width:0">
+          <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Firsts and lasts</h2>
+          <sc-for list="{{d.firsts}}" as="f" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:3px;padding-top:12px;border-top:1px solid #434C5E">
+              <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">{{f.k}}</span>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#ECEFF4">{{f.t}}</span>
+              <span style="font-size:13px;color:#A9B3C5">{{f.m}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1360}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const mode = (this.state && this.state.mode) || 'year';
+    const isYear = mode === 'year';
+    const grad = (a) => 'linear-gradient(160deg,' + a + ' 0%,#2E3440 100%)';
+    const BAR = '#6C8FB5', PEAK = '#88C0D0';
+
+    const barsFrom = (labels, vals, max) => {
+      const top = Math.max(...vals);
+      return labels.map((x, i) => {
+        const v = vals[i];
+        const empty = v === null;
+        const peak = !empty && v === top;
+        return {
+          x, v: empty ? '' : String(v),
+          h: empty ? '0%' : (v / max * 100) + '%',
+          c: peak ? PEAK : BAR,
+          lc: peak ? '#88C0D0' : '#D8DEE9',
+          xc: empty ? '#6B7488' : '#A9B3C5'
+        };
+      });
+    };
+    const ticksFrom = (max, step) => {
+      const t = [];
+      for (let v = 0; v <= max; v += step) t.push({ l: v.toLocaleString('en-US'), pct: (v / max * 100) + '%' });
+      return t;
+    };
+    const horiz = (pairs) => {
+      const m = Math.max(...pairs.map((p) => p[1]));
+      return pairs.map(([n, v]) => ({ n, v, w: (v / m * 100) + '%' }));
+    };
+    const vert = (pairs, labelFn) => {
+      const m = Math.max(...pairs.map((p) => p[1]));
+      return pairs.map(([l, v]) => ({ l: labelFn ? labelFn(l) : l, v, h: (v / m * 100) + '%', c: v === m ? PEAK : BAR }));
+    };
+    const initials = (n) => n.split(' ').map((w) => w[0]).slice(0, 2).join('');
+    const people = (pairs) => pairs.map(([n, v]) => ({ n, v, i: initials(n) }));
+    const ratingLabels = (l) => (['1', '2', '3', '4', '5'].indexOf(String(l)) >= 0 ? String(l) : '');
+
+    const year = {
+      eyebrow: 'Your year in film, TV and anime',
+      heading: '2026 so far',
+      hero: [
+        { v: '412', l: 'hours watched' },
+        { v: '84', l: 'films' },
+        { v: '312', l: 'episodes' },
+        { v: '3.8', l: 'average rating' },
+        { v: '19', l: 'theater visits' }
+      ],
+      chartTitle: 'Hours per month',
+      chartNote: 'October is your busiest month at 65 hours.',
+      ticks: ticksFrom(80, 20),
+      bars: barsFrom(['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'], [52,33,41,27,45,38,32,30,49,65,null,null], 80),
+      genres: horiz([['Drama',31],['Crime',22],['Animation',19],['Sci-Fi',16],['Thriller',14],['Fantasy',9]]),
+      decades: vert([['70s',4],['80s',7],['90s',15],['00s',12],['10s',18],['20s',28]]),
+      avg: '3.8',
+      ratings: vert([[0.5,0],[1,1],[1.5,1],[2,3],[2.5,5],[3,9],[3.5,15],[4,24],[4.5,18],[5,8]], ratingLabels),
+      directors: people([['Hayao Miyazaki',3],['Michael Mann',3],['Ridley Scott',3],['Satoshi Kon',2],['Bong Joon-ho',2]]),
+      actors: people([['Robert De Niro',4],['Al Pacino',3],['Sigourney Weaver',3],['Tilda Swinton',3],['Ken Watanabe',2]]),
+      theaters: horiz([['The Grand Palace',8],['Lakeside Cinema',5],['Rialto Repertory',4],['Northgate 12',2]]),
+      top: [
+        { t: 'Paprika', r: '5.0', bg: grad('#EBCB8B') },
+        { t: 'Cowboy Bebop', r: '5.0', bg: grad('#81A1C1') },
+        { t: 'Perfect Blue', r: '4.5', bg: grad('#B48EAD') },
+        { t: 'Heat', r: '4.5', bg: grad('#D08770') },
+        { t: 'Alien', r: '4.5', bg: grad('#A3BE8C') }
+      ],
+      firsts: [
+        { k: 'First of the year', t: 'Stalker', m: 'Jan 2 · Home · 4.5' },
+        { k: 'Latest', t: 'Heat', m: 'Oct 24 · The Grand Palace · 4.5' }
+      ]
+    };
+    const all = {
+      eyebrow: 'Everything you have logged',
+      heading: 'All time',
+      hero: [
+        { v: '2,240', l: 'hours watched' },
+        { v: '231', l: 'films' },
+        { v: '2,950', l: 'episodes' },
+        { v: '3.7', l: 'average rating' },
+        { v: '142', l: 'theater visits' }
+      ],
+      chartTitle: 'Hours per year',
+      chartNote: '2026 is your biggest year at 412 hours.',
+      ticks: ticksFrom(500, 100),
+      bars: barsFrom(['2019','2020','2021','2022','2023','2024','2025','2026'], [178,312,286,241,254,268,289,412], 500),
+      genres: horiz([['Drama',29],['Animation',24],['Crime',17],['Sci-Fi',15],['Fantasy',12],['Thriller',11]]),
+      decades: vert([['50s',6],['60s',11],['70s',19],['80s',24],['90s',41],['00s',44],['10s',52],['20s',34]]),
+      avg: '3.7',
+      ratings: vert([[0.5,1],[1,3],[1.5,3],[2,8],[2.5,14],[3,28],[3.5,46],[4,62],[4.5,46],[5,20]], ratingLabels),
+      directors: people([['Hayao Miyazaki',11],['Akira Kurosawa',9],['Ridley Scott',8],['Michael Mann',5],['Satoshi Kon',4]]),
+      actors: people([['Toshiro Mifune',9],['Robert De Niro',8],['Al Pacino',6],['Tilda Swinton',6],['Sigourney Weaver',5]]),
+      theaters: horiz([['The Grand Palace',58],['Lakeside Cinema',37],['Rialto Repertory',26],['Northgate 12',14],['3 other theaters',7]]),
+      top: [
+        { t: 'Seven Samurai', r: '5.0', bg: grad('#BF616A') },
+        { t: 'Paprika', r: '5.0', bg: grad('#EBCB8B') },
+        { t: 'Cowboy Bebop', r: '5.0', bg: grad('#81A1C1') },
+        { t: 'Spirited Away', r: '5.0', bg: grad('#8FBCBB') },
+        { t: 'Stalker', r: '5.0', bg: grad('#A3BE8C') }
+      ],
+      firsts: [
+        { k: 'First entry', t: 'Spirited Away', m: 'Jun 14, 2019 · Home · 5.0' },
+        { k: 'Most rewatched', t: 'Alien', m: '6 watches · last on Oct 4, 2026' }
+      ]
+    };
+
+    return {
+      d: isYear ? year : all,
+      isYear,
+      yearBg: isYear ? '#5E81AC' : 'transparent',
+      yearFg: isYear ? '#ECEFF4' : '#B8C2D4',
+      allBg: isYear ? 'transparent' : '#5E81AC',
+      allFg: isYear ? '#B8C2D4' : '#ECEFF4',
+      setYear: () => this.setState({ mode: 'year' }),
+      setAll: () => this.setState({ mode: 'all' })
+    };
+  }
+}
+</script>
+</body>
+</html>

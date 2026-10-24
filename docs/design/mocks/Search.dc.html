@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Search and add a title</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#2E3440}
+button,a,input{font-family:inherit}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid #88C0D0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:1440px;height:1040px;box-sizing:border-box;display:flex;background:#2E3440;color:#E5E9F0;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;overflow:hidden">
+  <div style="width:232px;flex-shrink:0"><dc-import name="Sidebar" active="Home" h="1040" hint-size="232px,1040px"></dc-import></div>
+  <main style="flex-grow:1;min-width:0;display:flex;flex-direction:column">
+    <div style="width:1208px;height:72px;flex-shrink:0"><dc-import name="Topbar" hint-size="1208px,72px"></dc-import></div>
+
+    <div style="padding:28px 32px 32px;display:flex;flex-direction:column;gap:22px">
+
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:34px;line-height:1;letter-spacing:-0.02em;color:#ECEFF4">Add a title</h1>
+        <label for="q" style="position:relative;display:flex;align-items:center">
+          <svg style="position:absolute;left:16px" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#88C0D0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-4.3-4.3"></path></svg>
+          <input id="q" type="text" value="paprika" style="width:100%;box-sizing:border-box;height:52px;padding:0 16px 0 48px;border-radius:12px;border:1px solid #88C0D0;background:#3B4252;color:#ECEFF4;font-size:18px">
+        </label>
+        <div style="display:flex;align-items:center;gap:6px">
+          <button type="button" style="height:30px;padding:0 12px;border-radius:999px;border:0;background:#4C566A;color:#ECEFF4;font-size:12px;font-weight:600;cursor:pointer">All</button>
+          <button type="button" style="height:30px;padding:0 12px;border-radius:999px;border:1px solid #434C5E;background:transparent;color:#B8C2D4;font-size:12px;cursor:pointer">Movies</button>
+          <button type="button" style="height:30px;padding:0 12px;border-radius:999px;border:1px solid #434C5E;background:transparent;color:#B8C2D4;font-size:12px;cursor:pointer">TV</button>
+          <button type="button" style="height:30px;padding:0 12px;border-radius:999px;border:1px solid #434C5E;background:transparent;color:#B8C2D4;font-size:12px;cursor:pointer">Anime</button>
+          <button type="button" style="height:30px;padding:0 12px;border-radius:999px;border:1px solid #434C5E;background:transparent;color:#B8C2D4;font-size:12px;cursor:pointer">People</button>
+          <div style="flex-grow:1"></div>
+          <span style="font-size:12px;color:#98A3B8">Searching TMDB and AniList</span>
+        </div>
+      </div>
+
+      <section aria-label="Results" style="display:flex;flex-direction:column;gap:12px">
+        <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">4 results</span>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{results}}" as="r" hint-placeholder-count="4">
+            <article style="display:flex;gap:18px;padding:16px;border-radius:14px;border:1px solid {{r.border}};background:#343A47">
+              <div style="width:72px;height:108px;flex-shrink:0;border-radius:6px;background:{{r.bg}};display:flex;align-items:flex-end;padding:8px;box-sizing:border-box">
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:11px;line-height:1.1;color:#ECEFF4">{{r.t}}</span>
+              </div>
+              <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                <div style="display:flex;align-items:baseline;gap:10px">
+                  <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#ECEFF4">{{r.t}}</span>
+                  <span style="font-size:14px;color:#98A3B8">{{r.y}}</span>
+                  <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:{{r.kbg}};color:{{r.kfg}}">{{r.k}}</span>
+                </div>
+                <span style="font-size:13px;color:#B8C2D4">{{r.m}}</span>
+                <div style="display:flex;gap:6px;align-items:center;margin-top:2px">
+                  <sc-for list="{{r.src}}" as="s" hint-placeholder-count="2">
+                    <span style="font-size:11px;padding:2px 8px;border-radius:999px;background:{{s.bg}};color:{{s.fg}}">{{s.n}}</span>
+                  </sc-for>
+                  <span style="font-size:12px;color:#A3BE8C">{{r.note}}</span>
+                </div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end;justify-content:center">
+                <button type="button" style="height:36px;padding:0 16px;border:0;border-radius:9px;background:#88C0D0;color:#2E3440;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap">Log a watch</button>
+                <button type="button" style="height:36px;padding:0 16px;border:1px solid #4C566A;border-radius:9px;background:transparent;color:#E5E9F0;font-size:13px;cursor:pointer;white-space:nowrap">{{r.second}}</button>
+              </div>
+            </article>
+          </sc-for>
+        </div>
+        <p style="margin:0;font-size:13px;color:#98A3B8">Not the right one? Open any result to pick a different match, or <a href="#" style="color:#88C0D0;text-decoration:none">add it by hand</a>.</p>
+      </section>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const grad = (a) => 'linear-gradient(160deg,' + a + ' 0%,#2E3440 100%)';
+    const K = {
+      Movie: { kbg: 'rgba(129,161,193,0.18)', kfg: '#81A1C1' },
+      Anime: { kbg: 'rgba(235,203,139,0.16)', kfg: '#EBCB8B' },
+      Person: { kbg: 'rgba(163,190,140,0.16)', kfg: '#A3BE8C' }
+    };
+    const AL = { n: 'AniList', bg: 'rgba(235,203,139,0.14)', fg: '#EBCB8B' };
+    const TM = { n: 'TMDB', bg: 'rgba(136,192,208,0.14)', fg: '#88C0D0' };
+    const results = [
+      { t: 'Paprika', y: '2006', k: 'Anime film', ...K.Anime, m: 'Directed by Satoshi Kon · 90 min · Animation, Sci-Fi, Mystery', src: [AL, TM], note: 'Matched across both sources and merged', bg: grad('#EBCB8B'), border: '#88C0D0', second: 'Add to watchlist' },
+      { t: 'Paprika', y: '1991', k: 'Movie', ...K.Movie, m: 'Directed by Tinto Brass · Drama', src: [TM], note: '', bg: grad('#BF616A'), border: '#434C5E', second: 'Add to watchlist' },
+      { t: 'Paprika', y: '2006', k: 'Anime film', ...K.Anime, m: 'Possible duplicate. Same title on TMDB only, not linked to the AniList entry.', src: [TM], note: '', bg: grad('#4C566A'), border: '#434C5E', second: 'Link to first result' },
+      { t: 'Satoshi Kon', y: 'Director', k: 'Person', ...K.Person, m: 'Perfect Blue, Millennium Actress, Tokyo Godfathers, Paprika, Paranoia Agent', src: [AL, TM], note: 'You have watched 4 of 5 titles', bg: grad('#81A1C1'), border: '#434C5E', second: 'Open page' }
+    ];
+    return { results };
+  }
+}
+</script>
+</body>
+</html>

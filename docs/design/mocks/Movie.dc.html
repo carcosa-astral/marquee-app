@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Movie page</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Hanken+Grotesk:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#2E3440}
+button,a{font-family:inherit}
+button:focus-visible,a:focus-visible{outline:2px solid #88C0D0;outline-offset:2px}
+</style>
+</helmet>
+<div style="width:1440px;height:1240px;box-sizing:border-box;display:flex;background:#2E3440;color:#E5E9F0;font-family:'Hanken Grotesk',system-ui,sans-serif;font-size:14px;line-height:1.4;font-variant-numeric:tabular-nums;overflow:hidden">
+  <div style="width:232px;flex-shrink:0"><dc-import name="Sidebar" active="Movies" h="1240" hint-size="232px,1240px"></dc-import></div>
+  <main style="flex-grow:1;min-width:0;display:flex;flex-direction:column">
+    <div style="width:1208px;height:72px;flex-shrink:0"><dc-import name="Topbar" hint-size="1208px,72px"></dc-import></div>
+
+    <div style="padding:24px 32px 32px;display:flex;flex-direction:column;gap:0">
+
+      <!-- Backdrop -->
+      <div style="height:230px;border-radius:16px;border:1px solid #434C5E;background:radial-gradient(90% 140% at 80% 10%,rgba(208,135,112,0.45),rgba(208,135,112,0) 60%),radial-gradient(70% 120% at 10% 100%,rgba(129,161,193,0.35),rgba(129,161,193,0) 60%),linear-gradient(180deg,#3B4252,#2E3440);position:relative;overflow:hidden">
+        <span style="position:absolute;right:16px;top:14px;font-size:11px;color:#D8DEE9;background:rgba(46,52,64,0.7);padding:3px 9px;border-radius:999px">Backdrop from TMDB</span>
+      </div>
+
+      <div style="display:flex;gap:32px;margin-top:-96px;padding:0 28px;position:relative">
+
+        <!-- Left column -->
+        <div style="width:208px;flex-shrink:0;display:flex;flex-direction:column;gap:18px">
+          <div style="width:208px;height:312px;border-radius:10px;background:linear-gradient(160deg,#D08770 0%,#7A4F4A 52%,#2E3440 100%);border:1px solid #4C566A;box-shadow:0 18px 40px rgba(0,0,0,0.45);display:flex;align-items:flex-end;padding:16px;box-sizing:border-box">
+            <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:28px;line-height:1.05;color:#ECEFF4">Heat</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">Where you saw it</span>
+            <sc-for list="{{where}}" as="w" hint-placeholder-count="2">
+              <div style="display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:#343A47;border:1px solid #434C5E">
+                <span style="font-weight:600;color:#ECEFF4;font-size:13px">{{w.name}}</span>
+                <span style="font-size:12px;color:#A9B3C5">{{w.detail}}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#98A3B8">Data</span>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span style="font-size:12px;padding:3px 9px;border-radius:999px;background:rgba(136,192,208,0.14);color:#88C0D0">TMDB</span>
+              <span style="font-size:12px;padding:3px 9px;border-radius:999px;border:1px solid #4C566A;color:#A9B3C5">0 fields edited</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column -->
+        <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:22px;padding-top:98px">
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:rgba(129,161,193,0.18);color:#81A1C1">Movie</span>
+              <span style="font-size:13px;color:#A9B3C5">Watched 2 times</span>
+            </div>
+            <h1 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:48px;line-height:1;letter-spacing:-0.02em;color:#ECEFF4">Heat <span style="font-weight:500;color:#98A3B8;font-size:28px">1995</span></h1>
+            <p style="margin:0;color:#B8C2D4;font-size:14px">170 min · Crime, Thriller, Drama · United States · English</p>
+            <p style="margin:0;color:#B8C2D4;font-size:14px">Directed by <a href="#" style="color:#88C0D0;text-decoration:none;font-weight:600">Michael Mann</a></p>
+            <p style="margin:4px 0 0;max-width:640px;color:#D8DEE9;font-size:15px;line-height:1.55">A Los Angeles detective hunts a crew of professional thieves led by a disciplined, careful leader. Both men see something of themselves in the other.</p>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center">
+            <button type="button" style="height:40px;padding:0 20px;border:0;border-radius:10px;background:#88C0D0;color:#2E3440;font-weight:600;font-size:14px;cursor:pointer">Log a watch</button>
+            <button type="button" style="height:40px;padding:0 16px;border:1px solid #4C566A;border-radius:10px;background:transparent;color:#E5E9F0;font-size:14px;cursor:pointer">Add to watchlist</button>
+            <button type="button" style="height:40px;padding:0 16px;border:1px solid #4C566A;border-radius:10px;background:transparent;color:#E5E9F0;font-size:14px;cursor:pointer">Put on ice</button>
+            <div style="flex-grow:1"></div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:26px;color:#ECEFF4">4.5</span>
+              <span style="font-size:12px;color:#98A3B8">your rating</span>
+            </div>
+          </div>
+
+          <!-- Your watches -->
+          <section aria-label="Your watches" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Your watches</h2>
+              <a href="#" style="color:#88C0D0;font-size:13px;text-decoration:none">Edit entries</a>
+            </div>
+            <sc-for list="{{watches}}" as="w" hint-placeholder-count="2">
+              <div style="display:flex;gap:16px;align-items:flex-start;padding-top:12px;border-top:1px solid #434C5E">
+                <div style="width:120px;flex-shrink:0;display:flex;flex-direction:column;gap:2px">
+                  <span style="font-weight:600;color:#ECEFF4">{{w.date}}</span>
+                  <span style="font-size:12px;color:{{w.kindColor}}">{{w.kind}}</span>
+                </div>
+                <div style="flex-grow:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                  <span style="color:#ECEFF4">{{w.where}}</span>
+                  <span style="font-size:13px;color:#A9B3C5">{{w.detail}}</span>
+                  <span style="font-size:13px;color:#D8DEE9;margin-top:4px">{{w.note}}</span>
+                </div>
+                <span style="display:flex;align-items:center;gap:4px;font-size:14px;color:#EBCB8B;white-space:nowrap">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="#EBCB8B" aria-hidden="true"><path d="M12 3l2.7 5.8 6.3.7-4.7 4.3 1.3 6.2L12 16.9 6.4 20l1.3-6.2L3 9.5l6.3-.7z"></path></svg>{{w.rating}}
+                </span>
+              </div>
+            </sc-for>
+          </section>
+
+          <!-- Cast -->
+          <section aria-label="Cast" style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:baseline;justify-content:space-between">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">Cast</h2>
+              <a href="#" style="color:#88C0D0;font-size:13px;text-decoration:none">Full cast and crew</a>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px">
+              <sc-for list="{{cast}}" as="c" hint-placeholder-count="8">
+                <a href="#" style="display:flex;flex-direction:column;align-items:center;gap:8px;text-decoration:none;min-width:0">
+                  <div style="width:72px;height:72px;border-radius:50%;background:{{c.bg}};display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:20px;color:#ECEFF4">{{c.i}}</div>
+                  <div style="display:flex;flex-direction:column;align-items:center;min-width:0;width:100%">
+                    <span style="font-size:13px;font-weight:600;color:#ECEFF4;text-align:center;line-height:1.2">{{c.n}}</span>
+                    <span style="font-size:12px;color:#98A3B8;text-align:center;line-height:1.2">{{c.r}}</span>
+                    <span style="font-size:11px;color:{{c.sc}};margin-top:3px">{{c.s}}</span>
+                  </div>
+                </a>
+              </sc-for>
+            </div>
+          </section>
+
+          <!-- From the director -->
+          <section aria-label="More from Michael Mann" style="border-radius:14px;border:1px solid #434C5E;background:#343A47;padding:18px 20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:baseline;gap:12px">
+              <h2 style="margin:0;font-family:'Bricolage Grotesque',sans-serif;font-weight:700;font-size:16px">More from Michael Mann</h2>
+              <span style="font-size:13px;color:#A9B3C5">Watched 5 of 12</span>
+              <div style="flex-grow:1"></div>
+              <a href="#" style="color:#88C0D0;font-size:13px;text-decoration:none">Open director page</a>
+            </div>
+            <div style="display:flex;gap:8px">
+              <sc-for list="{{mann}}" as="m" hint-placeholder-count="12">
+                <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                  <div style="aspect-ratio:2/3;border-radius:5px;background:{{m.bg}};opacity:{{m.op}}"></div>
+                  <div style="height:4px;border-radius:999px;background:{{m.c}}"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display:flex;gap:18px;font-size:12px;color:#A9B3C5">
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#A3BE8C;margin-right:6px"></span>Watched</span>
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#EBCB8B;margin-right:6px"></span>On watchlist</span>
+              <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#4C566A;margin-right:6px"></span>Not seen</span>
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1240}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const where = [
+      { name: 'The Grand Palace, Springfield', detail: 'Oct 24, 2026 · Screen 4 · 35mm' },
+      { name: 'Home', detail: 'Mar 9, 2024 · Plex' }
+    ];
+    const watches = [
+      { date: 'Oct 24, 2026', kind: 'Rewatch', kindColor: '#EBCB8B', where: 'The Grand Palace, Springfield', detail: 'Screen 4 · 35mm · Seat H12 · with Sam', note: 'Film print for the 30th anniversary. The coffee shop scene hits harder on a big screen.', rating: '4.5' },
+      { date: 'Mar 9, 2024', kind: 'First watch', kindColor: '#A3BE8C', where: 'Home', detail: 'Plex · alone', note: 'Finally got around to it.', rating: '4.5' }
+    ];
+    const grad = (a) => 'linear-gradient(160deg,' + a + ',#2E3440)';
+    const cast = [
+      { n: 'Al Pacino', r: 'Vincent Hanna', i: 'AP', bg: grad('#81A1C1'), s: '2 watched', sc: '#A3BE8C' },
+      { n: 'Robert De Niro', r: 'Neil McCauley', i: 'RD', bg: grad('#B48EAD'), s: '4 watched', sc: '#A3BE8C' },
+      { n: 'Val Kilmer', r: 'Chris Shiherlis', i: 'VK', bg: grad('#88C0D0'), s: '1 watched', sc: '#A3BE8C' },
+      { n: 'Jon Voight', r: 'Nate', i: 'JV', bg: grad('#D08770'), s: '3 watched', sc: '#A3BE8C' },
+      { n: 'Tom Sizemore', r: 'Michael Cheritto', i: 'TS', bg: grad('#A3BE8C'), s: '1 watched', sc: '#A3BE8C' },
+      { n: 'Diane Venora', r: 'Justine', i: 'DV', bg: grad('#EBCB8B'), s: 'Not seen', sc: '#98A3B8' },
+      { n: 'Amy Brenneman', r: 'Eady', i: 'AB', bg: grad('#8FBCBB'), s: '1 watched', sc: '#A3BE8C' },
+      { n: 'Ashley Judd', r: 'Charlene', i: 'AJ', bg: grad('#BF616A'), s: '2 watched', sc: '#A3BE8C' }
+    ];
+    const st = {
+      w: { c: '#A3BE8C', op: 1 },
+      l: { c: '#EBCB8B', op: 1 },
+      n: { c: '#4C566A', op: 0.5 }
+    };
+    const order = ['l','n','w','w','w','w','n','w','n','n','n','l'];
+    const cols = ['#81A1C1','#B48EAD','#88C0D0','#D08770','#A3BE8C','#EBCB8B','#8FBCBB','#BF616A','#5E81AC','#B48EAD','#D08770','#81A1C1'];
+    const mann = order.map((k, i) => ({ c: st[k].c, op: st[k].op, bg: grad(cols[i]) }));
+    return { where, watches, cast, mann };
+  }
+}
+</script>
+</body>
+</html>
