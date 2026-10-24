@@ -1,6 +1,7 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Marquee.Core.Metadata;
 using Marquee.Core.Model;
 using Marquee.Data;
 
@@ -12,15 +13,16 @@ public partial class ShellViewModel : ViewModelBase
     private readonly AppServices _services;
     private readonly SearchPageViewModel _search;
 
-    public ShellViewModel(AppServices services)
+    /// <param name="restartSetup">Shows the first-run screen again, after settings were erased.</param>
+    public ShellViewModel(AppServices services, Action restartSetup)
     {
         _services = services;
-        _search = new SearchPageViewModel(services, RefreshCounts);
+        _search = new SearchPageViewModel(services, titleId => OpenLog(titleId, null), OpenLogPending);
 
         MainItems =
         [
             Nav("Home", Icons.Home, null, Pages.Home()),
-            Nav("Diary", Icons.Diary, db => db.Watches.Count(), Pages.Soon("Diary", "Every watch, grouped by month, with filters.", "0.3.0")),
+            Nav("Diary", Icons.Diary, db => db.Watches.Count(), new DiaryPageViewModel(services, watchId => OpenLog(null, watchId))),
             Nav("Watchlist", Icons.Watchlist, db => db.Watchlist.Count(), Pages.Soon("Watchlist", "Titles coming soon and titles out now that you have not seen.", "0.5.0")),
             Nav("On Ice", Icons.OnIce, db => db.OnIce.Count(), Pages.Soon("On Ice", "Things you paused or dropped, with where you stopped and why.", "0.5.0")),
             Nav("People", Icons.People, null, Pages.Soon("People", "Actors and directors you have watched, most watched first.", "0.6.0")),
@@ -28,18 +30,24 @@ public partial class ShellViewModel : ViewModelBase
         ];
         LibraryItems =
         [
-            Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie),
-                new LibraryPageViewModel(services, TitleKind.Movie, "Movies", "No movies yet. Search at the top to add one.")),
-            Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv),
-                new LibraryPageViewModel(services, TitleKind.Tv, "TV", "No TV shows yet. Search at the top to add one.")),
-            Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime),
-                new LibraryPageViewModel(services, TitleKind.Anime, "Anime", "No anime yet. Search at the top to add series, films, OVAs and more.")),
-            Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), Pages.Soon("Theaters", "The theaters you add, with visits, formats and ratings.", "0.3.0")),
+            Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Movie, titleId => OpenLog(titleId, null), "Movies", "No movies watched yet. Search at the top and log one.")),
+            Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Tv, titleId => OpenLog(titleId, null), "TV", "No TV watched yet. Search at the top and log an episode.")),
+            Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Anime, titleId => OpenLog(titleId, null), "Anime", "No anime watched yet. Search at the top and log a series, film, OVA or more.")),
+            Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), new TheatersPageViewModel(services, OpenTheaterForm)),
         ];
         FooterItems =
         [
             Nav("Export JSON", Icons.Export, null, Pages.Soon("Export JSON", "Save your whole diary as one readable Marquee JSON file.", "0.8.0")),
-            Nav("Settings", Icons.Settings, null, new SettingsPageViewModel(services)),
+            Nav("Settings", Icons.Settings, null, new SettingsPageViewModel(services, settingsErased =>
+            {
+                if (settingsErased)
+                    restartSetup();
+                else
+                    RefreshCounts();
+            })),
         ];
 
         RefreshCounts();
@@ -54,6 +62,31 @@ public partial class ShellViewModel : ViewModelBase
 
     [ObservableProperty]
     public partial PageViewModel? CurrentPage { get; set; }
+
+    /// <summary>The open dialog (Log a watch or a theater form), shown over the page. Null when none is open.</summary>
+    [ObservableProperty]
+    public partial ViewModelBase? Dialog { get; set; }
+
+    [RelayCommand]
+    private void LogWatch() => OpenLog(null, null);
+
+    private void OpenLog(string? titleId, string? watchId) =>
+        Dialog = new LogWatchViewModel(_services, titleId, watchId, CloseDialog);
+
+    private void OpenLogPending(FetchedTitle pending) =>
+        Dialog = new LogWatchViewModel(_services, pending, CloseDialog);
+
+    private void OpenTheaterForm(Theater? theater) =>
+        Dialog = new TheaterFormViewModel(_services.Theaters, theater, saved => CloseDialog(saved is not null));
+
+    private void CloseDialog(bool changed)
+    {
+        Dialog = null;
+        if (!changed)
+            return;
+        RefreshCounts();
+        CurrentPage?.OnShown();
+    }
 
     /// <summary>The top bar search box.</summary>
     [ObservableProperty]

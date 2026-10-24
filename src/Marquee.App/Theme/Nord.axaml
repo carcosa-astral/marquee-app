@@ -77,6 +77,18 @@
     <GradientStop Offset="1" Color="{StaticResource Nord0}" />
   </LinearGradientBrush>
 
+  <!-- Ratings -->
+  <SolidColorBrush x:Key="RatingBrush" Color="{StaticResource Nord13}" />
+  <SolidColorBrush x:Key="RatingEmptyBrush" Color="{StaticResource Nord2}" />
+
+  <!-- Segmented controls and selected choices -->
+  <SolidColorBrush x:Key="SelectedBrush" Color="{StaticResource Nord10}" />
+
+  <!-- Dialogs -->
+  <SolidColorBrush x:Key="ScrimBrush" Color="#B3232831" />
+  <BoxShadows x:Key="DialogShadow">0 16 48 0 #66000000</BoxShadows>
+  <SolidColorBrush x:Key="DialogBorderBrush" Color="{StaticResource Nord3}" />
+
   <!-- Status -->
   <SolidColorBrush x:Key="WatchedBrush" Color="{StaticResource Nord14}" />
   <SolidColorBrush x:Key="WatchlistBrush" Color="{StaticResource Nord13}" />
@@ -96,6 +108,43 @@
   <FontFamily x:Key="BodyFont">avares://Marquee/Assets/Fonts#Hanken Grotesk, Segoe UI, Helvetica Neue, Arial</FontFamily>
 
   <!-- Fluent theme hooks so built-in controls pick up Nord -->
+  <SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource Nord2}" />
+  <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="TextControlForeground" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="TextControlPlaceholderForegroundPointerOver" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="TextControlPlaceholderForegroundFocused" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="ComboBoxBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxBackgroundUnfocused" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{StaticResource Nord2}" />
+  <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="ComboBoxBorderBrushPressed" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="ComboBoxForeground" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBackgroundPointerOver" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBackgroundPressed" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBackgroundFocused" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBorderBrush" Color="{StaticResource Nord2}" />
+  <SolidColorBrush x:Key="CalendarDatePickerBorderBrushPointerOver" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="CalendarDatePickerForeground" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="CalendarDatePickerCalendarGlyphForeground" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{StaticResource Nord14}" />
+  <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="{StaticResource Nord14}" />
+  <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="{StaticResource Nord14}" />
+  <SolidColorBrush x:Key="ToggleSwitchKnobFillOn" Color="{StaticResource Nord0}" />
+  <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPointerOver" Color="{StaticResource Nord0}" />
+  <SolidColorBrush x:Key="ToggleSwitchKnobFillOnPressed" Color="{StaticResource Nord0}" />
   <Color x:Key="SystemAccentColor">#88C0D0</Color>
   <Color x:Key="SystemAccentColorDark1">#81A1C1</Color>
   <Color x:Key="SystemAccentColorLight1">#8FBCBB</Color>

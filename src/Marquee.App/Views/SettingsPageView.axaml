@@ -44,5 +44,31 @@
     </Border>
 
     <TextBlock Classes="muted small" TextWrapping="Wrap" Text="{Binding Attribution}" />
+
+    <!-- Erase all data -->
+    <Border Classes="card" Padding="24,22" BorderBrush="{StaticResource ErrorBrush}">
+      <StackPanel Spacing="12">
+        <TextBlock Classes="h2" Text="Erase all data" />
+        <TextBlock Classes="subtle" FontSize="13" TextWrapping="Wrap"
+                   Text="Deletes every diary entry, title, person, theater, companion and saved image, so Marquee starts empty again. This cannot be undone, except from a backup copy." />
+        <CheckBox IsChecked="{Binding BackupBeforeErase}">
+          <TextBlock FontSize="13" Text="Save a backup copy in the backups folder first" />
+        </CheckBox>
+        <CheckBox IsChecked="{Binding EraseSettingsToo}">
+          <TextBlock FontSize="13" Text="Also erase settings and the TMDB key, and show the setup screen again" />
+        </CheckBox>
+        <TextBlock Classes="label" Text="Type ERASE to confirm" />
+        <Grid ColumnDefinitions="200,Auto" ColumnSpacing="10" HorizontalAlignment="Left">
+          <TextBox Text="{Binding EraseConfirm}" PlaceholderText="ERASE" />
+          <Button Grid.Column="1" Classes="secondary" Height="40" Content="Erase everything"
+                  Foreground="{StaticResource ErrorBrush}" BorderBrush="{StaticResource ErrorBrush}"
+                  Command="{Binding EraseCommand}" />
+        </Grid>
+        <TextBlock FontSize="13" Foreground="{StaticResource WatchedBrush}" TextWrapping="Wrap" Text="{Binding EraseStatus}"
+                   IsVisible="{Binding EraseStatus, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding EraseError}"
+                   IsVisible="{Binding EraseError, Converter={x:Static ObjectConverters.IsNotNull}}" />
+      </StackPanel>
+    </Border>
   </StackPanel>
 </UserControl>

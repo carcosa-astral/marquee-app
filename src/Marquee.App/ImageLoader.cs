@@ -9,19 +9,24 @@ namespace Marquee.App;
 /// </summary>
 public sealed class ImageLoader(HttpClient http, MarqueeFolder folder)
 {
+    // Keyed by size too, so a small diary thumbnail is never reused for a large library poster.
     private readonly Dictionary<string, Bitmap> _cache = [];
+
+    /// <summary>Forgets every loaded image, for example after erasing all data.</summary>
+    public void Clear() => _cache.Clear();
 
     public async Task<Bitmap?> LoadRemoteAsync(string? url, int width)
     {
         if (url is null)
             return null;
-        if (_cache.TryGetValue(url, out var cached))
+        var key = $"{width}:{url}";
+        if (_cache.TryGetValue(key, out var cached))
             return cached;
         try
         {
             var bytes = await http.GetByteArrayAsync(url);
             var bitmap = await Task.Run(() => Bitmap.DecodeToWidth(new MemoryStream(bytes), width));
-            return _cache[url] = bitmap;
+            return _cache[key] = bitmap;
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or ArgumentException or InvalidOperationException)
         {
@@ -37,7 +42,7 @@ public sealed class ImageLoader(HttpClient http, MarqueeFolder folder)
         var full = Path.GetFullPath(Path.Combine(folder.Data, relativePath));
         if (!folder.Contains(full) || !File.Exists(full))
             return null;
-        var key = "file:" + full;
+        var key = $"{width}:file:{full}";
         if (_cache.TryGetValue(key, out var cached))
             return cached;
         try

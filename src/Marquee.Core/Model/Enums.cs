@@ -6,7 +6,8 @@ public enum TitleFormat { Movie, Series, Ova, Ona, Special, Film }
 
 public enum CreditRole { Director, Actor, Voice }
 
-public enum WatchPlace { Theater, Home, Streaming, Other }
+/// <summary>Where a watch happened. Streaming services are recorded as the service on a Home or Other watch.</summary>
+public enum WatchPlace { Theater, Home, Other }
 
 public enum IceState { Paused, Dropped }
 

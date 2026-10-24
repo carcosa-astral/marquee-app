@@ -68,7 +68,21 @@ public sealed class TitleStoreTests : IDisposable
         Assert.Equal(2, db.Credits.Count());
         Assert.Equal("images/people/anilist-2.jpg", db.People.Single(p => p.AniListId == 2).PhotoPath);
         Assert.Equal(2, db.Episodes.Count());
-        Assert.Contains((154587), _store.GetLibraryIds().AniList);
+        Assert.Equal(db.Episodes.Single(e => e.Number == 2).Id, _store.FindEpisodeId(saved.Id, 1, 2));
+        Assert.Null(_store.FindEpisodeId(saved.Id, 1, 9));
+    }
+
+    [Fact]
+    public void The_library_only_shows_titles_with_a_watch()
+    {
+        var saved = _store.Save(Frieren(), Images);
+        Assert.Empty(_store.List(TitleKind.Anime));
+        Assert.Empty(_store.GetLibraryIds().AniList);
+
+        new WatchStore(_database).Add(new WatchInput { TitleId = saved.Id, WatchedOn = new DateOnly(2026, 10, 24) });
+
+        Assert.Single(_store.List(TitleKind.Anime));
+        Assert.Contains(154587, _store.GetLibraryIds().AniList);
     }
 
     [Fact]
@@ -109,8 +123,7 @@ public sealed class TitleStoreTests : IDisposable
         _store.Save(new FetchedTitle { Kind = TitleKind.Movie, Format = TitleFormat.Movie, TmdbType = TmdbType.Movie, TmdbId = 100, Name = "A movie" }.WithSource(MetadataSource.Tmdb), SavedImages.None);
         _store.Save(new FetchedTitle { Kind = TitleKind.Tv, Format = TitleFormat.Series, TmdbType = TmdbType.Tv, TmdbId = 100, Name = "A show" }.WithSource(MetadataSource.Tmdb), SavedImages.None);
 
-        Assert.Single(_store.List(TitleKind.Movie));
-        Assert.Single(_store.List(TitleKind.Tv));
+        Assert.Equal(["movie", "tv"], _store.ListAll().Select(t => t.TmdbType.ToString()!.ToLowerInvariant()).Order());
     }
 
     [Fact]

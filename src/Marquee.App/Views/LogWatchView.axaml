@@ -1,0 +1,258 @@
+<!-- Log a watch dialog. Matches docs/design/mocks/LogWatch.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             xmlns:controls="using:Marquee.App.Controls"
+             xmlns:model="using:Marquee.Core.Model"
+             x:Class="Marquee.App.Views.LogWatchView"
+             x:DataType="vm:LogWatchViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="StackPanel.field">
+      <Setter Property="Spacing" Value="6" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Orientation="Horizontal" Spacing="28" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+    <Border Classes="dialog" Width="700" Padding="28,26">
+      <StackPanel Spacing="18">
+
+        <!-- Header -->
+        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="16">
+          <Border Classes="poster" Width="44" Height="64" CornerRadius="5" IsVisible="{Binding HasTitle}">
+            <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+          </Border>
+          <StackPanel Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock Classes="section" Text="{Binding Kicker}" />
+            <TextBlock Classes="brand" FontSize="24" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasTitle}">
+              <Run Text="{Binding TitleName}" />
+              <Run Text=" " />
+              <Run Text="{Binding TitleYear}" FontSize="18" FontWeight="Medium" Foreground="{StaticResource TextMutedBrush}" />
+            </TextBlock>
+            <TextBlock Classes="brand" FontSize="24" Text="Pick a title" IsVisible="{Binding !HasTitle}" />
+          </StackPanel>
+          <Button Grid.Column="2" Classes="secondary" Height="32" Content="Change title" VerticalAlignment="Center"
+                  Command="{Binding ChangeTitleCommand}" IsVisible="{Binding HasTitle}" />
+        </Grid>
+
+        <!-- Title picker -->
+        <StackPanel Classes="field" IsVisible="{Binding IsPickingTitle}">
+          <TextBlock Classes="label" Text="Title from your library" />
+          <TextBox Text="{Binding TitleQuery}" PlaceholderText="Type to filter your library" />
+          <TextBlock Classes="muted" FontSize="13" TextWrapping="Wrap" IsVisible="{Binding LibraryIsEmpty}"
+                     Text="Your library is empty. Search for a title at the top first, or use Log a watch on a search result." />
+          <ItemsControl ItemsSource="{Binding TitleMatches}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:TitleChoice">
+                <Button Classes="nav" Command="{Binding $parent[ItemsControl].((vm:LogWatchViewModel)DataContext).PickTitleCommand}" CommandParameter="{Binding}">
+                  <StackPanel Orientation="Horizontal" Spacing="10">
+                    <TextBlock Classes="navLabel" Text="{Binding Name}" />
+                    <TextBlock Classes="muted" Text="{Binding Year}" />
+                    <TextBlock Classes="muted small" VerticalAlignment="Center" Text="{Binding Kind}" />
+                  </StackPanel>
+                </Button>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <!-- The form -->
+        <StackPanel Spacing="18" IsVisible="{Binding ShowForm}">
+
+          <!-- Episode -->
+          <Grid ColumnDefinitions="180,*" ColumnSpacing="12" IsVisible="{Binding HasEpisodes}">
+            <StackPanel Classes="field">
+              <TextBlock Classes="label" Text="Season" />
+              <ComboBox ItemsSource="{Binding Seasons}" SelectedItem="{Binding SelectedSeason}" HorizontalAlignment="Stretch" Height="40">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:SeasonChoice">
+                    <TextBlock Text="{Binding Label}" />
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Classes="field">
+              <TextBlock Classes="label" Text="Episode" />
+              <ComboBox ItemsSource="{Binding Episodes}" SelectedItem="{Binding SelectedEpisode}" HorizontalAlignment="Stretch" Height="40">
+                <ComboBox.ItemTemplate>
+                  <DataTemplate x:DataType="vm:EpisodeChoice">
+                    <TextBlock Text="{Binding Label}" TextTrimming="CharacterEllipsis" />
+                  </DataTemplate>
+                </ComboBox.ItemTemplate>
+              </ComboBox>
+            </StackPanel>
+          </Grid>
+
+          <!-- Date and time -->
+          <Grid ColumnDefinitions="*,150" ColumnSpacing="16">
+            <StackPanel Classes="field">
+              <TextBlock Classes="label" Text="Date seen" />
+              <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
+                <CalendarDatePicker SelectedDate="{Binding Date}" SelectedDateFormat="Custom" CustomDateFormatString="ddd, MMM d, yyyy"
+                                    HorizontalAlignment="Stretch" Height="40" IsTodayHighlighted="True" />
+                <Button Grid.Column="1" Classes="secondary" Height="40" Content="Today" Command="{Binding TodayCommand}" />
+                <Button Grid.Column="2" Classes="secondary" Height="40" Content="Yesterday" Command="{Binding YesterdayCommand}" />
+              </Grid>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Classes="field">
+              <TextBlock Classes="label">
+                <Run Text="Start time" />
+                <Run Text="(optional)" FontWeight="Normal" Foreground="{StaticResource TextMutedBrush}" />
+              </TextBlock>
+              <TextBox Text="{Binding StartTime}" PlaceholderText="7:30 PM" />
+            </StackPanel>
+          </Grid>
+          <TextBlock FontSize="12" Foreground="{StaticResource WarningBrush}" Text="{Binding TimeError}" Margin="0,-10,0,0"
+                     IsVisible="{Binding TimeError, Converter={x:Static ObjectConverters.IsNotNull}}" HorizontalAlignment="Right" />
+
+          <!-- Rating and rewatch -->
+          <Grid ColumnDefinitions="Auto,*,Auto">
+            <StackPanel Classes="field">
+              <TextBlock Classes="label" Text="Rating" />
+              <StackPanel Orientation="Horizontal" Spacing="12">
+                <controls:StarRating Value="{Binding Rating}" Fill="{StaticResource RatingBrush}" Empty="{StaticResource RatingEmptyBrush}"
+                                     ToolTip.Tip="Click the left half of a star for a half star. Click again to clear." />
+                <TextBlock Classes="brand" FontSize="20" VerticalAlignment="Center" Text="{Binding RatingText}" IsVisible="{Binding HasRating}" />
+                <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center" Text="Not rated" IsVisible="{Binding !HasRating}" />
+              </StackPanel>
+            </StackPanel>
+            <Border Grid.Column="2" Classes="inset" Padding="14,6" VerticalAlignment="Center">
+              <StackPanel Orientation="Horizontal" Spacing="4">
+                <ToggleSwitch IsChecked="{Binding IsRewatch}" OnContent="" OffContent="" VerticalAlignment="Center" />
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="Rewatch" />
+                  <TextBlock FontSize="12" Classes="subtle" Text="{Binding RewatchHint}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </Grid>
+
+          <!-- Where -->
+          <StackPanel Spacing="8">
+            <TextBlock Classes="label" Text="Where you watched" />
+            <Border Classes="segments">
+              <UniformGrid Columns="3" ColumnSpacing="4">
+                <Button Classes="segment" Classes.active="{Binding IsTheater}" Content="Theater"
+                        Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Theater}" />
+                <Button Classes="segment" Classes.active="{Binding IsHome}" Content="Home"
+                        Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Home}" />
+                <Button Classes="segment" Classes.active="{Binding IsOther}" Content="Other"
+                        Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Other}" />
+              </UniformGrid>
+            </Border>
+          </StackPanel>
+
+          <!-- Theater details -->
+          <Border Classes="card" CornerRadius="12" Padding="16" IsVisible="{Binding IsTheater}">
+            <StackPanel Spacing="12">
+              <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                <StackPanel Classes="field">
+                  <TextBlock Classes="label" Text="Theater" />
+                  <AutoCompleteBox Text="{Binding TheaterName}" ItemsSource="{Binding TheaterNames}"
+                                   FilterMode="ContainsOrdinal" MinimumPrefixLength="0" PlaceholderText="Pick or type a theater" />
+                </StackPanel>
+                <Button Grid.Column="1" Classes="accentOutline" VerticalAlignment="Bottom" Content="Add a theater" Command="{Binding AddTheaterCommand}" />
+              </Grid>
+              <Grid ColumnDefinitions="120,120,*" ColumnSpacing="12">
+                <StackPanel Classes="field">
+                  <TextBlock Classes="label" Text="Screen" />
+                  <TextBox Text="{Binding Screen}" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Classes="field">
+                  <TextBlock Classes="label" Text="Seat" />
+                  <TextBox Text="{Binding Seat}" />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Classes="field">
+                  <TextBlock Classes="label" Text="Format" />
+                  <ItemsControl ItemsSource="{Binding FormatOptions}">
+                    <ItemsControl.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <WrapPanel ItemSpacing="6" LineSpacing="6" />
+                      </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                      <DataTemplate x:DataType="vm:FormatOption">
+                        <Button Classes="option" Classes.active="{Binding IsSelected}" Content="{Binding Name}" Command="{Binding SelectCommand}" />
+                      </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                  </ItemsControl>
+                </StackPanel>
+              </Grid>
+              <TextBlock Classes="muted small" TextWrapping="Wrap"
+                         Text="Type a theater that is not in your list and it is added when you save." />
+            </StackPanel>
+          </Border>
+
+          <!-- Service -->
+          <StackPanel Classes="field" IsVisible="{Binding ShowsService}">
+            <TextBlock Classes="label">
+              <Run Text="Service or source" />
+              <Run Text="(optional)" FontWeight="Normal" Foreground="{StaticResource TextMutedBrush}" />
+            </TextBlock>
+            <AutoCompleteBox Text="{Binding Service}" ItemsSource="{Binding Services}"
+                             FilterMode="ContainsOrdinal" MinimumPrefixLength="0" PlaceholderText="Plex, Netflix, Blu-ray..." />
+          </StackPanel>
+
+          <!-- With and note -->
+          <Grid ColumnDefinitions="240,*" ColumnSpacing="16">
+            <StackPanel Classes="field">
+              <TextBlock Classes="label" Text="Watched with" />
+              <WrapPanel ItemSpacing="6" LineSpacing="6" MinHeight="40" VerticalAlignment="Top">
+                <ItemsControl ItemsSource="{Binding Companions}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                      <WrapPanel ItemSpacing="6" LineSpacing="6" />
+                    </ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CompanionChip">
+                      <Button Classes="option round" Background="{StaticResource CardBorderBrush}" BorderThickness="0"
+                              Command="{Binding RemoveCommand}" ToolTip.Tip="Remove">
+                        <StackPanel Orientation="Horizontal" Spacing="6">
+                          <TextBlock Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" />
+                          <TextBlock Classes="muted" Text="×" />
+                        </StackPanel>
+                      </Button>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button Classes="option round add" Content="Add person" Command="{Binding StartAddingCompanionCommand}"
+                        IsVisible="{Binding !IsAddingCompanion}" />
+                <AutoCompleteBox Width="160" Text="{Binding CompanionQuery}" ItemsSource="{Binding CompanionNames}"
+                                 FilterMode="ContainsOrdinal" PlaceholderText="Name, then Enter"
+                                 IsVisible="{Binding IsAddingCompanion}">
+                  <AutoCompleteBox.KeyBindings>
+                    <KeyBinding Gesture="Enter" Command="{Binding AddCompanionCommand}" />
+                  </AutoCompleteBox.KeyBindings>
+                </AutoCompleteBox>
+              </WrapPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Classes="field">
+              <TextBlock Classes="label" Text="Note" />
+              <TextBox Text="{Binding Note}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="64" Padding="12,10"
+                       VerticalContentAlignment="Top" />
+            </StackPanel>
+          </Grid>
+        </StackPanel>
+
+        <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                   IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <!-- Buttons -->
+        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="10">
+          <Button Classes="secondary" Height="42" Content="{Binding DeleteLabel}" Command="{Binding DeleteCommand}"
+                  Foreground="{StaticResource ErrorBrush}" IsVisible="{Binding IsEditing}" />
+          <Button Grid.Column="2" Classes="secondary" Height="42" Padding="20,0" FontSize="14" Content="Cancel"
+                  Command="{Binding CancelCommand}" IsCancel="True" />
+          <Button Grid.Column="3" Classes="primary" Height="42" Padding="22,0" Content="{Binding SaveText}"
+                  Command="{Binding SaveCommand}" />
+        </Grid>
+      </StackPanel>
+    </Border>
+
+    <!-- Add a theater panel, shown beside the dialog -->
+    <ContentControl Content="{Binding TheaterForm}" VerticalAlignment="Center"
+                    IsVisible="{Binding TheaterForm, Converter={x:Static ObjectConverters.IsNotNull}}" />
+  </StackPanel>
+</UserControl>

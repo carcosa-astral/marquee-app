@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Log a watch dialog: date (with Today and Yesterday), optional start time, half-star rating, rewatch, where you watched, theater details (screen, seat, format), service, who you watched with, and a note.
+- For TV and anime, the dialog picks a season and episode and suggests the next unwatched one.
+- Rewatch switches on by itself when you have seen the title or episode before, and shows when you first saw it.
+- Diary page: entries by month for one year at a time, with Movies, TV and Anime filters plus Theater only, Rewatches and Has a note. Click an entry to edit or delete it.
+- Theaters page: your theaters with visits, last visit and average rating, a detail panel with recent visits, and add and edit.
+- Theaters and companions can be created on the spot while logging. Nothing is preloaded.
+- Log a watch works from the top bar, from search results and from library posters.
+- "Erase all data" in Settings starts Marquee over. You type ERASE to confirm, a backup copy goes to `backups/` first (on by default), and you can also erase settings and the TMDB key to see the setup screen again.
+
+### Changed
+
+- Adding a title now always means logging a watch. Search results have "Log a watch" instead of "Add to library", and a title picked from search is saved (with its images) only when you save the watch. Cancelling leaves nothing behind.
+- Movies, TV and Anime pages and their sidebar counts show only titles you have watched.
+- "Where you watched" is now Theater, Home or Other. Streaming services go in the service field, and existing Streaming entries become Home with their service kept.
+
 ## [0.2.0] - 2026-10-24
 
 ### Added

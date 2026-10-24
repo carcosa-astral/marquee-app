@@ -11,8 +11,8 @@ namespace Marquee.App.ViewModels;
 
 public enum SearchFilter { All, Movies, Tv, Anime }
 
-/// <summary>"Add a title": searches TMDB and AniList together and adds results to the library.</summary>
-public sealed partial class SearchPageViewModel(AppServices services, Action onLibraryChanged) : PageViewModel
+/// <summary>"Add a title": searches TMDB and AniList together. Adding a title always means logging a watch.</summary>
+public sealed partial class SearchPageViewModel(AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending) : PageViewModel
 {
     private static readonly TimeSpan TypingDelay = TimeSpan.FromMilliseconds(450);
 
@@ -52,9 +52,17 @@ public sealed partial class SearchPageViewModel(AppServices services, Action onL
     public bool IsTv => Filter == SearchFilter.Tv;
     public bool IsAnime => Filter == SearchFilter.Anime;
 
-    public override void OnShown() => SourcesText = services.Metadata.HasTmdbKey
-        ? "Searching TMDB and AniList"
-        : "Searching AniList only. Add a TMDB key in Settings for movies and TV.";
+    public override void OnShown()
+    {
+        SourcesText = services.Metadata.HasTmdbKey
+            ? "Searching TMDB and AniList"
+            : "Searching AniList only. Add a TMDB key in Settings for movies and TV.";
+
+        // A watch may have just been saved from one of these results.
+        var diary = services.Titles.GetLibraryIds();
+        foreach (var r in _all)
+            r.InDiary = diary.Contains(r.Result);
+    }
 
     /// <summary>Opens the page with a query typed elsewhere, such as the top bar.</summary>
     public void SearchFor(string query)
@@ -101,7 +109,7 @@ public sealed partial class SearchPageViewModel(AppServices services, Action onL
             _searched = true;
             var library = services.Titles.GetLibraryIds();
             _all = outcome.Results
-                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, onLibraryChanged))
+                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, logSaved, logPending))
                 .ToList();
             // A missing TMDB key is already explained next to the search box.
             var problems = new[] { outcome.AniListProblem, services.Metadata.HasTmdbKey ? outcome.TmdbProblem : null }.OfType<string>().ToList();
@@ -147,15 +155,17 @@ public sealed partial class SearchResultViewModel : ViewModelBase
 {
     private readonly SearchResult _result;
     private readonly AppServices _services;
-    private readonly Action _onLibraryChanged;
+    private readonly Action<string> _logSaved;
+    private readonly Action<FetchedTitle> _logPending;
     private bool _posterRequested;
 
-    public SearchResultViewModel(SearchResult result, bool inLibrary, AppServices services, Action onLibraryChanged)
+    public SearchResultViewModel(SearchResult result, bool inDiary, AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending)
     {
         _result = result;
         _services = services;
-        _onLibraryChanged = onLibraryChanged;
-        IsInLibrary = inLibrary;
+        _logSaved = logSaved;
+        _logPending = logPending;
+        InDiary = inDiary;
 
         var hit = result.Primary;
         Name = hit.Name;
@@ -166,6 +176,7 @@ public sealed partial class SearchResultViewModel : ViewModelBase
         Overview = (result.Tmdb?.Overview ?? hit.Overview)?.ReplaceLineEndings(" ");
     }
 
+    public SearchResult Result => _result;
     public string Name { get; }
     public string YearText { get; }
     public TitleKind Kind { get; }
@@ -183,20 +194,19 @@ public sealed partial class SearchResultViewModel : ViewModelBase
     [ObservableProperty]
     public partial Bitmap? Poster { get; set; }
 
+    /// <summary>True when this title already has at least one diary entry.</summary>
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(AddLabel))]
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    public partial bool IsInLibrary { get; set; }
+    public partial bool InDiary { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(AddLabel))]
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    public partial bool IsAdding { get; set; }
+    [NotifyPropertyChangedFor(nameof(LogLabel))]
+    [NotifyCanExecuteChangedFor(nameof(LogCommand))]
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
     public partial string? Error { get; set; }
 
-    public string AddLabel => IsAdding ? "Adding..." : IsInLibrary ? "In your library" : "Add to library";
+    public string LogLabel => IsLoading ? "Loading..." : "Log a watch";
 
     public async void LoadPoster()
     {
@@ -206,20 +216,26 @@ public sealed partial class SearchResultViewModel : ViewModelBase
         Poster = await _services.Images.LoadRemoteAsync(_result.Tmdb?.PosterUrl ?? _result.Primary.PosterUrl, 144);
     }
 
-    private bool CanAdd() => !IsInLibrary && !IsAdding;
+    private bool CanLog() => !IsLoading;
 
-    [RelayCommand(CanExecute = nameof(CanAdd))]
-    private async Task Add()
+    /// <summary>
+    /// Opens the Log a watch dialog. A title that is not saved yet is only fetched here;
+    /// it is saved together with the watch, so cancelling leaves nothing behind.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanLog))]
+    private async Task Log()
     {
-        IsAdding = true;
+        if (_services.Titles.FindId(_result) is { } id)
+        {
+            _logSaved(id);
+            return;
+        }
+
+        IsLoading = true;
         Error = null;
         try
         {
-            var fetched = await _services.Metadata.FetchAsync(_result);
-            var images = await _services.Downloader.SaveAllAsync(fetched);
-            await Task.Run(() => _services.Titles.Save(fetched, images));
-            IsInLibrary = true;
-            _onLibraryChanged();
+            _logPending(await _services.Metadata.FetchAsync(_result));
         }
         catch (MetadataException ex)
         {
@@ -227,11 +243,11 @@ public sealed partial class SearchResultViewModel : ViewModelBase
         }
         catch (Exception ex)
         {
-            Error = "Could not add this title: " + ex.Message;
+            Error = "Could not load this title: " + ex.Message;
         }
         finally
         {
-            IsAdding = false;
+            IsLoading = false;
         }
     }
 

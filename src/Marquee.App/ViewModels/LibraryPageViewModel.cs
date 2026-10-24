@@ -5,8 +5,8 @@ using Marquee.Core.Model;
 
 namespace Marquee.App.ViewModels;
 
-/// <summary>A poster grid of every Movie, TV show or anime in the library. Filters arrive in 0.9.0.</summary>
-public sealed partial class LibraryPageViewModel(AppServices services, TitleKind kind, string title, string emptyText) : PageViewModel
+/// <summary>A poster grid of every movie, TV show or anime you have watched. Filters arrive in 0.9.0.</summary>
+public sealed partial class LibraryPageViewModel(AppServices services, TitleKind kind, Action<string> logWatch, string title, string emptyText) : PageViewModel
 {
     public string Title { get; } = title;
     public string EmptyText { get; } = emptyText;
@@ -24,17 +24,21 @@ public sealed partial class LibraryPageViewModel(AppServices services, TitleKind
         Items.Clear();
         foreach (var t in services.Titles.List(kind))
         {
-            var item = new LibraryItemViewModel(t);
+            var item = new LibraryItemViewModel(t, logWatch);
             Items.Add(item);
             item.LoadPoster(services.Images);
         }
         IsEmpty = Items.Count == 0;
-        CountText = Items.Count == 1 ? "1 TITLE" : $"{Items.Count} TITLES";
+        CountText = $"{Items.Count:N0} WATCHED";
     }
 }
 
-public sealed partial class LibraryItemViewModel(Title title) : ViewModelBase
+public sealed partial class LibraryItemViewModel(Title title, Action<string> logWatch) : ViewModelBase
 {
+    /// <summary>Until title pages arrive in 0.4.0, clicking a poster logs a watch.</summary>
+    [CommunityToolkit.Mvvm.Input.RelayCommand]
+    private void Open() => logWatch(title.Id);
+
     public string Name { get; } = title.Name;
 
     public string Details { get; } = string.Join(" · ", new[]

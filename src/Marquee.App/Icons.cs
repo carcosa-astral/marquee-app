@@ -21,6 +21,8 @@ public static class Icons
     public static readonly Geometry Search = P("M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM21 21l-4.3-4.3");
     public static readonly Geometry Plus = P("M12 5v14M5 12h14");
     public static readonly Geometry Check = P("M5 12l5 5L20 7");
+    public static readonly Geometry ChevronLeft = P("M15 18l-6-6 6-6");
+    public static readonly Geometry ChevronRight = P("M9 18l6-6-6-6");
 
     private static Geometry P(string data) => StreamGeometry.Parse(data);
 }
