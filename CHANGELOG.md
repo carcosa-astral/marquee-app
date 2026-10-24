@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TMDB client (accepts the API key or the read access token) and AniList client (no key needed).
 - Results that are the same title on both sources are matched by MAL id, or by title, year and format, and shown as one merged result.
 - Adding a title saves its details, genres, directors, cast and voice actors, seasons and episodes, and which source each field came from.
-- Anime uses AniList first, with TMDB filling gaps such as backdrops and cast photos.
+- Anime uses AniList first, with TMDB filling gaps such as backdrops and cast photos. For the poster, TMDB's art is preferred when TMDB has one.
 - Posters, backdrops and person photos are saved to `data/images/`.
 - Movies, TV and Anime library pages show a poster grid.
 - The TMDB key can be added or changed in Settings.

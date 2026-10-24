@@ -106,6 +106,23 @@ public class MetadataRulesTests
     }
 
     [Fact]
+    public void Anime_prefers_the_TMDB_poster_when_there_is_one()
+    {
+        var aniList = Fetched(MetadataSource.AniList, t => { t.Name = "Paprika"; t.PosterUrl = "https://al/cover.jpg"; });
+        var tmdb = Fetched(MetadataSource.Tmdb, t => { t.Name = "Paprika"; t.PosterUrl = "https://tmdb/poster.jpg"; });
+        var tmdbWithoutPoster = Fetched(MetadataSource.Tmdb, t => t.Name = "Paprika");
+
+        var merged = MetadataMerge.Combine(tmdb, aniList);
+        Assert.Equal("https://tmdb/poster.jpg", merged.PosterUrl);
+        Assert.Equal(MetadataSource.Tmdb, merged.Sources[TitleFields.Poster]);
+        Assert.Equal(MetadataSource.AniList, merged.Sources[TitleFields.Name]);
+
+        var fallback = MetadataMerge.Combine(tmdbWithoutPoster, aniList);
+        Assert.Equal("https://al/cover.jpg", fallback.PosterUrl);
+        Assert.Equal(MetadataSource.AniList, fallback.Sources[TitleFields.Poster]);
+    }
+
+    [Fact]
     public void Movies_and_TV_use_TMDB_only()
     {
         var tmdb = Fetched(MetadataSource.Tmdb, t => t.Name = "Heat");

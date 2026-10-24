@@ -15,8 +15,8 @@ public sealed class ImageDownloader(HttpClient http, MarqueeFolder folder)
         var key = TitleKey(title);
         var saved = new SavedImages
         {
-            PosterPath = await SaveAsync(title.PosterUrl, "titles", key + "-poster", ct),
-            BackdropPath = await SaveAsync(title.BackdropUrl, "titles", key + "-backdrop", ct),
+            PosterPath = await SaveAsync(title.PosterUrl, "titles", $"{key}-poster-{ShortHash(title.PosterUrl)}", ct),
+            BackdropPath = await SaveAsync(title.BackdropUrl, "titles", $"{key}-backdrop-{ShortHash(title.BackdropUrl)}", ct),
         };
 
         var people = title.Credits.Where(c => c.Role == CreditRole.Director)
@@ -90,6 +90,13 @@ public sealed class ImageDownloader(HttpClient http, MarqueeFolder folder)
 
     private static string? PersonKey(FetchedPerson p) =>
         p.TmdbId is { } t ? $"tmdb-{t}" : p.AniListId is { } a ? $"anilist-{a}" : null;
+
+    /// <summary>
+    /// A short fingerprint of the image address, so a new poster (for example from the other
+    /// source) gets its own file instead of reusing the old one.
+    /// </summary>
+    private static string ShortHash(string? url) =>
+        url is null ? "" : Convert.ToHexStringLower(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(url)))[..8];
 
     private static string Extension(Uri uri)
     {

@@ -87,7 +87,7 @@ Use string GUIDs as primary keys so exports can be merged cleanly.
 - **Completion bar** on a person page shows watched, on watchlist and not seen across that person's counted Titles.
 - **Metadata precedence:**
   1. Movies and TV: TMDB first.
-  2. Anime: AniList first, TMDB fills what is missing (for example cast photos and backdrops).
+  2. Anime: AniList first, TMDB fills what is missing (for example cast photos and backdrops). The poster is the exception: TMDB's poster is preferred when TMDB has one (owner's choice).
   3. A FieldOverride beats both.
 - **Matching across sources:** link by external ids first (AniList carries the MAL id, TMDB has external ids). If there is no id match, fall back to title, year and format. The user can always fix a wrong match, and entries, ratings and watches stay attached to the Title.
 - **Refreshing metadata** never touches Watches, overrides or user-created data.

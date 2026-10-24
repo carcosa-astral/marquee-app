@@ -203,7 +203,7 @@ public sealed partial class SearchResultViewModel : ViewModelBase
         if (_posterRequested)
             return;
         _posterRequested = true;
-        Poster = await _services.Images.LoadRemoteAsync(_result.Primary.PosterUrl ?? _result.Tmdb?.PosterUrl, 144);
+        Poster = await _services.Images.LoadRemoteAsync(_result.Tmdb?.PosterUrl ?? _result.Primary.PosterUrl, 144);
     }
 
     private bool CanAdd() => !IsInLibrary && !IsAdding;

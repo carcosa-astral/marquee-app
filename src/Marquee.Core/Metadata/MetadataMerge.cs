@@ -4,7 +4,8 @@ namespace Marquee.Core.Metadata;
 
 /// <summary>
 /// Metadata precedence from the build plan:
-/// movies and TV use TMDB first; anime uses AniList first and TMDB fills what is missing.
+/// movies and TV use TMDB first; anime uses AniList first and TMDB fills what is missing,
+/// except the poster, where TMDB's art is preferred for anime too.
 /// User overrides beat both, and are applied when saving.
 /// </summary>
 public static class MetadataMerge
@@ -13,8 +14,19 @@ public static class MetadataMerge
     public static FetchedTitle Combine(FetchedTitle? tmdb, FetchedTitle? aniList)
     {
         if (aniList is not null)
-            return tmdb is null ? aniList : Fill(aniList, tmdb);
+            return tmdb is null ? aniList : PreferTmdbPoster(Fill(aniList, tmdb), tmdb);
         return tmdb ?? throw new ArgumentException("At least one source is needed.");
+    }
+
+    /// <summary>The owner prefers TMDB's poster art for anime, so it replaces AniList's cover when TMDB has one.</summary>
+    private static FetchedTitle PreferTmdbPoster(FetchedTitle merged, FetchedTitle tmdb)
+    {
+        if (tmdb.HasValue(TitleFields.Poster))
+        {
+            merged.PosterUrl = tmdb.PosterUrl;
+            merged.Sources[TitleFields.Poster] = MetadataSource.Tmdb;
+        }
+        return merged;
     }
 
     /// <summary>
