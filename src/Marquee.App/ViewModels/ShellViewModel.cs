@@ -1,6 +1,7 @@
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Marquee.Core.Metadata;
 using Marquee.Core.Model;
 using Marquee.Data;
 
@@ -15,7 +16,7 @@ public partial class ShellViewModel : ViewModelBase
     public ShellViewModel(AppServices services)
     {
         _services = services;
-        _search = new SearchPageViewModel(services, RefreshCounts, titleId => OpenLog(titleId, null));
+        _search = new SearchPageViewModel(services, titleId => OpenLog(titleId, null), OpenLogPending);
 
         MainItems =
         [
@@ -28,12 +29,12 @@ public partial class ShellViewModel : ViewModelBase
         ];
         LibraryItems =
         [
-            Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie),
-                new LibraryPageViewModel(services, TitleKind.Movie, titleId => OpenLog(titleId, null), "Movies", "No movies yet. Search at the top to add one.")),
-            Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv),
-                new LibraryPageViewModel(services, TitleKind.Tv, titleId => OpenLog(titleId, null), "TV", "No TV shows yet. Search at the top to add one.")),
-            Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime),
-                new LibraryPageViewModel(services, TitleKind.Anime, titleId => OpenLog(titleId, null), "Anime", "No anime yet. Search at the top to add series, films, OVAs and more.")),
+            Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Movie, titleId => OpenLog(titleId, null), "Movies", "No movies watched yet. Search at the top and log one.")),
+            Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Tv, titleId => OpenLog(titleId, null), "TV", "No TV watched yet. Search at the top and log an episode.")),
+            Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime && db.Watches.Any(w => w.TitleId == t.Id)),
+                new LibraryPageViewModel(services, TitleKind.Anime, titleId => OpenLog(titleId, null), "Anime", "No anime watched yet. Search at the top and log a series, film, OVA or more.")),
             Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), new TheatersPageViewModel(services, OpenTheaterForm)),
         ];
         FooterItems =
@@ -64,6 +65,9 @@ public partial class ShellViewModel : ViewModelBase
 
     private void OpenLog(string? titleId, string? watchId) =>
         Dialog = new LogWatchViewModel(_services, titleId, watchId, CloseDialog);
+
+    private void OpenLogPending(FetchedTitle pending) =>
+        Dialog = new LogWatchViewModel(_services, pending, CloseDialog);
 
     private void OpenTheaterForm(Theater? theater) =>
         Dialog = new TheaterFormViewModel(_services.Theaters, theater, saved => CloseDialog(saved is not null));

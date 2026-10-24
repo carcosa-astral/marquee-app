@@ -67,7 +67,7 @@ Use string GUIDs as primary keys so exports can be merged cleanly.
 - **Person**: name, birth and death dates, bio, photo path, external ids.
 - **Credit**: Title, Person, role (`director`, `actor`, `voice`), character name, order.
 - **Genre** and **TitleGenre**.
-- **Watch**: one diary entry. Title, optional Episode, watched on (date), optional start time, rating (0.5 to 5), is rewatch, where kind (`theater`, `home`, `streaming`, `other`), optional Theater, screen, seat, format, service, note.
+- **Watch**: one diary entry. Title, optional Episode, watched on (date), optional start time, rating (0.5 to 5), is rewatch, where kind (`theater`, `home`, `other`; a streaming service is stored as the service on a home or other watch), optional Theater, screen, seat, format, service, note.
 - **WatchCompanion**: links a Watch to a Companion.
 - **Companion**: a person the user watches with. Created by the user.
 - **Theater**: name, city, chain, formats offered. Created by the user. Never preloaded.

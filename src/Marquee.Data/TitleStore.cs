@@ -7,11 +7,12 @@ namespace Marquee.Data;
 /// <summary>Saves fetched titles and reads the library.</summary>
 public sealed class TitleStore(MarqueeDatabase database)
 {
-    /// <summary>The ids already in the library, so search can mark results as added.</summary>
+    /// <summary>The ids of titles with at least one watch, so search can mark results as already in the diary.</summary>
     public LibraryIds GetLibraryIds()
     {
         using var db = database.CreateContext();
-        var rows = db.Titles.Select(t => new { t.TmdbType, t.TmdbId, t.AniListId }).ToList();
+        var rows = db.Titles.Where(t => db.Watches.Any(w => w.TitleId == t.Id))
+            .Select(t => new { t.TmdbType, t.TmdbId, t.AniListId }).ToList();
         return new LibraryIds(
             rows.Where(r => r.TmdbId is not null && r.TmdbType is not null).Select(r => (r.TmdbType!.Value, r.TmdbId!.Value)).ToHashSet(),
             rows.Where(r => r.AniListId is not null).Select(r => r.AniListId!.Value).ToHashSet());
@@ -26,6 +27,16 @@ public sealed class TitleStore(MarqueeDatabase database)
         if (result.Tmdb is { TmdbType: { } type } tmdb && db.Titles.FirstOrDefault(t => t.TmdbId == tmdb.Id && t.TmdbType == type) is { } byTmdb)
             return byTmdb.Id;
         return null;
+    }
+
+    /// <summary>The id of an episode, found by season and episode number.</summary>
+    public string? FindEpisodeId(string titleId, int season, int episode)
+    {
+        using var db = database.CreateContext();
+        return db.Episodes
+            .Where(e => e.Number == episode && e.Season!.TitleId == titleId && e.Season.Number == season)
+            .Select(e => e.Id)
+            .FirstOrDefault();
     }
 
     /// <summary>Every title in the library, for picking one in the Log a watch dialog.</summary>
@@ -51,7 +62,10 @@ public sealed class TitleStore(MarqueeDatabase database)
     public List<Title> List(TitleKind kind)
     {
         using var db = database.CreateContext();
-        return db.Titles.AsNoTracking().Where(t => t.Kind == kind).OrderBy(t => t.Name).ToList();
+        return db.Titles.AsNoTracking()
+            .Where(t => t.Kind == kind && db.Watches.Any(w => w.TitleId == t.Id))
+            .OrderBy(t => t.Name)
+            .ToList();
     }
 
     /// <summary>

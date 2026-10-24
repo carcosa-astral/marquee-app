@@ -5,7 +5,7 @@ using Marquee.Core.Model;
 
 namespace Marquee.App.ViewModels;
 
-/// <summary>A poster grid of every Movie, TV show or anime in the library. Filters arrive in 0.9.0.</summary>
+/// <summary>A poster grid of every movie, TV show or anime you have watched. Filters arrive in 0.9.0.</summary>
 public sealed partial class LibraryPageViewModel(AppServices services, TitleKind kind, Action<string> logWatch, string title, string emptyText) : PageViewModel
 {
     public string Title { get; } = title;
@@ -29,7 +29,7 @@ public sealed partial class LibraryPageViewModel(AppServices services, TitleKind
             item.LoadPoster(services.Images);
         }
         IsEmpty = Items.Count == 0;
-        CountText = Items.Count == 1 ? "1 TITLE" : $"{Items.Count} TITLES";
+        CountText = $"{Items.Count:N0} WATCHED";
     }
 }
 

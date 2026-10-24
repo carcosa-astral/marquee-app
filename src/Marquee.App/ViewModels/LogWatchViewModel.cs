@@ -3,6 +3,7 @@ using System.Globalization;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Marquee.Core.Metadata;
 using Marquee.Core.Model;
 using Marquee.Core.Rules;
 using Marquee.Data;
@@ -20,6 +21,12 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     private readonly List<Title> _library;
     private List<Theater> _theaters;
     private bool _loading;
+
+    /// <summary>
+    /// A title picked from search that is not saved yet. It is saved, with its images,
+    /// only when the watch is saved, so the library never holds titles without a watch.
+    /// </summary>
+    private FetchedTitle? _pending;
 
     /// <param name="titleId">The title to log, or null to pick one first.</param>
     /// <param name="watchId">An existing diary entry to edit, or null for a new one.</param>
@@ -45,6 +52,32 @@ public sealed partial class LogWatchViewModel : ViewModelBase
             IsPickingTitle = true;
         FilterTitles();
         RefreshFormats();
+    }
+
+    /// <summary>Logs a title from search that is not in the library yet. Nothing is saved until Save.</summary>
+    public LogWatchViewModel(AppServices services, FetchedTitle pending, Action<bool> close)
+        : this(services, null, null, close)
+    {
+        _pending = pending;
+        IsPickingTitle = false;
+        var preview = Preview(pending);
+        Title = preview;
+        _ = LoadRemotePosterAsync(pending.PosterUrl);
+        LoadSeasons(preview, null);
+        UpdateRewatch(force: true);
+    }
+
+    /// <summary>An unsaved Title built from fetched details, so the form can show it and its episodes.</summary>
+    private static Title Preview(FetchedTitle f)
+    {
+        var title = new Title { Name = f.Name ?? "Untitled", Year = f.Year, Kind = f.Kind, Format = f.Format };
+        title.Seasons = f.Seasons.Select(fs =>
+        {
+            var season = new Season { TitleId = title.Id, Number = fs.Number, Name = fs.Name };
+            season.Episodes = fs.Episodes.Select(fe => new Episode { SeasonId = season.Id, Number = fe.Number, Name = fe.Name }).ToList();
+            return season;
+        }).ToList();
+        return title;
     }
 
     public bool IsEditing => _watchId is not null;
@@ -107,6 +140,7 @@ public sealed partial class LogWatchViewModel : ViewModelBase
         var title = _services.Titles.GetWithEpisodes(titleId);
         if (title is null)
             return;
+        _pending = null;
         Title = title;
         _ = LoadPosterAsync(title.PosterPath);
         LoadSeasons(title, null);
@@ -114,6 +148,8 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     }
 
     private async Task LoadPosterAsync(string? path) => Poster = await _services.Images.LoadSavedAsync(path, 88);
+
+    private async Task LoadRemotePosterAsync(string? url) => Poster = await _services.Images.LoadRemoteAsync(url, 88);
 
     // ----- Episodes -----
 
@@ -134,7 +170,7 @@ public sealed partial class LogWatchViewModel : ViewModelBase
         Episodes.Clear();
         Episodes.Add(EpisodeChoice.None);
         foreach (var e in value?.Episodes ?? [])
-            Episodes.Add(new EpisodeChoice(e.Id, $"Episode {e.Number}" + (string.IsNullOrWhiteSpace(e.Name) || e.Name == $"Episode {e.Number}" ? "" : $" · {e.Name}")));
+            Episodes.Add(new EpisodeChoice(e.Id, value!.Number, e.Number, $"Episode {e.Number}" + (string.IsNullOrWhiteSpace(e.Name) || e.Name == $"Episode {e.Number}" ? "" : $" · {e.Name}")));
         if (!_loading)
             SelectedEpisode = Episodes.Count > 1 ? Episodes[1] : Episodes[0];
     }
@@ -219,12 +255,11 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     // ----- Where -----
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsTheater), nameof(IsHome), nameof(IsStreaming), nameof(IsOther), nameof(ShowsService))]
+    [NotifyPropertyChangedFor(nameof(IsTheater), nameof(IsHome), nameof(IsOther), nameof(ShowsService))]
     public partial WatchPlace Where { get; set; } = WatchPlace.Home;
 
     public bool IsTheater => Where == WatchPlace.Theater;
     public bool IsHome => Where == WatchPlace.Home;
-    public bool IsStreaming => Where == WatchPlace.Streaming;
     public bool IsOther => Where == WatchPlace.Other;
     public bool ShowsService => !IsTheater;
 
@@ -348,18 +383,28 @@ public sealed partial class LogWatchViewModel : ViewModelBase
 
     public string DeleteLabel => IsConfirmingDelete ? "Click again to delete" : "Delete entry";
 
-    private bool CanSave() => Title is not null && Date is not null;
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SaveText))]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
+    public partial bool IsSaving { get; set; }
+
+    public string SaveText => IsSaving ? "Saving..." : SaveLabel;
+
+    private bool CanSave() => Title is not null && Date is not null && !IsSaving;
 
     [RelayCommand(CanExecute = nameof(CanSave))]
-    private void Save()
+    private async Task Save()
     {
         if (!TimeInput.TryParse(StartTime, out var time))
         {
             Error = TimeError;
             return;
         }
+        IsSaving = true;
         try
         {
+            var (titleId, episodeId) = await SaveTitleIfPendingAsync();
+
             // A name typed for something not yet in the lists is added to them.
             if (!string.IsNullOrWhiteSpace(CompanionQuery))
                 AddCompanion();
@@ -368,8 +413,8 @@ public sealed partial class LogWatchViewModel : ViewModelBase
 
             var input = new WatchInput
             {
-                TitleId = Title!.Id,
-                EpisodeId = SelectedEpisode?.Id,
+                TitleId = titleId,
+                EpisodeId = episodeId,
                 WatchedOn = DateOnly.FromDateTime(Date!.Value),
                 StartTime = time,
                 Rating = Rating,
@@ -393,6 +438,26 @@ public sealed partial class LogWatchViewModel : ViewModelBase
         {
             Error = "Could not save: " + ex.Message;
         }
+        finally
+        {
+            IsSaving = false;
+        }
+    }
+
+    /// <summary>Saves a title picked from search (with its images) and finds the chosen episode in it.</summary>
+    private async Task<(string TitleId, string? EpisodeId)> SaveTitleIfPendingAsync()
+    {
+        if (_pending is null)
+            return (Title!.Id, SelectedEpisode?.Id);
+
+        var pending = _pending;
+        var images = await _services.Downloader.SaveAllAsync(pending);
+        var saved = await Task.Run(() => _services.Titles.Save(pending, images));
+        _pending = null;
+        var episodeId = SelectedEpisode is { Season: { } season, Number: { } number }
+            ? _services.Titles.FindEpisodeId(saved.Id, season, number)
+            : null;
+        return (saved.Id, episodeId);
     }
 
     [RelayCommand]
@@ -450,9 +515,10 @@ public sealed record TitleChoice(string Id, string Name, string Year, string Kin
 
 public sealed record SeasonChoice(int Number, string Label, List<Episode> Episodes);
 
-public sealed record EpisodeChoice(string? Id, string Label)
+/// <summary>An episode to pick. Season and number find it again once a new title is saved.</summary>
+public sealed record EpisodeChoice(string? Id, int? Season, int? Number, string Label)
 {
-    public static readonly EpisodeChoice None = new(null, "No specific episode");
+    public static readonly EpisodeChoice None = new(null, null, null, "No specific episode");
 }
 
 public sealed partial class FormatOption(string name, bool selected, Action<string> select) : ViewModelBase

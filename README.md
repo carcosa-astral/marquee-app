@@ -6,7 +6,7 @@ A private, local-first diary for movies, TV and anime. Think Trakt and Letterbox
 
 ## What it does
 
-- **Diary:** every watch is its own entry, so rewatches count. Each entry can hold the date, a rating, where you watched (theater, home, streaming), the theater, screen, seat and format, who you watched with, and a note.
+- **Diary:** every watch is its own entry, so rewatches count. Each entry can hold the date, a rating, where you watched (theater, home or other, plus the service), the theater, screen, seat and format, who you watched with, and a note.
 - **Movies, TV and anime:** anime is its own section and includes series, films, OVAs, ONAs and specials.
 - **Progress:** episode tracking for TV and anime.
 - **Watchlist:** titles coming soon (they move to "out now" on their own) and titles that are out but not yet seen.

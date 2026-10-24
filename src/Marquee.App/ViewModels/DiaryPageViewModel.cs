@@ -151,7 +151,6 @@ public sealed partial class DiaryEntryViewModel : ViewModelBase
         {
             WatchPlace.Theater => watch.Theater?.Name ?? "Theater",
             WatchPlace.Home => "Home",
-            WatchPlace.Streaming => "Streaming",
             _ => "Other",
         };
         WhereDetail = Detail(watch);

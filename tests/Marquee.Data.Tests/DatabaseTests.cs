@@ -2,6 +2,9 @@ using Marquee.Core.Model;
 using Marquee.Core.Storage;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Marquee.Data.Tests;
 
@@ -74,6 +77,32 @@ public sealed class DatabaseTests : IDisposable
         using var cmd = raw.CreateCommand();
         cmd.CommandText = "SELECT Kind || '/' || Format FROM Titles";
         Assert.Equal("anime/ova", cmd.ExecuteScalar());
+    }
+
+    [Fact]
+    public void Old_streaming_watches_become_home_and_keep_their_service()
+    {
+        var database = new MarqueeDatabase(_folder);
+        _folder.EnsureCreated();
+        using (var db = database.CreateContext())
+            db.GetInfrastructure().GetRequiredService<IMigrator>().Migrate("20261024212707_AddTmdbTypeAndPersonIndexes");
+
+        using (var raw = new SqliteConnection($"Data Source={_folder.Database}"))
+        {
+            raw.Open();
+            using var cmd = raw.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO Titles (Id, Kind, Format, Name) VALUES ('t1', 'movie', 'movie', 'Heat');
+                INSERT INTO Watches (Id, TitleId, WatchedOn, IsRewatch, "Where", Service) VALUES ('w1', 't1', '2026-10-24', 0, 'streaming', 'Netflix');
+                """;
+            cmd.ExecuteNonQuery();
+        }
+
+        database.Initialize();
+
+        using var after = database.CreateContext();
+        var watch = after.Watches.Single();
+        Assert.Equal((WatchPlace.Home, "Netflix"), (watch.Where, watch.Service));
     }
 
     [Fact]

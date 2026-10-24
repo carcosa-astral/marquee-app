@@ -85,6 +85,8 @@
                     <Border Classes="pill tmdb" IsVisible="{Binding FromTmdb}"><TextBlock Text="TMDB" /></Border>
                     <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" VerticalAlignment="Center"
                                Text="Matched across both sources and merged" IsVisible="{Binding IsMerged}" />
+                    <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" VerticalAlignment="Center"
+                               Text="In your diary" IsVisible="{Binding InDiary}" />
                   </StackPanel>
                   <TextBlock FontSize="12" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
                              IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
@@ -92,9 +94,9 @@
 
                 <StackPanel Grid.Column="2" Spacing="8" VerticalAlignment="Center" MinWidth="140">
                   <Button Classes="primary" Height="36" FontSize="13" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
-                          Content="Log a watch" Command="{Binding LogCommand}" />
-                  <Button Classes="secondary" HorizontalAlignment="Stretch"
-                          Content="{Binding AddLabel}" Command="{Binding AddCommand}" />
+                          Content="{Binding LogLabel}" Command="{Binding LogCommand}" />
+                  <Button Classes="secondary" HorizontalAlignment="Stretch" Content="Add to watchlist" IsEnabled="False"
+                          ToolTip.Tip="The watchlist arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
                 </StackPanel>
               </Grid>
             </Border>

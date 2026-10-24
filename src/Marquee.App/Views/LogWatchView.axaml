@@ -132,13 +132,11 @@
           <StackPanel Spacing="8">
             <TextBlock Classes="label" Text="Where you watched" />
             <Border Classes="segments">
-              <UniformGrid Columns="4" ColumnSpacing="4">
+              <UniformGrid Columns="3" ColumnSpacing="4">
                 <Button Classes="segment" Classes.active="{Binding IsTheater}" Content="Theater"
                         Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Theater}" />
                 <Button Classes="segment" Classes.active="{Binding IsHome}" Content="Home"
                         Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Home}" />
-                <Button Classes="segment" Classes.active="{Binding IsStreaming}" Content="Streaming"
-                        Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Streaming}" />
                 <Button Classes="segment" Classes.active="{Binding IsOther}" Content="Other"
                         Command="{Binding SetWhereCommand}" CommandParameter="{x:Static model:WatchPlace.Other}" />
               </UniformGrid>
@@ -247,7 +245,7 @@
                   Foreground="{StaticResource ErrorBrush}" IsVisible="{Binding IsEditing}" />
           <Button Grid.Column="2" Classes="secondary" Height="42" Padding="20,0" FontSize="14" Content="Cancel"
                   Command="{Binding CancelCommand}" IsCancel="True" />
-          <Button Grid.Column="3" Classes="primary" Height="42" Padding="22,0" Content="{Binding SaveLabel}"
+          <Button Grid.Column="3" Classes="primary" Height="42" Padding="22,0" Content="{Binding SaveText}"
                   Command="{Binding SaveCommand}" />
         </Grid>
       </StackPanel>
