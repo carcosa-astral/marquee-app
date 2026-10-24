@@ -2,6 +2,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Marquee.App.ViewModels"
+             xmlns:app="using:Marquee.App"
              x:Class="Marquee.App.Views.DiaryPageView"
              x:DataType="vm:DiaryPageViewModel">
 
@@ -23,9 +24,21 @@
       </StackPanel>
       <Border Grid.Column="2" Classes="inset" Height="40" Padding="6,0" VerticalAlignment="Bottom">
         <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-          <Button Classes="segment" Width="30" Height="30" Content="‹" FontSize="18" Command="{Binding PreviousYearCommand}" ToolTip.Tip="Previous year" />
-          <TextBlock Classes="brand" FontSize="16" MinWidth="48" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding YearText}" />
-          <Button Classes="segment" Width="30" Height="30" Content="›" FontSize="18" Command="{Binding NextYearCommand}" ToolTip.Tip="Next year" />
+          <Button Classes="segment" Width="30" Height="30" Padding="0" Command="{Binding PreviousYearCommand}" ToolTip.Tip="Previous year">
+            <Viewbox Width="16" Height="16">
+              <Canvas Width="24" Height="24">
+                <Path Classes="icon" Data="{x:Static app:Icons.ChevronLeft}" StrokeThickness="2.2" />
+              </Canvas>
+            </Viewbox>
+          </Button>
+          <TextBlock Classes="brand" FontSize="16" MinWidth="48" TextAlignment="Center" VerticalAlignment="Center" LineHeight="20" Text="{Binding YearText}" />
+          <Button Classes="segment" Width="30" Height="30" Padding="0" Command="{Binding NextYearCommand}" ToolTip.Tip="Next year">
+            <Viewbox Width="16" Height="16">
+              <Canvas Width="24" Height="24">
+                <Path Classes="icon" Data="{x:Static app:Icons.ChevronRight}" StrokeThickness="2.2" />
+              </Canvas>
+            </Viewbox>
+          </Button>
         </StackPanel>
       </Border>
     </Grid>
@@ -91,7 +104,7 @@
                 </Border>
                 <StackPanel Grid.Column="4" VerticalAlignment="Center">
                   <TextBlock FontSize="13" Text="{Binding Where}" TextTrimming="CharacterEllipsis" />
-                  <TextBlock Classes="muted small" Text="{Binding WhereDetail}" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Classes="muted small" Text="{Binding WhereDetail}" TextTrimming="CharacterEllipsis" IsVisible="{Binding HasWhereDetail}" />
                 </StackPanel>
                 <TextBlock Grid.Column="5" Foreground="{StaticResource RatingBrush}" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding RatingText}" />
                 <TextBlock Grid.Column="6" Classes="subtle" FontSize="13" VerticalAlignment="Center" Text="{Binding Note}" TextTrimming="CharacterEllipsis" />

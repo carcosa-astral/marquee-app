@@ -170,6 +170,7 @@ public sealed partial class DiaryEntryViewModel : ViewModelBase
     public bool IsRewatch => _watch.IsRewatch;
     public string Where { get; }
     public string WhereDetail { get; }
+    public bool HasWhereDetail => WhereDetail.Length > 0;
     public string RatingText { get; }
     public string Note { get; }
 

@@ -168,6 +168,9 @@
     <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
     <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
   </Style>
+  <Style Selector="Button.segment:disabled Path.icon">
+    <Setter Property="Opacity" Value="0.35" />
+  </Style>
   <Style Selector="Button.segment.active">
     <Setter Property="Background" Value="{StaticResource SelectedBrush}" />
     <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
