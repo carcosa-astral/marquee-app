@@ -225,6 +225,12 @@ namespace Marquee.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AniListId");
+
+                    b.HasIndex("Name");
+
+                    b.HasIndex("TmdbId");
+
                     b.ToTable("People");
                 });
 
@@ -337,6 +343,9 @@ namespace Marquee.Data.Migrations
                     b.Property<int?>("TmdbId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("TmdbType")
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("Year")
                         .HasColumnType("INTEGER");
 
@@ -348,7 +357,7 @@ namespace Marquee.Data.Migrations
 
                     b.HasIndex("Name");
 
-                    b.HasIndex("TmdbId");
+                    b.HasIndex("TmdbType", "TmdbId");
 
                     b.ToTable("Titles");
                 });

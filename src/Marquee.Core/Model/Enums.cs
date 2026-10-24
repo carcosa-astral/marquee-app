@@ -11,3 +11,6 @@ public enum WatchPlace { Theater, Home, Streaming, Other }
 public enum IceState { Paused, Dropped }
 
 public enum MetadataSource { Tmdb, AniList, User }
+
+/// <summary>TMDB keeps movie and TV ids apart, so a TMDB id is only unique together with its type.</summary>
+public enum TmdbType { Movie, Tv }

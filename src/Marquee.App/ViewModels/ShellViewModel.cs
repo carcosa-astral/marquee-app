@@ -9,67 +9,106 @@ namespace Marquee.App.ViewModels;
 /// <summary>The main window: sidebar, top bar and the current page.</summary>
 public partial class ShellViewModel : ViewModelBase
 {
-    public ShellViewModel(MarqueeDatabase database, SettingsStore settings)
+    private readonly AppServices _services;
+    private readonly SearchPageViewModel _search;
+
+    public ShellViewModel(AppServices services)
     {
-        using var db = database.CreateContext();
-        int Titles(TitleKind kind) => db.Titles.Count(t => t.Kind == kind);
+        _services = services;
+        _search = new SearchPageViewModel(services, RefreshCounts);
 
         MainItems =
         [
-            Nav("Home", Icons.Home, 0, Pages.Home()),
-            Nav("Diary", Icons.Diary, db.Watches.Count(), Pages.Soon("Diary", "Every watch, grouped by month, with filters.", "0.3.0")),
-            Nav("Watchlist", Icons.Watchlist, db.Watchlist.Count(), Pages.Soon("Watchlist", "Titles coming soon and titles out now that you have not seen.", "0.5.0")),
-            Nav("On Ice", Icons.OnIce, db.OnIce.Count(), Pages.Soon("On Ice", "Things you paused or dropped, with where you stopped and why.", "0.5.0")),
-            Nav("People", Icons.People, 0, Pages.Soon("People", "Actors and directors you have watched, most watched first.", "0.6.0")),
-            Nav("Recap", Icons.Recap, 0, Pages.Soon("Recap", "Your year and all time, in one view.", "0.7.0")),
+            Nav("Home", Icons.Home, null, Pages.Home()),
+            Nav("Diary", Icons.Diary, db => db.Watches.Count(), Pages.Soon("Diary", "Every watch, grouped by month, with filters.", "0.3.0")),
+            Nav("Watchlist", Icons.Watchlist, db => db.Watchlist.Count(), Pages.Soon("Watchlist", "Titles coming soon and titles out now that you have not seen.", "0.5.0")),
+            Nav("On Ice", Icons.OnIce, db => db.OnIce.Count(), Pages.Soon("On Ice", "Things you paused or dropped, with where you stopped and why.", "0.5.0")),
+            Nav("People", Icons.People, null, Pages.Soon("People", "Actors and directors you have watched, most watched first.", "0.6.0")),
+            Nav("Recap", Icons.Recap, null, Pages.Soon("Recap", "Your year and all time, in one view.", "0.7.0")),
         ];
         LibraryItems =
         [
-            Nav("Movies", Icons.Movies, Titles(TitleKind.Movie), Pages.Soon("Movies", "Every movie in your library.", "0.4.0")),
-            Nav("TV", Icons.Tv, Titles(TitleKind.Tv), Pages.Soon("TV", "Every TV show in your library.", "0.4.0")),
-            Nav("Anime", Icons.Anime, Titles(TitleKind.Anime), Pages.Soon("Anime", "Series, films, OVAs, ONAs and specials.", "0.4.0")),
-            Nav("Theaters", Icons.Theaters, db.Theaters.Count(), Pages.Soon("Theaters", "The theaters you add, with visits, formats and ratings.", "0.3.0")),
+            Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie),
+                new LibraryPageViewModel(services, TitleKind.Movie, "Movies", "No movies yet. Search at the top to add one.")),
+            Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv),
+                new LibraryPageViewModel(services, TitleKind.Tv, "TV", "No TV shows yet. Search at the top to add one.")),
+            Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime),
+                new LibraryPageViewModel(services, TitleKind.Anime, "Anime", "No anime yet. Search at the top to add series, films, OVAs and more.")),
+            Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), Pages.Soon("Theaters", "The theaters you add, with visits, formats and ratings.", "0.3.0")),
         ];
         FooterItems =
         [
-            Nav("Export JSON", Icons.Export, 0, Pages.Soon("Export JSON", "Save your whole diary as one readable Marquee JSON file.", "0.8.0")),
-            Nav("Settings", Icons.Settings, 0, Pages.Settings(database.Folder, settings)),
+            Nav("Export JSON", Icons.Export, null, Pages.Soon("Export JSON", "Save your whole diary as one readable Marquee JSON file.", "0.8.0")),
+            Nav("Settings", Icons.Settings, null, new SettingsPageViewModel(services)),
         ];
 
-        Select(MainItems[0]);
+        RefreshCounts();
+        Show(MainItems[0].Page, MainItems[0]);
     }
 
     public IReadOnlyList<NavItemViewModel> MainItems { get; }
     public IReadOnlyList<NavItemViewModel> LibraryItems { get; }
     public IReadOnlyList<NavItemViewModel> FooterItems { get; }
 
+    private IEnumerable<NavItemViewModel> AllItems => MainItems.Concat(LibraryItems).Concat(FooterItems);
+
     [ObservableProperty]
     public partial PageViewModel? CurrentPage { get; set; }
 
-    private void Select(NavItemViewModel item)
+    /// <summary>The top bar search box.</summary>
+    [ObservableProperty]
+    public partial string TopQuery { get; set; } = "";
+
+    [RelayCommand]
+    private void OpenSearch()
     {
-        foreach (var nav in MainItems.Concat(LibraryItems).Concat(FooterItems))
-            nav.IsActive = nav == item;
-        CurrentPage = item.Page;
+        var query = TopQuery.Trim();
+        TopQuery = "";
+        Show(_search, null);
+        if (query.Length > 0)
+            _search.SearchFor(query);
     }
 
-    private NavItemViewModel Nav(string label, Geometry icon, int count, PageViewModel page) =>
-        new(label, icon, count, page, Select);
+    /// <summary>Updates the sidebar counts after the library changes.</summary>
+    public void RefreshCounts()
+    {
+        using var db = _services.Database.CreateContext();
+        foreach (var nav in AllItems)
+            nav.Refresh(db);
+    }
+
+    private void Show(PageViewModel page, NavItemViewModel? item)
+    {
+        foreach (var nav in AllItems)
+            nav.IsActive = nav == item;
+        page.OnShown();
+        CurrentPage = page;
+    }
+
+    private NavItemViewModel Nav(string label, Geometry icon, Func<MarqueeDbContext, int>? count, PageViewModel page) =>
+        new(label, icon, count, page, item => Show(item.Page, item));
 }
 
-public partial class NavItemViewModel(string label, Geometry icon, int count, PageViewModel page, Action<NavItemViewModel> select)
+public partial class NavItemViewModel(
+    string label, Geometry icon, Func<MarqueeDbContext, int>? count, PageViewModel page, Action<NavItemViewModel> select)
     : ViewModelBase
 {
     public string Label { get; } = label;
     public Geometry Icon { get; } = icon;
+    public PageViewModel Page { get; } = page;
 
     /// <summary>Empty when zero, so a fresh diary shows a clean sidebar.</summary>
-    public string Count { get; } = count > 0 ? count.ToString("N0") : "";
-
-    public PageViewModel Page { get; } = page;
+    [ObservableProperty]
+    public partial string Count { get; set; } = "";
 
     [ObservableProperty]
     public partial bool IsActive { get; set; }
+
+    public void Refresh(MarqueeDbContext db)
+    {
+        var n = count?.Invoke(db) ?? 0;
+        Count = n > 0 ? n.ToString("N0") : "";
+    }
 
     [RelayCommand]
     private void Open() => select(this);

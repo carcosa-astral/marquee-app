@@ -101,6 +101,92 @@
     <Setter Property="StrokeThickness" Value="2.4" />
   </Style>
 
+  <!-- Secondary button -->
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource TextBodyBrush}" />
+    <Setter Property="CornerRadius" Value="9" />
+    <Setter Property="Padding" Value="16,0" />
+    <Setter Property="Height" Value="36" />
+    <Setter Property="FontSize" Value="13" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.secondary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+  </Style>
+  <Style Selector="Button.secondary:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+  </Style>
+
+  <!-- Filter chips -->
+  <Style Selector="Button.chip">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{StaticResource TextSubtleBrush}" />
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="12,0" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="FontSize" Value="12" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="Cursor" Value="Hand" />
+  </Style>
+  <Style Selector="Button.chip:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+  </Style>
+  <Style Selector="Button.chip.active">
+    <Setter Property="Background" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+  <Style Selector="Button.chip.active:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource QuietBorderBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+  </Style>
+  <Style Selector="Button.chip:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+    <Setter Property="Opacity" Value="0.5" />
+  </Style>
+
+  <!-- Small pills: title kind and metadata source -->
+  <Style Selector="Border.pill">
+    <Setter Property="CornerRadius" Value="999" />
+    <Setter Property="Padding" Value="8,2" />
+    <Setter Property="VerticalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="Border.pill > TextBlock">
+    <Setter Property="FontSize" Value="11" />
+  </Style>
+  <Style Selector="Border.pill.movie"><Setter Property="Background" Value="{StaticResource MovieSoftBrush}" /></Style>
+  <Style Selector="Border.pill.movie > TextBlock"><Setter Property="Foreground" Value="{StaticResource MovieBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="Border.pill.tv"><Setter Property="Background" Value="{StaticResource TvSoftBrush}" /></Style>
+  <Style Selector="Border.pill.tv > TextBlock"><Setter Property="Foreground" Value="{StaticResource TvBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="Border.pill.anime"><Setter Property="Background" Value="{StaticResource AnimeSoftBrush}" /></Style>
+  <Style Selector="Border.pill.anime > TextBlock"><Setter Property="Foreground" Value="{StaticResource AnimeBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="Border.pill.tmdb"><Setter Property="Background" Value="{StaticResource TmdbTagSoftBrush}" /></Style>
+  <Style Selector="Border.pill.tmdb > TextBlock"><Setter Property="Foreground" Value="{StaticResource TmdbTagBrush}" /></Style>
+  <Style Selector="Border.pill.anilist"><Setter Property="Background" Value="{StaticResource AniListTagSoftBrush}" /></Style>
+  <Style Selector="Border.pill.anilist > TextBlock"><Setter Property="Foreground" Value="{StaticResource AniListTagBrush}" /></Style>
+
+  <!-- Posters -->
+  <Style Selector="Border.poster">
+    <Setter Property="Background" Value="{StaticResource PosterPlaceholderBrush}" />
+    <Setter Property="CornerRadius" Value="6" />
+    <Setter Property="ClipToBounds" Value="True" />
+  </Style>
+
   <!-- Sidebar navigation -->
   <Style Selector="Button.nav">
     <Setter Property="Background" Value="Transparent" />

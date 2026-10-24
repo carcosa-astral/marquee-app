@@ -61,6 +61,21 @@
   <SolidColorBrush x:Key="MovieBrush" Color="{StaticResource Nord9}" />
   <SolidColorBrush x:Key="TvBrush" Color="{StaticResource Nord15}" />
   <SolidColorBrush x:Key="AnimeBrush" Color="{StaticResource Nord13}" />
+  <SolidColorBrush x:Key="MovieSoftBrush" Color="#2E81A1C1" />
+  <SolidColorBrush x:Key="TvSoftBrush" Color="#2EB48EAD" />
+  <SolidColorBrush x:Key="AnimeSoftBrush" Color="#29EBCB8B" />
+
+  <!-- Metadata source tags -->
+  <SolidColorBrush x:Key="TmdbTagBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="TmdbTagSoftBrush" Color="#2488C0D0" />
+  <SolidColorBrush x:Key="AniListTagBrush" Color="{StaticResource Nord13}" />
+  <SolidColorBrush x:Key="AniListTagSoftBrush" Color="#24EBCB8B" />
+
+  <!-- Shown where a poster is missing or still loading -->
+  <LinearGradientBrush x:Key="PosterPlaceholderBrush" StartPoint="0%,0%" EndPoint="60%,100%">
+    <GradientStop Offset="0" Color="{StaticResource Nord3}" />
+    <GradientStop Offset="1" Color="{StaticResource Nord0}" />
+  </LinearGradientBrush>
 
   <!-- Status -->
   <SolidColorBrush x:Key="WatchedBrush" Color="{StaticResource Nord14}" />
@@ -68,6 +83,7 @@
   <SolidColorBrush x:Key="PausedBrush" Color="{StaticResource Nord9}" />
   <SolidColorBrush x:Key="DroppedBrush" Color="{StaticResource Nord12}" />
   <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource Nord11}" />
+  <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Nord12}" />
 
   <!-- Setup screen glow, from the Setup mock -->
   <RadialGradientBrush x:Key="SetupGlowBrush" Center="50%,0%" GradientOrigin="50%,0%" RadiusX="70%" RadiusY="90%">

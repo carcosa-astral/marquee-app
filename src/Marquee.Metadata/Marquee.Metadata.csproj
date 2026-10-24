@@ -1,2 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Marquee.Core\Marquee.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Marquee.Metadata.Tests" />
+  </ItemGroup>
+
 </Project>
