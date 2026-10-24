@@ -2,7 +2,7 @@
 
 A private, local-first diary for movies, TV and anime. Think Trakt and Letterboxd without the social side: rich metadata, a clean Nord-themed desktop app, tracking, and yearly and all-time recaps.
 
-> **Status:** design phase. The screens are mocked and the build plan is written. There is no runnable app yet.
+> **Status:** early build. Milestone 0.1.0 (the skeleton) runs: the Nord shell, the first-run screen and an empty diary. Most pages are placeholders for now.
 
 ## What it does
 
@@ -27,6 +27,17 @@ A private, local-first diary for movies, TV and anime. Think Trakt and Letterbox
 ## Tech
 
 C#, .NET and Avalonia for the desktop UI, SQLite for storage. Movie and TV metadata from TMDB, anime metadata from AniList with TMDB filling gaps. See [docs/BUILD_PLAN.md](docs/BUILD_PLAN.md).
+
+## Build and run
+
+Needs the .NET 10 SDK.
+
+```
+dotnet run --project src/Marquee.App
+dotnet test
+```
+
+The app creates `data/`, `backups/` and `exports/` next to the executable. When run from source that is `src/Marquee.App/bin/Debug/net10.0/`.
 
 ## Docs
 

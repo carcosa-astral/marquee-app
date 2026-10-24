@@ -1,0 +1,14 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="Marquee.App.Views.MainWindow"
+        x:DataType="x:Object"
+        Title="Marquee"
+        Width="1440" Height="900"
+        MinWidth="1024" MinHeight="680"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource AppBackgroundBrush}"
+        FontFamily="{StaticResource BodyFont}"
+        FontSize="14">
+  <!-- The window shows whatever view model it is given: setup, the shell, or a startup error. -->
+  <ContentControl Content="{Binding}" />
+</Window>

@@ -1,0 +1,86 @@
+<!--
+  The Nord palette and Marquee's semantic tokens. Views use the brushes below,
+  never raw hex values. See docs/BUILD_PLAN.md, section 9.
+-->
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <!-- Polar Night -->
+  <Color x:Key="Nord0">#2E3440</Color>
+  <Color x:Key="Nord1">#3B4252</Color>
+  <Color x:Key="Nord2">#434C5E</Color>
+  <Color x:Key="Nord3">#4C566A</Color>
+  <!-- Snow Storm -->
+  <Color x:Key="Nord4">#D8DEE9</Color>
+  <Color x:Key="Nord5">#E5E9F0</Color>
+  <Color x:Key="Nord6">#ECEFF4</Color>
+  <!-- Frost -->
+  <Color x:Key="Nord7">#8FBCBB</Color>
+  <Color x:Key="Nord8">#88C0D0</Color>
+  <Color x:Key="Nord9">#81A1C1</Color>
+  <Color x:Key="Nord10">#5E81AC</Color>
+  <!-- Aurora -->
+  <Color x:Key="Nord11">#BF616A</Color>
+  <Color x:Key="Nord12">#D08770</Color>
+  <Color x:Key="Nord13">#EBCB8B</Color>
+  <Color x:Key="Nord14">#A3BE8C</Color>
+  <Color x:Key="Nord15">#B48EAD</Color>
+  <!-- Extra shades used by the mocks -->
+  <Color x:Key="NordSidebar">#272C36</Color>
+  <Color x:Key="NordCard">#343A47</Color>
+  <Color x:Key="NordMuted">#98A3B8</Color>
+  <Color x:Key="NordSubtle">#B8C2D4</Color>
+  <Color x:Key="NordAccentSoft">#1F88C0D0</Color>
+  <Color x:Key="NordAccentGlow">#2E88C0D0</Color>
+
+  <!-- Surfaces -->
+  <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource Nord0}" />
+  <SolidColorBrush x:Key="SidebarBackgroundBrush" Color="{StaticResource NordSidebar}" />
+  <SolidColorBrush x:Key="CardBackgroundBrush" Color="{StaticResource NordCard}" />
+  <SolidColorBrush x:Key="RaisedBackgroundBrush" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="HoverBackgroundBrush" Color="{StaticResource Nord1}" />
+
+  <!-- Lines -->
+  <SolidColorBrush x:Key="DividerBrush" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CardBorderBrush" Color="{StaticResource Nord2}" />
+  <SolidColorBrush x:Key="QuietBorderBrush" Color="{StaticResource Nord3}" />
+
+  <!-- Text -->
+  <SolidColorBrush x:Key="TextStrongBrush" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="TextBodyBrush" Color="{StaticResource Nord5}" />
+  <SolidColorBrush x:Key="TextNavBrush" Color="{StaticResource Nord4}" />
+  <SolidColorBrush x:Key="TextSubtleBrush" Color="{StaticResource NordSubtle}" />
+  <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource NordMuted}" />
+
+  <!-- Accent -->
+  <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="OnAccentBrush" Color="{StaticResource Nord0}" />
+  <SolidColorBrush x:Key="AccentSoftBrush" Color="{StaticResource NordAccentSoft}" />
+
+  <!-- Title types -->
+  <SolidColorBrush x:Key="MovieBrush" Color="{StaticResource Nord9}" />
+  <SolidColorBrush x:Key="TvBrush" Color="{StaticResource Nord15}" />
+  <SolidColorBrush x:Key="AnimeBrush" Color="{StaticResource Nord13}" />
+
+  <!-- Status -->
+  <SolidColorBrush x:Key="WatchedBrush" Color="{StaticResource Nord14}" />
+  <SolidColorBrush x:Key="WatchlistBrush" Color="{StaticResource Nord13}" />
+  <SolidColorBrush x:Key="PausedBrush" Color="{StaticResource Nord9}" />
+  <SolidColorBrush x:Key="DroppedBrush" Color="{StaticResource Nord12}" />
+  <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource Nord11}" />
+
+  <!-- Setup screen glow, from the Setup mock -->
+  <RadialGradientBrush x:Key="SetupGlowBrush" Center="50%,0%" GradientOrigin="50%,0%" RadiusX="70%" RadiusY="90%">
+    <GradientStop Offset="0" Color="{StaticResource NordAccentGlow}" />
+    <GradientStop Offset="0.6" Color="#0088C0D0" />
+  </RadialGradientBrush>
+
+  <!-- Fonts, bundled with fallbacks -->
+  <FontFamily x:Key="HeadingFont">avares://Marquee/Assets/Fonts#Bricolage Grotesque, Segoe UI, Helvetica Neue, Arial</FontFamily>
+  <FontFamily x:Key="BodyFont">avares://Marquee/Assets/Fonts#Hanken Grotesk, Segoe UI, Helvetica Neue, Arial</FontFamily>
+
+  <!-- Fluent theme hooks so built-in controls pick up Nord -->
+  <Color x:Key="SystemAccentColor">#88C0D0</Color>
+  <Color x:Key="SystemAccentColorDark1">#81A1C1</Color>
+  <Color x:Key="SystemAccentColorLight1">#8FBCBB</Color>
+</ResourceDictionary>
