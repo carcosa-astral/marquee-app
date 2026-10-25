@@ -3,9 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
   <!-- Type -->
-  <Style Selector="TextBlock">
-    <Setter Property="Foreground" Value="{StaticResource TextBodyBrush}" />
-  </Style>
   <Style Selector="TextBlock.display">
     <Setter Property="FontFamily" Value="{StaticResource HeadingFont}" />
     <Setter Property="FontWeight" Value="Bold" />
@@ -222,6 +219,23 @@
   </Style>
   <Style Selector="AutoCompleteBox /template/ TextBox">
     <Setter Property="CornerRadius" Value="8" />
+  </Style>
+
+  <!-- Date picker: keep the calendar icon off the edge, and make the popup calendar Nord -->
+  <Style Selector="CalendarDatePicker /template/ Button#PART_Button">
+    <Setter Property="Margin" Value="0,0,10,0" />
+  </Style>
+  <Style Selector="CalendarDatePicker">
+    <Setter Property="Padding" Value="12,0,8,0" />
+  </Style>
+  <Style Selector="Calendar">
+    <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+    <Setter Property="CornerRadius" Value="12" />
+  </Style>
+  <Style Selector="CalendarDayButton, CalendarButton">
+    <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+    <Setter Property="FontSize" Value="14" />
+    <Setter Property="CornerRadius" Value="6" />
   </Style>
 
   <!-- Table rows that open something, such as diary entries and theaters -->

@@ -139,6 +139,28 @@
   <SolidColorBrush x:Key="CalendarDatePickerBorderBrushPointerOver" Color="{StaticResource Nord3}" />
   <SolidColorBrush x:Key="CalendarDatePickerForeground" Color="{StaticResource Nord6}" />
   <SolidColorBrush x:Key="CalendarDatePickerCalendarGlyphForeground" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="CalendarDatePickerLightDismissOverlayBackground" Color="Transparent" />
+  <SolidColorBrush x:Key="CalendarViewBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarViewBorderBrush" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarViewForeground" Color="{StaticResource Nord6}" />
+  <SolidColorBrush x:Key="CalendarViewCalendarItemForeground" Color="{StaticResource Nord4}" />
+  <SolidColorBrush x:Key="CalendarViewCalendarItemRevealBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarViewCalendarItemRevealBorderBrush" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarViewOutOfScopeBackground" Color="{StaticResource Nord1}" />
+  <SolidColorBrush x:Key="CalendarViewOutOfScopeForeground" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="CalendarViewBlackoutForeground" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="CalendarViewWeekDayForegroundDisabled" Color="{StaticResource NordMuted}" />
+  <SolidColorBrush x:Key="CalendarViewTodayForeground" Color="{StaticResource Nord0}" />
+  <SolidColorBrush x:Key="CalendarViewHoverBorderBrush" Color="{StaticResource Nord3}" />
+  <SolidColorBrush x:Key="CalendarViewPressedBorderBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="CalendarViewSelectedBorderBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="CalendarViewSelectedHoverBorderBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="CalendarViewSelectedPressedBorderBrush" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="CalendarViewNavigationButtonBackground" Color="Transparent" />
+  <SolidColorBrush x:Key="CalendarViewNavigationButtonBorderBrush" Color="Transparent" />
+  <SolidColorBrush x:Key="CalendarViewNavigationButtonBorderBrushPointerOver" Color="Transparent" />
+  <SolidColorBrush x:Key="CalendarViewNavigationButtonForegroundPointerOver" Color="{StaticResource Nord8}" />
+  <SolidColorBrush x:Key="CalendarViewNavigationButtonForegroundPressed" Color="{StaticResource Nord8}" />
   <SolidColorBrush x:Key="ToggleSwitchFillOn" Color="{StaticResource Nord14}" />
   <SolidColorBrush x:Key="ToggleSwitchFillOnPointerOver" Color="{StaticResource Nord14}" />
   <SolidColorBrush x:Key="ToggleSwitchFillOnPressed" Color="{StaticResource Nord14}" />
