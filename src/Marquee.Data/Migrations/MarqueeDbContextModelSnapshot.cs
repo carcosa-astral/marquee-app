@@ -307,6 +307,9 @@ namespace Marquee.Data.Migrations
                     b.Property<int?>("AniListId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AniListScore")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("BackdropPath")
                         .HasColumnType("TEXT");
 
@@ -354,6 +357,9 @@ namespace Marquee.Data.Migrations
 
                     b.Property<int?>("TmdbId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<double?>("TmdbScore")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("TmdbType")
                         .HasColumnType("TEXT");

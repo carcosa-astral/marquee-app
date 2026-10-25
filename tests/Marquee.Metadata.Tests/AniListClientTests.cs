@@ -19,7 +19,7 @@ public class AniListClientTests
 
     private const string Details = """
         { "data": { "Media": {
-          "id": 154587, "idMal": 52991, "format": "TV", "status": "FINISHED", "episodes": 3, "duration": 24, "seasonYear": 2023,
+          "id": 154587, "idMal": 52991, "format": "TV", "status": "FINISHED", "episodes": 3, "duration": 24, "seasonYear": 2023, "averageScore": 91,
           "title": { "romaji": "Sousou no Frieren", "english": "Frieren: Beyond Journey’s End", "native": "葬送のフリーレン" },
           "startDate": { "year": 2023, "month": 9, "day": 29 },
           "description": "The adventure is over.<br><br>But life goes on &amp; on. (Source: Crunchyroll)",
@@ -65,6 +65,7 @@ public class AniListClientTests
         Assert.Equal("葬送のフリーレン", t.OriginalName);
         Assert.Equal(new DateOnly(2023, 9, 29), t.ReleaseDate);
         Assert.Equal("Finished", t.Status);
+        Assert.Equal(91, t.AniListScore);
         Assert.Equal("https://al/xl.jpg", t.PosterUrl);
         Assert.Null(t.BackdropUrl);
         Assert.Equal("The adventure is over.\n\nBut life goes on & on. (Source: Crunchyroll)", t.Overview);

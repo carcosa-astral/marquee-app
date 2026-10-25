@@ -35,6 +35,10 @@ public class Title : Entity
     public double? ImdbRating { get; set; }
     public int? ImdbVotes { get; set; }
 
+    /// <summary>TMDB's average user score (0 to 10) and AniList's average score (0 to 100).</summary>
+    public double? TmdbScore { get; set; }
+    public int? AniListScore { get; set; }
+
     public List<Season> Seasons { get; set; } = [];
     public List<Credit> Credits { get; set; } = [];
     public List<TitleGenre> Genres { get; set; } = [];

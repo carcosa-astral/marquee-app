@@ -82,13 +82,13 @@ public class MetadataRulesTests
     {
         var aniList = Fetched(MetadataSource.AniList, t =>
         {
-            t.AniListId = 1943; t.MalId = 1943;
+            t.AniListId = 1943; t.MalId = 1943; t.AniListScore = 82;
             t.Name = "Paprika"; t.Overview = "AniList overview"; t.PosterUrl = "https://al/poster.jpg"; t.Runtime = 90;
             t.Genres = ["Sci-Fi"];
         });
         var tmdb = Fetched(MetadataSource.Tmdb, t =>
         {
-            t.TmdbId = 4977; t.TmdbType = TmdbType.Movie; t.ImdbId = "tt0851578";
+            t.TmdbId = 4977; t.TmdbType = TmdbType.Movie; t.ImdbId = "tt0851578"; t.TmdbScore = 7.7;
             t.Name = "Paprika"; t.Overview = "TMDB overview"; t.BackdropUrl = "https://tmdb/backdrop.jpg"; t.Status = "Released";
             t.Genres = ["Animation"];
         });
@@ -102,6 +102,7 @@ public class MetadataRulesTests
         Assert.Equal(MetadataSource.Tmdb, merged.Sources[TitleFields.Status]);
         Assert.Equal((4977, 1943, "tt0851578"), (merged.TmdbId!.Value, merged.AniListId!.Value, merged.ImdbId));
         Assert.Equal(["Sci-Fi"], merged.Genres);
+        Assert.Equal((7.7, 82), (merged.TmdbScore!.Value, merged.AniListScore!.Value));
         Assert.Equal(TitleKind.Anime, merged.Kind);
     }
 

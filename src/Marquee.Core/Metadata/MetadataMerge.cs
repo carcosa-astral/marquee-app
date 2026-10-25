@@ -45,6 +45,8 @@ public static class MetadataMerge
             AniListId = primary.AniListId ?? fallback.AniListId,
             MalId = primary.MalId ?? fallback.MalId,
             ImdbId = primary.ImdbId ?? fallback.ImdbId,
+            TmdbScore = primary.TmdbScore ?? fallback.TmdbScore,
+            AniListScore = primary.AniListScore ?? fallback.AniListScore,
             Genres = primary.Genres.Count > 0 ? [.. primary.Genres] : [.. fallback.Genres],
             Seasons = primary.Seasons,
             Sources = new(primary.Sources),

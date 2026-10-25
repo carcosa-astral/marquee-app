@@ -91,6 +91,7 @@ public sealed class TmdbClient(HttpClient http, Func<string?> apiKey)
             Runtime = m.Int("runtime"),
             Overview = m.Str("overview"),
             Status = m.Str("status"),
+            TmdbScore = Score(m),
             PosterUrl = Image("w500", m.Str("poster_path")),
             BackdropUrl = Image("w1280", m.Str("backdrop_path")),
             Genres = genres.Select(g => g.Str("name")).OfType<string>().ToList(),
@@ -150,6 +151,7 @@ public sealed class TmdbClient(HttpClient http, Func<string?> apiKey)
             Runtime = runtime,
             Overview = t.Str("overview"),
             Status = t.Str("status"),
+            TmdbScore = Score(t),
             PosterUrl = Image("w500", t.Str("poster_path")),
             BackdropUrl = Image("w1280", t.Str("backdrop_path")),
             Genres = genres.Select(g => g.Str("name")).OfType<string>().ToList(),
@@ -227,6 +229,16 @@ public sealed class TmdbClient(HttpClient http, Func<string?> apiKey)
             PhotoUrl = Image("w185", c.Str("profile_path")),
         },
     };
+
+    /// <summary>TMDB's average score, rounded to one decimal. Null when nobody has voted.</summary>
+    private static double? Score(System.Text.Json.JsonElement e)
+    {
+        var votes = e.Int("vote_count");
+        var average = e.Prop("vote_average");
+        return votes is > 0 && average?.ValueKind == System.Text.Json.JsonValueKind.Number
+            ? Math.Round(average.Value.GetDouble(), 1)
+            : null;
+    }
 
     /// <summary>Japanese animation is treated as anime.</summary>
     private static bool IsAnime(IEnumerable<int> genreIds, IEnumerable<string?> countries, string? language) =>

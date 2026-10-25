@@ -31,7 +31,7 @@ public sealed partial class AniListClient(HttpClient http)
     private const string DetailsQuery = """
         query ($id: Int) {
           Media(id: $id, type: ANIME) {
-            id idMal format status episodes duration seasonYear
+            id idMal format status episodes duration seasonYear averageScore
             title { romaji english native }
             startDate { year month day }
             description(asHtml: false)
@@ -151,6 +151,7 @@ public sealed partial class AniListClient(HttpClient http)
             Runtime = duration,
             Overview = CleanDescription(m.Str("description")),
             Status = MapStatus(m.Str("status")),
+            AniListScore = m.Int("averageScore"),
             PosterUrl = m.Prop("coverImage")?.Str("extraLarge") ?? m.Prop("coverImage")?.Str("large"),
             // AniList's banner is a wide strip, not a backdrop. TMDB fills the backdrop.
             BackdropUrl = null,

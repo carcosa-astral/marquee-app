@@ -117,6 +117,10 @@ public sealed class TitleStore(MarqueeDatabase database)
 
         title.Kind = fetched.Kind;
         title.Format = fetched.Format;
+        // Scores are not editable; they follow the sources. A refresh that could not reach a
+        // source keeps the old score, while Fix match always takes the new match's scores.
+        title.TmdbScore = rematchTitleId is null ? fetched.TmdbScore ?? title.TmdbScore : fetched.TmdbScore;
+        title.AniListScore = rematchTitleId is null ? fetched.AniListScore ?? title.AniListScore : fetched.AniListScore;
 
         var overrides = db.FieldOverrides.Where(o => o.TitleId == title.Id).ToDictionary(o => o.FieldName);
         var sources = db.FieldSources.Where(s => s.TitleId == title.Id).ToDictionary(s => s.FieldName);

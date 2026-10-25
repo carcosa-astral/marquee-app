@@ -51,9 +51,11 @@ public sealed partial class TitlePageViewModel : PageViewModel
     [ObservableProperty] public partial string? DirectedBy { get; set; }
     [ObservableProperty] public partial string? Overview { get; set; }
 
-    /// <summary>"8.3" and "712K votes" from IMDb's ratings file, when known.</summary>
+    /// <summary>Scores from IMDb ("8.3"), TMDB ("7.4") and AniList ("86%"), when known.</summary>
     [ObservableProperty] public partial string? ImdbRating { get; set; }
-    [ObservableProperty] public partial string? ImdbVotes { get; set; }
+    [ObservableProperty] public partial string? TmdbScore { get; set; }
+    [ObservableProperty] public partial string? AniListScore { get; set; }
+    [ObservableProperty] public partial bool HasScores { get; set; }
     [ObservableProperty] public partial bool IsMovie { get; set; }
     [ObservableProperty] public partial bool IsTv { get; set; }
     [ObservableProperty] public partial bool IsAnime { get; set; }
@@ -162,7 +164,9 @@ public sealed partial class TitlePageViewModel : PageViewModel
         };
         Overview = t.Overview;
         ImdbRating = t.ImdbRating?.ToString("0.0", CultureInfo.InvariantCulture);
-        ImdbVotes = t.ImdbVotes is { } v ? $"{CompactCount(v)} votes" : null;
+        TmdbScore = t.TmdbScore?.ToString("0.0", CultureInfo.InvariantCulture);
+        AniListScore = t.AniListScore is { } al ? $"{al}%" : null;
+        HasScores = ImdbRating is not null || TmdbScore is not null || AniListScore is not null;
         var directors = t.Credits.Where(c => c.Role == CreditRole.Director).Select(c => c.Person?.Name).OfType<string>().Distinct().Take(3).ToList();
         DirectedBy = directors.Count == 0 ? null : string.Join(", ", directors);
 
@@ -452,14 +456,6 @@ public sealed partial class TitlePageViewModel : PageViewModel
         Message = message;
         _actions.Changed();
     }
-
-    /// <summary>712345 as "712K", 1234567 as "1.2M".</summary>
-    internal static string CompactCount(int n) => n switch
-    {
-        >= 1_000_000 => (n / 1_000_000.0).ToString("0.#", CultureInfo.InvariantCulture) + "M",
-        >= 1_000 => (n / 1_000.0).ToString("0", CultureInfo.InvariantCulture) + "K",
-        _ => n.ToString(CultureInfo.InvariantCulture),
-    };
 
     internal static string SourceName(MetadataSource s) => s switch
     {

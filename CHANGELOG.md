@@ -18,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix match: pick a different TMDB or AniList entry. Diary entries, ratings and edits stay attached.
 - Refresh details fetches the latest data again without touching watches or edits.
 - Library posters open the title page, and search results already in your diary have an Open link.
-- IMDb ratings: Settings downloads IMDb's free ratings file (about 8 MB) into `data/imdb/`, and title pages show the IMDb rating and vote count. Titles logged later get their rating from the saved file, offline.
+- IMDb ratings: Settings downloads IMDb's free ratings file (about 8 MB) into `data/imdb/`. Titles logged later get their rating from the saved file, offline.
+- Title pages show a row of scores: IMDb first, then TMDB's user score, then AniList's average score (for anime). TMDB and AniList scores are saved when a title is added and updated by Refresh details.
 
 ### Changed
 

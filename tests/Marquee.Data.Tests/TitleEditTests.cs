@@ -188,6 +188,21 @@ public sealed class TitleEditTests : IDisposable
     }
 
     [Fact]
+    public void Source_scores_are_saved_and_a_refresh_without_one_keeps_the_old_score()
+    {
+        var withScores = Paprika();
+        withScores.TmdbScore = 7.7;
+        var t = _titles.Save(withScores, SavedImages.None);
+        Assert.Equal(7.7, _titles.GetDetails(t.Id)!.Title.TmdbScore);
+
+        _titles.Save(Paprika(), SavedImages.None);
+        Assert.Equal(7.7, _titles.GetDetails(t.Id)!.Title.TmdbScore);
+
+        _titles.Save(Paprika(tmdbId: 5), SavedImages.None, rematchTitleId: t.Id);
+        Assert.Null(_titles.GetDetails(t.Id)!.Title.TmdbScore);
+    }
+
+    [Fact]
     public void People_count_titles_you_have_watched()
     {
         var paprika = _titles.Save(Paprika(), SavedImages.None);
