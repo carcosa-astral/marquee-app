@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- The date picker's calendar now uses the Nord colors and fonts instead of Fluent's black defaults, with days from other months dimmed.
+- The date text and calendar icon in the date box have proper spacing from the edges.
+- Text color now comes from the window instead of a style that forced one color on every piece of text, so built-in controls can show their own states (such as dimmed days).
+
 ## [0.3.0] - 2026-10-24
 
 ### Added
