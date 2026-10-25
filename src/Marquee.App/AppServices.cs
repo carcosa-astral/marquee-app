@@ -17,6 +17,8 @@ public sealed class AppServices
         Theaters = new TheaterStore(database);
         Companions = new CompanionStore(database);
         Reset = new ResetService(database);
+        Watchlist = new WatchlistStore(database);
+        Ice = new IceStore(database);
 
         var http = new HttpClient { Timeout = TimeSpan.FromSeconds(30) };
         var version = typeof(AppServices).Assembly.GetName().Version?.ToString(3) ?? "0";
@@ -51,6 +53,23 @@ public sealed class AppServices
     public TheaterStore Theaters { get; }
     public CompanionStore Companions { get; }
     public ResetService Reset { get; }
+    public WatchlistStore Watchlist { get; }
+    public IceStore Ice { get; }
+
+    /// <summary>
+    /// The saved id for a search result, fetching and saving the title (with its images) first
+    /// when it is new. Used by the watchlist, which holds titles you have not watched yet.
+    /// </summary>
+    public async Task<string> EnsureSavedAsync(Core.Metadata.SearchResult result)
+    {
+        if (Titles.FindId(result) is { } id)
+            return id;
+        var fetched = await Metadata.FetchAsync(result);
+        var images = await Downloader.SaveAllAsync(fetched);
+        var saved = await Task.Run(() => Titles.Save(fetched, images));
+        await ApplyImdbRatingsAsync(saved.Id);
+        return saved.Id;
+    }
     public MetadataService Metadata { get; }
     public ImageDownloader Downloader { get; }
     public ImageLoader Images { get; }

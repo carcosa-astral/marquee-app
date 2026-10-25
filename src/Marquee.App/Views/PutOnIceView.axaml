@@ -1,0 +1,126 @@
+<!-- Put on ice. Matches docs/design/mocks/PutOnIce.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.PutOnIceView"
+             x:DataType="vm:PutOnIceViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Button.choice.paused.selected">
+      <Setter Property="Background" Value="{StaticResource PausedSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource PausedBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="Button.choice.paused.selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource PausedSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource PausedBrush}" />
+    </Style>
+    <Style Selector="Button.choice.dropped.selected">
+      <Setter Property="Background" Value="{StaticResource DroppedSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource DroppedBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="Button.choice.dropped.selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DroppedSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource DroppedBrush}" />
+    </Style>
+    <Style Selector="Button.primary.ice">
+      <Setter Property="Background" Value="{StaticResource PausedBrush}" />
+    </Style>
+    <Style Selector="Button.primary.ice:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource PausedBrush}" />
+    </Style>
+    <Style Selector="Button.primary.ice.drop">
+      <Setter Property="Background" Value="{StaticResource DroppedBrush}" />
+    </Style>
+    <Style Selector="Button.primary.ice.drop:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource DroppedBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Classes="dialog" Width="640" Padding="28,26">
+    <StackPanel Spacing="20">
+      <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+        <Border Classes="poster" Width="44" Height="64" CornerRadius="5">
+          <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+        </Border>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+          <TextBlock Classes="section" Foreground="{StaticResource PausedBrush}" Text="PUT ON ICE" />
+          <TextBlock Classes="brand" FontSize="22" TextWrapping="Wrap" Text="{Binding Name}" />
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Spacing="8">
+        <TextBlock Classes="label" Text="What kind of break is this?" />
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+          <Button Classes="choice paused" Classes.selected="{Binding IsPaused}" Command="{Binding ChoosePausedCommand}">
+            <StackPanel Spacing="4">
+              <TextBlock FontWeight="SemiBold" FontSize="15" Foreground="{StaticResource PausedBrush}" Text="Paused" />
+              <TextBlock FontSize="13" Classes="subtle" Text="I plan to come back to it." />
+            </StackPanel>
+          </Button>
+          <Button Grid.Column="1" Classes="choice dropped" Classes.selected="{Binding IsDropped}" Command="{Binding ChooseDroppedCommand}">
+            <StackPanel Spacing="4">
+              <TextBlock FontWeight="SemiBold" FontSize="15" Foreground="{StaticResource DroppedBrush}" Text="Dropped" />
+              <TextBlock FontSize="13" Classes="subtle" Text="I gave up on it for now." />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </StackPanel>
+
+      <Grid ColumnDefinitions="*,190" ColumnSpacing="16">
+        <StackPanel Spacing="6">
+          <TextBlock Classes="label" Text="Where you stopped" />
+          <Border Classes="inset" CornerRadius="8" Height="40" Padding="12,0">
+            <TextBlock VerticalAlignment="Center" Foreground="{StaticResource TextStrongBrush}" Text="{Binding StoppedAt}" />
+          </Border>
+          <TextBlock Classes="muted small" Text="{Binding StoppedHint}" />
+        </StackPanel>
+        <StackPanel Grid.Column="1" Spacing="6">
+          <TextBlock Classes="label" Text="Date" />
+          <CalendarDatePicker SelectedDate="{Binding Date}" SelectedDateFormat="Custom" CustomDateFormatString="MMM d, yyyy"
+                              HorizontalAlignment="Stretch" Height="40" />
+        </StackPanel>
+      </Grid>
+
+      <StackPanel Spacing="8">
+        <TextBlock Classes="label">
+          <Run Text="Why" />
+          <Run Text="(optional)" FontWeight="Normal" Foreground="{StaticResource TextMutedBrush}" />
+        </TextBlock>
+        <WrapPanel ItemSpacing="6" LineSpacing="6">
+          <ItemsControl ItemsSource="{Binding Reasons}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><WrapPanel ItemSpacing="6" LineSpacing="6" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:ReasonChoice">
+                <Button Classes="option round" Classes.active="{Binding IsSelected}" Content="{Binding Text}" Command="{Binding PickCommand}" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <Button Classes="option round add" VerticalAlignment="Bottom" Content="Add your own" Command="{Binding StartAddingReasonCommand}" IsVisible="{Binding !IsAddingReason}" />
+          <TextBox Width="200" MinHeight="32" Height="32" VerticalAlignment="Bottom" Text="{Binding NewReason}" PlaceholderText="Your reason, then Enter" IsVisible="{Binding IsAddingReason}">
+            <TextBox.KeyBindings>
+              <KeyBinding Gesture="Enter" Command="{Binding AddReasonCommand}" />
+            </TextBox.KeyBindings>
+          </TextBox>
+        </WrapPanel>
+        <TextBlock Classes="label" Text="Note" Margin="0,4,0,0" />
+        <TextBox Text="{Binding Note}" AcceptsReturn="True" TextWrapping="Wrap" MinHeight="64" Padding="12,10" VerticalContentAlignment="Top" />
+      </StackPanel>
+
+      <Border Classes="inset" Padding="14,12">
+        <TextBlock FontSize="13" Foreground="{StaticResource TextNavBrush}" TextWrapping="Wrap" Text="{Binding KeepsText}" />
+      </Border>
+
+      <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+        <Button Classes="secondary" Height="42" Padding="20,0" FontSize="14" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" />
+        <Button Classes="primary ice" Classes.drop="{Binding IsDropped}" Height="42" Padding="22,0" Content="Put on ice" Command="{Binding SaveCommand}" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

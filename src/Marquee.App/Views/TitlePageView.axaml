@@ -253,7 +253,9 @@
             <Border Classes="pill" Classes.movie="{Binding IsMovie}" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}">
               <TextBlock Text="{Binding KindLabel}" />
             </Border>
-            <Border Classes="pill status" IsVisible="{Binding IsSeries}"><TextBlock Text="{Binding StatusLabel}" /></Border>
+            <Border Classes="pill status" Classes.paused="{Binding IsPausedIce}" Classes.dropped="{Binding IsDroppedIce}" IsVisible="{Binding IsSeries}">
+              <TextBlock Text="{Binding StatusLabel}" />
+            </Border>
             <TextBlock Classes="subtle" FontSize="13" VerticalAlignment="Center" Text="{Binding StatusLabel}" IsVisible="{Binding IsMovie}" />
           </StackPanel>
           <TextBlock Classes="display" FontSize="46" TextWrapping="Wrap" LineHeight="50">
@@ -309,10 +311,10 @@
                 </MultiBinding>
               </Button.IsVisible>
             </Button>
-            <Button Classes="secondary" Height="40" FontSize="14" Content="Add to watchlist" IsEnabled="False"
-                    ToolTip.Tip="The watchlist arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
-            <Button Classes="secondary" Height="40" FontSize="14" Content="Put on ice" IsEnabled="False"
-                    ToolTip.Tip="On Ice arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
+            <Button Classes="secondary" Height="40" FontSize="14" Content="{Binding WatchlistLabel}" Command="{Binding ToggleWatchlistCommand}" />
+            <Button Classes="secondary" Height="40" FontSize="14" Content="Put on ice" Command="{Binding PutOnIceCommand}" IsVisible="{Binding CanPutOnIce}" />
+            <Button Classes="secondary" Height="40" FontSize="14" Content="Resume" Command="{Binding ResumeCommand}" IsVisible="{Binding IsIced}"
+                    ToolTip.Tip="Take it off ice and back to Watching" />
           </StackPanel>
           <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
             <StackPanel.IsVisible>

@@ -107,6 +107,8 @@
   <SolidColorBrush x:Key="WatchlistBrush" Color="{StaticResource Nord13}" />
   <SolidColorBrush x:Key="PausedBrush" Color="{StaticResource Nord9}" />
   <SolidColorBrush x:Key="DroppedBrush" Color="{StaticResource Nord12}" />
+  <SolidColorBrush x:Key="PausedSoftBrush" Color="#2E81A1C1" />
+  <SolidColorBrush x:Key="DroppedSoftBrush" Color="#2ED08770" />
   <SolidColorBrush x:Key="ErrorBrush" Color="{StaticResource Nord11}" />
   <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Nord12}" />
 

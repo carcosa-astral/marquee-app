@@ -45,7 +45,7 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-          <Button Classes="option round add" Content="Add format" Command="{Binding StartAddingFormatCommand}"
+          <Button Classes="option round add" VerticalAlignment="Bottom" Content="Add format" Command="{Binding StartAddingFormatCommand}"
                   IsVisible="{Binding !IsAddingFormat}" />
           <TextBox Width="140" MinHeight="32" Height="32" Text="{Binding NewFormat}" PlaceholderText="Format, then Enter"
                    IsVisible="{Binding IsAddingFormat}">

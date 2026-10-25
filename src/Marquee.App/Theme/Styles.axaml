@@ -321,6 +321,10 @@
   <Style Selector="Border.pill.tv > TextBlock"><Setter Property="Foreground" Value="{StaticResource TvBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
   <Style Selector="Border.pill.anime"><Setter Property="Background" Value="{StaticResource AnimeSoftBrush}" /></Style>
   <Style Selector="Border.pill.anime > TextBlock"><Setter Property="Foreground" Value="{StaticResource AnimeBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="Border.pill.paused"><Setter Property="Background" Value="{StaticResource PausedSoftBrush}" /></Style>
+  <Style Selector="Border.pill.paused > TextBlock"><Setter Property="Foreground" Value="{StaticResource PausedBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+  <Style Selector="Border.pill.dropped"><Setter Property="Background" Value="{StaticResource DroppedSoftBrush}" /></Style>
+  <Style Selector="Border.pill.dropped > TextBlock"><Setter Property="Foreground" Value="{StaticResource DroppedBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
   <Style Selector="Border.pill.tmdb"><Setter Property="Background" Value="{StaticResource TmdbTagSoftBrush}" /></Style>
   <Style Selector="Border.pill.tmdb > TextBlock"><Setter Property="Foreground" Value="{StaticResource TmdbTagBrush}" /></Style>
   <Style Selector="Border.pill.anilist"><Setter Property="Background" Value="{StaticResource AniListTagSoftBrush}" /></Style>

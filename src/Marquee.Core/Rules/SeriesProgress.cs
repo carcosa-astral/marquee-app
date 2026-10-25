@@ -26,6 +26,10 @@ public sealed record SeriesProgress(int Watched, int Total, int MinutesLeft, Epi
         return new SeriesProgress(watched, main.Count, left, next, state);
     }
 
+    /// <summary>The furthest main-season episode watched, for "where you stopped". Null when none.</summary>
+    public static Episode? LastWatched(IEnumerable<Season> seasons, IReadOnlySet<string> watchedEpisodeIds) =>
+        MainEpisodes(seasons).LastOrDefault(e => watchedEpisodeIds.Contains(e.Id));
+
     /// <summary>Episodes of the main seasons (not specials), in viewing order.</summary>
     public static List<Episode> MainEpisodes(IEnumerable<Season> seasons) => seasons
         .Where(s => s.Number != 0)
