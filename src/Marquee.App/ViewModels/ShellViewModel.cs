@@ -17,7 +17,7 @@ public partial class ShellViewModel : ViewModelBase
     public ShellViewModel(AppServices services, Action restartSetup)
     {
         _services = services;
-        _search = new SearchPageViewModel(services, titleId => OpenLog(titleId, null), OpenLogPending);
+        _search = new SearchPageViewModel(services, titleId => OpenLog(titleId, null), OpenLogPending, OpenTitle);
 
         MainItems =
         [
@@ -31,11 +31,11 @@ public partial class ShellViewModel : ViewModelBase
         LibraryItems =
         [
             Nav("Movies", Icons.Movies, db => db.Titles.Count(t => t.Kind == TitleKind.Movie && db.Watches.Any(w => w.TitleId == t.Id)),
-                new LibraryPageViewModel(services, TitleKind.Movie, titleId => OpenLog(titleId, null), "Movies", "No movies watched yet. Search at the top and log one.")),
+                new LibraryPageViewModel(services, TitleKind.Movie, OpenTitle, "Movies", "No movies watched yet. Search at the top and log one.")),
             Nav("TV", Icons.Tv, db => db.Titles.Count(t => t.Kind == TitleKind.Tv && db.Watches.Any(w => w.TitleId == t.Id)),
-                new LibraryPageViewModel(services, TitleKind.Tv, titleId => OpenLog(titleId, null), "TV", "No TV watched yet. Search at the top and log an episode.")),
+                new LibraryPageViewModel(services, TitleKind.Tv, OpenTitle, "TV", "No TV watched yet. Search at the top and log an episode.")),
             Nav("Anime", Icons.Anime, db => db.Titles.Count(t => t.Kind == TitleKind.Anime && db.Watches.Any(w => w.TitleId == t.Id)),
-                new LibraryPageViewModel(services, TitleKind.Anime, titleId => OpenLog(titleId, null), "Anime", "No anime watched yet. Search at the top and log a series, film, OVA or more.")),
+                new LibraryPageViewModel(services, TitleKind.Anime, OpenTitle, "Anime", "No anime watched yet. Search at the top and log a series, film, OVA or more.")),
             Nav("Theaters", Icons.Theaters, db => db.Theaters.Count(), new TheatersPageViewModel(services, OpenTheaterForm)),
         ];
         FooterItems =
@@ -72,6 +72,30 @@ public partial class ShellViewModel : ViewModelBase
 
     private void OpenLog(string? titleId, string? watchId) =>
         Dialog = new LogWatchViewModel(_services, titleId, watchId, CloseDialog);
+
+    private PageViewModel? _beforeTitle;
+
+    /// <summary>Opens a title's page. Back returns to the page you came from.</summary>
+    private void OpenTitle(string titleId)
+    {
+        if (CurrentPage is not TitlePageViewModel)
+            _beforeTitle = CurrentPage;
+        var page = new TitlePageViewModel(_services, titleId, new TitlePageActions(
+            OpenLog,
+            dialog => Dialog = dialog,
+            GoBack,
+            RefreshCounts));
+        page.OnShown();
+        CurrentPage = page;
+    }
+
+    private void GoBack()
+    {
+        var page = _beforeTitle ?? MainItems[0].Page;
+        _beforeTitle = null;
+        page.OnShown();
+        CurrentPage = page;
+    }
 
     private void OpenLogPending(FetchedTitle pending) =>
         Dialog = new LogWatchViewModel(_services, pending, CloseDialog);

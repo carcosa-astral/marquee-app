@@ -100,6 +100,12 @@ namespace Marquee.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("OriginalSource")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OriginalValue")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("TitleId")
                         .IsRequired()
                         .HasColumnType("TEXT");

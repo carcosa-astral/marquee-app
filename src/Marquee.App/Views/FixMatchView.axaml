@@ -1,0 +1,93 @@
+<!-- Fix the match. Matches the right panel of docs/design/mocks/EditMeta.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.FixMatchView"
+             x:DataType="vm:FixMatchViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Button.candidate">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="12" />
+      <Setter Property="Padding" Value="12,10" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.candidate:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    </Style>
+    <Style Selector="Button.candidate.selected">
+      <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="Button.candidate.selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource AccentSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Classes="dialog" Width="460" Padding="24" BorderBrush="{StaticResource AccentBrush}">
+    <StackPanel Spacing="14">
+      <StackPanel Spacing="2">
+        <TextBlock Classes="section" Foreground="{StaticResource AccentBrush}" Text="WRONG TITLE?" />
+        <TextBlock Classes="brand" FontSize="22" Text="Fix the match" />
+      </StackPanel>
+      <TextBlock FontSize="13" Classes="subtle" TextWrapping="Wrap"
+                 Text="Your diary entries, ratings and edits stay attached. Only the details and images change." />
+
+      <StackPanel Spacing="6">
+        <TextBlock Classes="label" Text="Search for another" />
+        <TextBox Text="{Binding Query}" PlaceholderText="Title">
+          <TextBox.KeyBindings>
+            <KeyBinding Gesture="Enter" Command="{Binding SearchCommand}" />
+          </TextBox.KeyBindings>
+        </TextBox>
+      </StackPanel>
+
+      <TextBlock Classes="section" Text="SEARCHING..." IsVisible="{Binding IsSearching}" />
+
+      <ScrollViewer MaxHeight="420">
+        <ItemsControl ItemsSource="{Binding Candidates}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate><StackPanel Spacing="8" /></ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:MatchCandidate">
+              <Button Classes="candidate" Classes.selected="{Binding IsSelected}" Command="{Binding PickCommand}">
+                <Grid ColumnDefinitions="34,*,Auto" ColumnSpacing="12">
+                  <Border Classes="poster" Width="34" Height="50" CornerRadius="4">
+                    <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                  </Border>
+                  <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" TextTrimming="CharacterEllipsis">
+                      <Run Text="{Binding Name}" />
+                      <Run Text=" " />
+                      <Run Text="{Binding Year}" FontWeight="Normal" Foreground="{StaticResource TextMutedBrush}" />
+                    </TextBlock>
+                    <TextBlock Classes="subtle small" Text="{Binding Meta}" />
+                  </StackPanel>
+                  <TextBlock Grid.Column="2" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource WatchedBrush}"
+                             VerticalAlignment="Center" Text="Current" IsVisible="{Binding IsCurrent}" />
+                </Grid>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+      <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <StackPanel Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+        <Button Classes="secondary" Height="40" Padding="18,0" FontSize="14" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" />
+        <Button Classes="primary" Height="40" Padding="20,0" Content="{Binding UseLabel}" Command="{Binding UseCommand}" />
+      </StackPanel>
+    </StackPanel>
+  </Border>
+</UserControl>

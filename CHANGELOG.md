@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Title pages for movies, TV and anime: backdrop, poster, details, overview, who directed it, cast with how many of their titles you have watched, and a Details card showing where each field came from.
+- Movie pages list every watch (first watch and rewatches) and where you saw it; click one to edit it.
+- TV and anime pages show progress for the whole show, with season tabs, an episode grid for long anime seasons and an episode list with check marks. Click an episode to mark it watched today, or a watched one to open its entry.
+- "Mark through episode" for single-season shows and "Mark season watched" for TV seasons.
+- Average rating per season on TV pages.
+- Edit details: change the title, original title, year, runtime, release date, status and overview. Your values win over TMDB and AniList, even after a refresh, and each field can be reset to the source's value without going online.
+- Fix match: pick a different TMDB or AniList entry. Diary entries, ratings and edits stay attached.
+- Refresh details fetches the latest data again without touching watches or edits.
+- Library posters open the title page, and search results already in your diary have an Open link.
+
 ## [0.3.1] - 2026-10-24
 
 ### Fixed

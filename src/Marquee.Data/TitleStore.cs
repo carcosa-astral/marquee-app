@@ -73,36 +73,64 @@ public sealed class TitleStore(MarqueeDatabase database)
     /// Fields the user changed by hand are left alone, and watches, watchlist,
     /// On Ice and other user data are never touched.
     /// </summary>
-    public Title Save(FetchedTitle fetched, SavedImages images)
+    /// <param name="rematchTitleId">
+    /// Fix match: point this saved title at a different TMDB or AniList entry. Its ids are
+    /// replaced, not merged, and its diary entries, ratings and edits stay attached.
+    /// </param>
+    public Title Save(FetchedTitle fetched, SavedImages images, string? rematchTitleId = null)
     {
         using var db = database.CreateContext();
         using var tx = db.Database.BeginTransaction();
 
-        var title = FindExisting(db, fetched);
-        if (title is null)
+        Title? title;
+        if (rematchTitleId is not null)
         {
-            title = new Title();
-            db.Titles.Add(title);
+            title = db.Titles.Single(t => t.Id == rematchTitleId);
+            if (FindExisting(db, fetched) is { } other && other.Id != title.Id)
+                throw new InvalidOperationException($"\"{other.Name}\" is already in your library with that match.");
+            title.TmdbType = fetched.TmdbType;
+            title.TmdbId = fetched.TmdbId;
+            title.AniListId = fetched.AniListId;
+            title.MalId = fetched.MalId;
+            title.ImdbId = fetched.ImdbId;
+        }
+        else
+        {
+            title = FindExisting(db, fetched);
+            if (title is null)
+            {
+                title = new Title();
+                db.Titles.Add(title);
+            }
+            title.TmdbType = fetched.TmdbType ?? title.TmdbType;
+            title.TmdbId = fetched.TmdbId ?? title.TmdbId;
+            title.AniListId = fetched.AniListId ?? title.AniListId;
+            title.MalId = fetched.MalId ?? title.MalId;
+            title.ImdbId = fetched.ImdbId ?? title.ImdbId;
         }
 
         title.Kind = fetched.Kind;
         title.Format = fetched.Format;
-        title.TmdbType = fetched.TmdbType ?? title.TmdbType;
-        title.TmdbId = fetched.TmdbId ?? title.TmdbId;
-        title.AniListId = fetched.AniListId ?? title.AniListId;
-        title.MalId = fetched.MalId ?? title.MalId;
-        title.ImdbId = fetched.ImdbId ?? title.ImdbId;
 
-        var overridden = db.FieldOverrides.Where(o => o.TitleId == title.Id).Select(o => o.FieldName).ToHashSet();
+        var overrides = db.FieldOverrides.Where(o => o.TitleId == title.Id).ToDictionary(o => o.FieldName);
         var sources = db.FieldSources.Where(s => s.TitleId == title.Id).ToDictionary(s => s.FieldName);
         foreach (var field in TitleFields.All)
         {
-            if (overridden.Contains(field))
+            var hasValue = fetched.Sources.TryGetValue(field, out var source) && fetched.HasValue(field);
+            if (overrides.TryGetValue(field, out var edit))
             {
+                // The user's value stays. Remember the source's latest value so Reset can bring it back.
+                if (hasValue)
+                {
+                    var scratch = new Title();
+                    Apply(scratch, field, fetched, images);
+                    edit.OriginalValue = TitleFieldValues.Get(scratch, field) ?? edit.OriginalValue;
+                    edit.OriginalSource = source;
+                }
                 SetSource(db, sources, title.Id, field, MetadataSource.User);
                 continue;
             }
-            if (!fetched.Sources.TryGetValue(field, out var source) || !fetched.HasValue(field))
+            if (!hasValue)
                 continue;
             Apply(title, field, fetched, images);
             SetSource(db, sources, title.Id, field, source);
@@ -115,10 +143,108 @@ public sealed class TitleStore(MarqueeDatabase database)
         SaveGenres(db, title, fetched.Genres);
         SaveCredits(db, title, fetched.Credits, images);
         SaveSeasons(db, title, fetched.Seasons);
+        if (rematchTitleId is not null)
+            RemoveUnusedEpisodes(db, title, fetched.Seasons);
 
         db.SaveChanges();
         tx.Commit();
         return title;
+    }
+
+    /// <summary>Everything the title page shows about one title.</summary>
+    public TitleDetails? GetDetails(string titleId)
+    {
+        using var db = database.CreateContext();
+        var title = db.Titles.AsNoTracking().AsSplitQuery()
+            .Include(t => t.Seasons).ThenInclude(s => s.Episodes)
+            .Include(t => t.Credits).ThenInclude(c => c.Person)
+            .Include(t => t.Genres).ThenInclude(g => g.Genre)
+            .FirstOrDefault(t => t.Id == titleId);
+        if (title is null)
+            return null;
+        title.Seasons = title.Seasons.OrderBy(s => s.Number).ToList();
+        foreach (var season in title.Seasons)
+            season.Episodes = season.Episodes.OrderBy(e => e.Number).ToList();
+        title.Credits = title.Credits.OrderBy(c => c.Role).ThenBy(c => c.Order).ToList();
+
+        var sources = db.FieldSources.Where(s => s.TitleId == titleId).ToDictionary(s => s.FieldName, s => s.Source);
+        var overrides = db.FieldOverrides.AsNoTracking().Where(o => o.TitleId == titleId).ToDictionary(o => o.FieldName);
+        return new TitleDetails(title, sources, overrides);
+    }
+
+    /// <summary>
+    /// Saves values typed by the user. They win over TMDB and AniList from now on,
+    /// including after a refresh. The source's value is kept so the field can be reset.
+    /// </summary>
+    public void SaveEdits(string titleId, IReadOnlyDictionary<string, string?> values)
+    {
+        foreach (var (field, value) in values)
+        {
+            if (TitleFieldValues.Validate(field, value) is { } error)
+                throw new ArgumentException(error);
+        }
+
+        using var db = database.CreateContext();
+        var title = db.Titles.Single(t => t.Id == titleId);
+        var overrides = db.FieldOverrides.Where(o => o.TitleId == titleId).ToDictionary(o => o.FieldName);
+        var sources = db.FieldSources.Where(s => s.TitleId == titleId).ToDictionary(s => s.FieldName);
+        foreach (var (field, value) in values)
+        {
+            if (!overrides.TryGetValue(field, out var edit))
+            {
+                edit = new FieldOverride
+                {
+                    TitleId = titleId,
+                    FieldName = field,
+                    OriginalValue = TitleFieldValues.Get(title, field),
+                    OriginalSource = sources.TryGetValue(field, out var src) ? src.Source : null,
+                };
+                db.FieldOverrides.Add(edit);
+            }
+            edit.Value = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            TitleFieldValues.Set(title, field, edit.Value);
+            SetSource(db, sources, titleId, field, MetadataSource.User);
+        }
+        db.SaveChanges();
+    }
+
+    /// <summary>Drops the user's value for one field and brings back what the source said.</summary>
+    public void ResetEdit(string titleId, string field)
+    {
+        using var db = database.CreateContext();
+        var edit = db.FieldOverrides.SingleOrDefault(o => o.TitleId == titleId && o.FieldName == field);
+        if (edit is null)
+            return;
+        var title = db.Titles.Single(t => t.Id == titleId);
+        TitleFieldValues.Set(title, field, edit.OriginalValue);
+        var source = db.FieldSources.SingleOrDefault(s => s.TitleId == titleId && s.FieldName == field);
+        if (edit.OriginalSource is { } original)
+        {
+            if (source is null)
+                db.FieldSources.Add(new FieldSource { TitleId = titleId, FieldName = field, Source = original });
+            else
+                source.Source = original;
+        }
+        else if (source is not null)
+        {
+            db.FieldSources.Remove(source);
+        }
+        db.FieldOverrides.Remove(edit);
+        db.SaveChanges();
+    }
+
+    /// <summary>For each person, how many titles they are credited on that you have watched.</summary>
+    public Dictionary<string, int> WatchedTitleCounts(IEnumerable<string> personIds)
+    {
+        var ids = personIds.Distinct().ToList();
+        using var db = database.CreateContext();
+        return db.Credits
+            .Where(c => ids.Contains(c.PersonId) && db.Watches.Any(w => w.TitleId == c.TitleId))
+            .Select(c => new { c.PersonId, c.TitleId })
+            .Distinct()
+            .ToList()
+            .GroupBy(c => c.PersonId)
+            .ToDictionary(g => g.Key, g => g.Count());
     }
 
     private static Title? FindExisting(MarqueeDbContext db, FetchedTitle f)
@@ -234,6 +360,21 @@ public sealed class TitleStore(MarqueeDatabase database)
         return person;
     }
 
+    /// <summary>After Fix match, drops seasons and episodes the new match does not have, unless a watch points at them.</summary>
+    private static void RemoveUnusedEpisodes(MarqueeDbContext db, Title title, List<FetchedSeason> seasons)
+    {
+        var keep = seasons.SelectMany(s => s.Episodes.Select(e => (s.Number, e.Number))).ToHashSet();
+        var watched = db.Watches.Where(w => w.TitleId == title.Id && w.EpisodeId != null).Select(w => w.EpisodeId!).ToHashSet();
+        foreach (var season in db.Seasons.Include(s => s.Episodes).Where(s => s.TitleId == title.Id).ToList())
+        {
+            foreach (var episode in season.Episodes.Where(e => !keep.Contains((season.Number, e.Number)) && !watched.Contains(e.Id)).ToList())
+                db.Episodes.Remove(episode);
+            if (season.Episodes.All(e => !keep.Contains((season.Number, e.Number)) && !watched.Contains(e.Id))
+                && seasons.All(s => s.Number != season.Number))
+                db.Seasons.Remove(season);
+        }
+    }
+
     /// <summary>Adds missing seasons and episodes and updates their details. Nothing is deleted, so watches keep their episode.</summary>
     private static void SaveSeasons(MarqueeDbContext db, Title title, List<FetchedSeason> seasons)
     {
@@ -269,3 +410,9 @@ public sealed record LibraryIds(HashSet<(TmdbType Type, int Id)> Tmdb, HashSet<i
         (r.AniList is { } al && AniList.Contains(al.Id))
         || (r.Tmdb is { TmdbType: { } type } t && Tmdb.Contains((type, t.Id)));
 }
+
+/// <summary>A title with where each field came from and the user's edits.</summary>
+public sealed record TitleDetails(
+    Title Title,
+    IReadOnlyDictionary<string, MetadataSource> Sources,
+    IReadOnlyDictionary<string, FieldOverride> Edits);

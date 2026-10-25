@@ -1,0 +1,68 @@
+<!-- Edit details. Matches the left panel of docs/design/mocks/EditMeta.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.EditDetailsView"
+             x:DataType="vm:EditDetailsViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="Border.pill.user"><Setter Property="Background" Value="{StaticResource WatchedSoftBrush}" /></Style>
+    <Style Selector="Border.pill.user > TextBlock"><Setter Property="Foreground" Value="{StaticResource WatchedBrush}" /></Style>
+    <Style Selector="Border.pill.none > TextBlock"><Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" /></Style>
+    <Style Selector="TextBox.edited">
+      <Setter Property="BorderBrush" Value="{StaticResource WatchedBrush}" />
+    </Style>
+    <Style Selector="TextBox.invalid">
+      <Setter Property="BorderBrush" Value="{StaticResource ErrorBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <Border Classes="dialog" Width="700" Padding="28,26">
+    <StackPanel Spacing="16">
+      <StackPanel Spacing="2">
+        <TextBlock Classes="section" Text="EDIT DETAILS" />
+        <TextBlock Classes="brand" FontSize="24">
+          <Run Text="{Binding Name}" />
+          <Run Text=" " />
+          <Run Text="{Binding YearText}" FontSize="18" FontWeight="Medium" Foreground="{StaticResource TextMutedBrush}" />
+        </TextBlock>
+      </StackPanel>
+      <TextBlock FontSize="13" Classes="subtle" TextWrapping="Wrap"
+                 Text="Anything you change here wins over TMDB and AniList, even after a refresh. You can reset any field back to its source." />
+
+      <ItemsControl ItemsSource="{Binding Fields}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:EditField">
+            <Border BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="0,1,0,0" Padding="0,10">
+              <Grid ColumnDefinitions="110,*,92,56" ColumnSpacing="14" RowDefinitions="Auto,Auto">
+                <TextBlock FontSize="13" Classes="subtle" VerticalAlignment="Center" Text="{Binding Label}" />
+                <TextBox Grid.Column="1" Text="{Binding Value}" Classes.edited="{Binding IsEdited}"
+                         Classes.invalid="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}"
+                         AcceptsReturn="{Binding IsMultiline}" TextWrapping="Wrap" MinHeight="38" MaxHeight="160" />
+                <Border Grid.Column="2" Classes="pill" HorizontalAlignment="Center"
+                        Classes.tmdb="{Binding IsTmdb}" Classes.anilist="{Binding IsAniList}" Classes.user="{Binding IsEdited}"
+                        Classes.none="{Binding Source, Converter={x:Static ObjectConverters.IsNull}}">
+                  <TextBlock Text="{Binding SourceText}" />
+                </Border>
+                <Button Grid.Column="3" Classes="secondary" Height="30" Padding="8,0" FontSize="12" BorderThickness="0"
+                        Foreground="{StaticResource AccentBrush}" Content="Reset" Command="{Binding ResetCommand}"
+                        IsVisible="{Binding IsEdited}" ToolTip.Tip="Go back to the value from TMDB or AniList" />
+                <TextBlock Grid.Row="1" Grid.Column="1" FontSize="12" Foreground="{StaticResource ErrorBrush}" Margin="0,4,0,0"
+                           Text="{Binding Error}" IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+              </Grid>
+            </Border>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
+      <TextBlock FontSize="13" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
+                 IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+        <TextBlock Classes="muted small" VerticalAlignment="Center" Text="{Binding EditedText}" />
+        <Button Grid.Column="1" Classes="secondary" Height="42" Padding="20,0" FontSize="14" Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" />
+        <Button Grid.Column="2" Classes="primary" Height="42" Padding="22,0" Content="Save changes" Command="{Binding SaveCommand}" />
+      </Grid>
+    </StackPanel>
+  </Border>
+</UserControl>

@@ -77,6 +77,18 @@
     <GradientStop Offset="1" Color="{StaticResource Nord0}" />
   </LinearGradientBrush>
 
+  <!-- Title pages -->
+  <SolidColorBrush x:Key="EpisodeWatchedBrush" Color="#4C6A82" />
+  <SolidColorBrush x:Key="WatchedSoftBrush" Color="#29A3BE8C" />
+  <LinearGradientBrush x:Key="BackdropPlaceholderBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0" Color="{StaticResource Nord1}" />
+    <GradientStop Offset="1" Color="{StaticResource Nord0}" />
+  </LinearGradientBrush>
+  <LinearGradientBrush x:Key="BackdropFadeBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0.35" Color="#002E3440" />
+    <GradientStop Offset="1" Color="#CC2E3440" />
+  </LinearGradientBrush>
+
   <!-- Ratings -->
   <SolidColorBrush x:Key="RatingBrush" Color="{StaticResource Nord13}" />
   <SolidColorBrush x:Key="RatingEmptyBrush" Color="{StaticResource Nord2}" />

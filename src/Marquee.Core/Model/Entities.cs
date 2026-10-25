@@ -158,6 +158,10 @@ public class FieldOverride : Entity
     public Title? Title { get; set; }
     public string FieldName { get; set; } = "";
     public string? Value { get; set; }
+
+    /// <summary>What TMDB or AniList says for this field, kept up to date by refreshes, so Reset can restore it.</summary>
+    public string? OriginalValue { get; set; }
+    public MetadataSource? OriginalSource { get; set; }
 }
 
 /// <summary>Where a Title field's current value came from.</summary>

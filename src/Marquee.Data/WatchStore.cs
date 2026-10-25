@@ -68,6 +68,31 @@ public sealed class WatchStore(MarqueeDatabase database)
         return Newest(Full(db).Where(w => w.WatchedOn >= from && w.WatchedOn <= to).ToList());
     }
 
+    /// <summary>Every watch of one title, newest first.</summary>
+    public List<Watch> ListForTitle(string titleId)
+    {
+        using var db = database.CreateContext();
+        return Newest(Full(db).Where(w => w.TitleId == titleId).ToList());
+    }
+
+    /// <summary>
+    /// Marks episodes as watched on one date, with no other details: one diary entry each.
+    /// Episodes that already have a watch are skipped. Returns how many were added.
+    /// </summary>
+    public int MarkEpisodesWatched(string titleId, IEnumerable<string> episodeIds, DateOnly on)
+    {
+        using var db = database.CreateContext();
+        var seen = db.Watches.Where(w => w.TitleId == titleId && w.EpisodeId != null).Select(w => w.EpisodeId!).ToHashSet();
+        var added = 0;
+        foreach (var id in episodeIds.Distinct().Where(id => !seen.Contains(id)))
+        {
+            db.Watches.Add(new Watch { TitleId = titleId, EpisodeId = id, WatchedOn = on, Where = WatchPlace.Home });
+            added++;
+        }
+        db.SaveChanges();
+        return added;
+    }
+
     /// <summary>Years that have at least one watch, newest first.</summary>
     public List<int> Years()
     {
