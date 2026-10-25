@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-10-24
+
 ### Fixed
 
 - The date picker's calendar now uses the Nord colors and fonts instead of Fluent's black defaults, with days from other months dimmed.
@@ -67,7 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Settings page showing folder locations, the version and TMDB and AniList attribution.
 - Tests for folder resolution, migrations, settings and that nothing is written outside the Marquee folder.
 
-[Unreleased]: https://github.com/carcosa-astral/marquee-app/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/carcosa-astral/marquee-app/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/carcosa-astral/marquee-app/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/carcosa-astral/marquee-app/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/carcosa-astral/marquee-app/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/carcosa-astral/marquee-app/releases/tag/v0.1.0

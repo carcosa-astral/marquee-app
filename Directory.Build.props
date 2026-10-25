@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <Authors>Carcosa Astral</Authors>
     <Product>Marquee</Product>
   </PropertyGroup>
