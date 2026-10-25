@@ -109,10 +109,10 @@
           <!-- Rating and rewatch -->
           <Grid ColumnDefinitions="Auto,*,Auto">
             <StackPanel Classes="field">
-              <TextBlock Classes="label" Text="Rating" />
+              <TextBlock Classes="label" Text="{Binding RatingLabel}" />
               <StackPanel Orientation="Horizontal" Spacing="12">
                 <controls:StarRating Value="{Binding Rating}" Fill="{StaticResource RatingBrush}" Empty="{StaticResource RatingEmptyBrush}"
-                                     ToolTip.Tip="Click the left half of a star for a half star. Click again to clear." />
+                                     ToolTip.Tip="{Binding RatingTip}" />
                 <TextBlock Classes="brand" FontSize="20" VerticalAlignment="Center" Text="{Binding RatingText}" IsVisible="{Binding HasRating}" />
                 <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center" Text="Not rated" IsVisible="{Binding !HasRating}" />
               </StackPanel>
@@ -128,8 +128,8 @@
             </Border>
           </Grid>
 
-          <!-- Where -->
-          <StackPanel Spacing="8">
+          <!-- Where (not for TV or anime series: episodes are watched at home) -->
+          <StackPanel Spacing="8" IsVisible="{Binding ShowsWhere}">
             <TextBlock Classes="label" Text="Where you watched" />
             <Border Classes="segments">
               <UniformGrid Columns="3" ColumnSpacing="4">

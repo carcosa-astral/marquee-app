@@ -46,6 +46,11 @@ public sealed class FetchedTitle
     public string? PosterUrl { get; set; }
     public string? BackdropUrl { get; set; }
 
+    /// <summary>TMDB's average user score (0 to 10). Only set when people have voted.</summary>
+    public double? TmdbScore { get; set; }
+    /// <summary>AniList's average score (0 to 100).</summary>
+    public int? AniListScore { get; set; }
+
     public List<string> Genres { get; set; } = [];
     public List<FetchedCredit> Credits { get; set; } = [];
     public List<FetchedSeason> Seasons { get; set; } = [];

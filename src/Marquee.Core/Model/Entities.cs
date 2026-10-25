@@ -25,6 +25,20 @@ public class Title : Entity
     public int? MalId { get; set; }
     public string? ImdbId { get; set; }
 
+    /// <summary>
+    /// The user's rating for a whole TV show or anime series (0.5 to 5). Episodes are not rated.
+    /// Movies are rated per watch instead. Refreshing metadata never changes this.
+    /// </summary>
+    public double? UserRating { get; set; }
+
+    /// <summary>IMDb's average rating (1 to 10) and vote count, from IMDb's ratings file. Needs an IMDb id.</summary>
+    public double? ImdbRating { get; set; }
+    public int? ImdbVotes { get; set; }
+
+    /// <summary>TMDB's average user score (0 to 10) and AniList's average score (0 to 100).</summary>
+    public double? TmdbScore { get; set; }
+    public int? AniListScore { get; set; }
+
     public List<Season> Seasons { get; set; } = [];
     public List<Credit> Credits { get; set; } = [];
     public List<TitleGenre> Genres { get; set; } = [];
@@ -158,6 +172,10 @@ public class FieldOverride : Entity
     public Title? Title { get; set; }
     public string FieldName { get; set; } = "";
     public string? Value { get; set; }
+
+    /// <summary>What TMDB or AniList says for this field, kept up to date by refreshes, so Reset can restore it.</summary>
+    public string? OriginalValue { get; set; }
+    public MetadataSource? OriginalSource { get; set; }
 }
 
 /// <summary>Where a Title field's current value came from.</summary>

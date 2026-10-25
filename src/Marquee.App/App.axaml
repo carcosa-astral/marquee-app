@@ -53,6 +53,15 @@
     <DataTemplate DataType="vm:TheatersPageViewModel">
       <views:TheatersPageView />
     </DataTemplate>
+    <DataTemplate DataType="vm:TitlePageViewModel">
+      <views:TitlePageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:EditDetailsViewModel">
+      <views:EditDetailsView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:FixMatchViewModel">
+      <views:FixMatchView />
+    </DataTemplate>
     <DataTemplate DataType="vm:StartupErrorViewModel">
       <views:StartupErrorView />
     </DataTemplate>

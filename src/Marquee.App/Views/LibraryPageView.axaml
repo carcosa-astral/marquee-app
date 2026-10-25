@@ -24,7 +24,7 @@
         <DataTemplate x:DataType="vm:LibraryItemViewModel">
           <StackPanel Width="148" Spacing="7">
             <Button Classes="segment" Padding="0" Width="148" Height="222" CornerRadius="7" Background="Transparent"
-                    Command="{Binding OpenCommand}" ToolTip.Tip="Log a watch">
+                    Command="{Binding OpenCommand}" ToolTip.Tip="{Binding Name}">
               <Border Classes="poster" Width="148" Height="222" CornerRadius="7">
                 <Panel>
                   <TextBlock Classes="brand" FontSize="13" Margin="10" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />

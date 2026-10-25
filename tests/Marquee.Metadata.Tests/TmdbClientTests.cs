@@ -19,7 +19,7 @@ public class TmdbClientTests
 
     private const string Movie = """
         { "id": 949, "title": "Heat", "original_title": "Heat", "release_date": "1995-12-15", "runtime": 170,
-          "overview": "Obsessive master thief.", "status": "Released", "imdb_id": "tt0113277",
+          "overview": "Obsessive master thief.", "status": "Released", "imdb_id": "tt0113277", "vote_average": 7.912, "vote_count": 7000,
           "poster_path": "/heat.jpg", "backdrop_path": "/heat-bg.jpg", "original_language": "en",
           "genres": [ { "id": 80, "name": "Crime" }, { "id": 18, "name": "Drama" } ],
           "credits": {
@@ -96,6 +96,7 @@ public class TmdbClientTests
         Assert.Equal("https://image.tmdb.org/t/p/w1280/heat-bg.jpg", heat.BackdropUrl);
         Assert.Equal(["Crime", "Drama"], heat.Genres);
         Assert.Equal(MetadataSource.Tmdb, heat.Sources["overview"]);
+        Assert.Equal(7.9, heat.TmdbScore);
 
         Assert.Equal("Michael Mann", Assert.Single(heat.Credits, c => c.Role == CreditRole.Director).Person.Name);
         var cast = heat.Credits.Where(c => c.Role == CreditRole.Actor).ToList();
@@ -120,6 +121,7 @@ public class TmdbClientTests
         var show = await Client(http).GetTvAsync(1);
 
         Assert.Equal((TitleKind.Tv, TitleFormat.Series, 30, "tt1"), (show.Kind, show.Format, show.Runtime!.Value, show.ImdbId));
+        Assert.Null(show.TmdbScore);
         var season = Assert.Single(show.Seasons);
         Assert.Equal(2, season.Episodes.Count);
         Assert.Equal("Pilot", season.Episodes[0].Name);

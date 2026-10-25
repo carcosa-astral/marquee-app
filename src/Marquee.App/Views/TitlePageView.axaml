@@ -1,0 +1,554 @@
+<!-- A movie, TV show or anime. Matches docs/design/mocks/Movie, Show and TvShow. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             xmlns:app="using:Marquee.App"
+             xmlns:controls="using:Marquee.App.Controls"
+             x:Class="Marquee.App.Views.TitlePageView"
+             x:DataType="vm:TitlePageViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="TextBlock.cardTitle">
+      <Setter Property="FontFamily" Value="{StaticResource HeadingFont}" />
+      <Setter Property="FontWeight" Value="Bold" />
+      <Setter Property="FontSize" Value="16" />
+      <Setter Property="Foreground" Value="{StaticResource TextBodyBrush}" />
+    </Style>
+    <Style Selector="Border.box">
+      <Setter Property="Background" Value="{StaticResource CardBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Padding" Value="20,18" />
+    </Style>
+    <Style Selector="Border.rowLine">
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="BorderThickness" Value="0,1,0,0" />
+    </Style>
+    <Style Selector="ProgressBar.track">
+      <Setter Property="Height" Value="6" />
+      <Setter Property="MinHeight" Value="6" />
+      <Setter Property="CornerRadius" Value="999" />
+      <Setter Property="Background" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Maximum" Value="100" />
+    </Style>
+    <Style Selector="ProgressBar.track.tv">
+      <Setter Property="Foreground" Value="{StaticResource TvBrush}" />
+    </Style>
+
+    <!-- Episode grid buttons -->
+    <Style Selector="Button.ep">
+      <Setter Property="Height" Value="36" />
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="CornerRadius" Value="7" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Foreground" Value="{StaticResource TextSubtleBrush}" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.ep:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+    </Style>
+    <Style Selector="Button.ep.watched">
+      <Setter Property="Background" Value="{StaticResource EpisodeWatchedBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource EpisodeWatchedBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+      <Setter Property="FontWeight" Value="Medium" />
+    </Style>
+    <Style Selector="Button.ep.watched:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource EpisodeWatchedBrush}" />
+    </Style>
+    <Style Selector="Button.ep.next">
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="FontWeight" Value="Bold" />
+    </Style>
+
+    <!-- Episode list check circles -->
+    <Style Selector="Button.check">
+      <Setter Property="Width" Value="28" />
+      <Setter Property="Height" Value="28" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="CornerRadius" Value="14" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="HorizontalContentAlignment" Value="Center" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.check:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="Background" Value="Transparent" />
+    </Style>
+    <Style Selector="Button.check.watched">
+      <Setter Property="Background" Value="{StaticResource WatchedBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource WatchedBrush}" />
+    </Style>
+    <Style Selector="Button.check.watched:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource WatchedBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource WatchedBrush}" />
+    </Style>
+    <Style Selector="Button.check.next">
+      <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="TextBlock.epStatus"><Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" /></Style>
+    <Style Selector="TextBlock.epStatus.watched"><Setter Property="Foreground" Value="{StaticResource WatchedBrush}" /></Style>
+    <Style Selector="TextBlock.epStatus.next"><Setter Property="Foreground" Value="{StaticResource AccentBrush}" /></Style>
+
+    <!-- Season tabs -->
+    <Style Selector="Button.season">
+      <Setter Property="Height" Value="56" />
+      <Setter Property="Padding" Value="16,0" />
+      <Setter Property="CornerRadius" Value="10" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="VerticalContentAlignment" Value="Center" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.season:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource HoverBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+    </Style>
+    <Style Selector="Button.season.selected">
+      <Setter Property="Background" Value="{StaticResource TvSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource TvBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+    <Style Selector="Button.season.selected:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="{StaticResource TvSoftBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource TvBrush}" />
+      <Setter Property="BorderThickness" Value="2" />
+    </Style>
+
+    <Style Selector="Border.pill.imdb"><Setter Property="Background" Value="{StaticResource ImdbBrush}" /></Style>
+    <Style Selector="Border.pill.imdb > TextBlock"><Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" /><Setter Property="FontWeight" Value="Bold" /></Style>
+    <Style Selector="Border.pill.user"><Setter Property="Background" Value="{StaticResource WatchedSoftBrush}" /></Style>
+    <Style Selector="Border.pill.user > TextBlock"><Setter Property="Foreground" Value="{StaticResource WatchedBrush}" /></Style>
+    <Style Selector="Border.pill.status"><Setter Property="Background" Value="{StaticResource WatchedSoftBrush}" /></Style>
+    <Style Selector="Border.pill.status > TextBlock"><Setter Property="Foreground" Value="{StaticResource WatchedBrush}" /><Setter Property="FontWeight" Value="SemiBold" /></Style>
+    <Style Selector="Border.pill.outline">
+      <Setter Property="BorderBrush" Value="{StaticResource QuietBorderBrush}" />
+      <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    <Style Selector="Border.pill.outline > TextBlock"><Setter Property="Foreground" Value="{StaticResource TextSubtleBrush}" /></Style>
+    <Style Selector="Button.link">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderThickness" Value="0" />
+      <Setter Property="Padding" Value="0" />
+      <Setter Property="Foreground" Value="{StaticResource AccentBrush}" />
+      <Setter Property="FontSize" Value="13" />
+      <Setter Property="Cursor" Value="Hand" />
+    </Style>
+    <Style Selector="Button.link:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{StaticResource TextStrongBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Margin="32,20,32,32" Spacing="12">
+
+    <Button Classes="link" HorizontalAlignment="Left" Command="{Binding BackCommand}">
+      <StackPanel Orientation="Horizontal" Spacing="4">
+        <Viewbox Width="14" Height="14" VerticalAlignment="Center">
+          <Canvas Width="24" Height="24">
+            <Path Classes="icon" Data="{x:Static app:Icons.ChevronLeft}" Stroke="{StaticResource AccentBrush}" StrokeThickness="2.2" />
+          </Canvas>
+        </Viewbox>
+        <TextBlock Text="Back" VerticalAlignment="Center" />
+      </StackPanel>
+    </Button>
+
+    <!-- Backdrop -->
+    <Border Height="230" CornerRadius="16" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1"
+            Background="{StaticResource BackdropPlaceholderBrush}" ClipToBounds="True">
+      <Panel>
+        <Image Source="{Binding Backdrop}" Stretch="UniformToFill" VerticalAlignment="Center" />
+        <Border Background="{StaticResource BackdropFadeBrush}" />
+        <Border Classes="pill" Background="{StaticResource ScrimBrush}" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="16,14"
+                IsVisible="{Binding BackdropSource, Converter={x:Static ObjectConverters.IsNotNull}}">
+          <TextBlock Foreground="{StaticResource TextNavBrush}" Text="{Binding BackdropSource}" />
+        </Border>
+      </Panel>
+    </Border>
+
+    <Grid ColumnDefinitions="208,*" ColumnSpacing="32" Margin="28,-108,28,0">
+
+      <!-- Left column -->
+      <StackPanel Spacing="18">
+        <Border Width="208" Height="312" CornerRadius="10" Classes="poster" BorderBrush="{StaticResource QuietBorderBrush}" BorderThickness="1"
+                BoxShadow="{StaticResource DialogShadow}">
+          <Panel>
+            <TextBlock Classes="brand" FontSize="26" Margin="16" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
+            <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+          </Panel>
+        </Border>
+
+        <!-- Movie: where you saw it -->
+        <StackPanel Spacing="10">
+          <StackPanel.IsVisible>
+            <MultiBinding Converter="{x:Static BoolConverters.And}">
+              <Binding Path="IsMovie" />
+              <Binding Path="HasWatches" />
+            </MultiBinding>
+          </StackPanel.IsVisible>
+          <TextBlock Classes="section" Text="WHERE YOU SAW IT" />
+          <ItemsControl ItemsSource="{Binding WhereSeen}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><StackPanel Spacing="8" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:TitleWatchRow">
+                <Border Classes="card" CornerRadius="10" Padding="12,10">
+                  <StackPanel Spacing="2">
+                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Where}" TextWrapping="Wrap" />
+                    <TextBlock Classes="subtle small" Text="{Binding ShortDetail}" TextWrapping="Wrap" />
+                  </StackPanel>
+                </Border>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <!-- Series: whole show -->
+        <StackPanel Spacing="8" IsVisible="{Binding IsSeries}">
+          <TextBlock Classes="section" Text="WHOLE SHOW" />
+          <ProgressBar Classes="track" Classes.tv="{Binding IsTv}" Value="{Binding ProgressPercent}" />
+          <TextBlock FontSize="13" Foreground="{StaticResource TextNavBrush}" Text="{Binding ProgressText}" />
+          <TextBlock Classes="muted small" Text="{Binding TimeLeftText}" />
+        </StackPanel>
+
+        <!-- Data sources -->
+        <StackPanel Spacing="8">
+          <TextBlock Classes="section" Text="DATA" />
+          <WrapPanel ItemSpacing="6" LineSpacing="6">
+            <Border Classes="pill tmdb" IsVisible="{Binding FromTmdb}"><TextBlock FontSize="12" Text="TMDB" /></Border>
+            <Border Classes="pill anilist" IsVisible="{Binding FromAniList}"><TextBlock FontSize="12" Text="AniList" /></Border>
+            <Border Classes="pill outline"><TextBlock FontSize="12" Text="{Binding EditedText}" /></Border>
+          </WrapPanel>
+          <StackPanel Spacing="6" Margin="0,4,0,0">
+            <Button Classes="secondary" HorizontalAlignment="Stretch" Content="Edit details" Command="{Binding EditDetailsCommand}" />
+            <Button Classes="secondary" HorizontalAlignment="Stretch" Content="Fix match" Command="{Binding FixMatchCommand}" />
+            <Button Classes="secondary" HorizontalAlignment="Stretch" Content="Refresh details" Command="{Binding RefreshCommand}"
+                    IsEnabled="{Binding !IsBusy}" ToolTip.Tip="Fetch the latest details again. Your edits and diary entries stay." />
+          </StackPanel>
+        </StackPanel>
+      </StackPanel>
+
+      <!-- Right column -->
+      <StackPanel Grid.Column="1" Spacing="22" Margin="0,110,0,0">
+
+        <StackPanel Spacing="10">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Border Classes="pill" Classes.movie="{Binding IsMovie}" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}">
+              <TextBlock Text="{Binding KindLabel}" />
+            </Border>
+            <Border Classes="pill status" IsVisible="{Binding IsSeries}"><TextBlock Text="{Binding StatusLabel}" /></Border>
+            <TextBlock Classes="subtle" FontSize="13" VerticalAlignment="Center" Text="{Binding StatusLabel}" IsVisible="{Binding IsMovie}" />
+          </StackPanel>
+          <TextBlock Classes="display" FontSize="46" TextWrapping="Wrap" LineHeight="50">
+            <Run Text="{Binding Name}" />
+            <Run Text=" " />
+            <Run Text="{Binding YearText}" FontSize="28" FontWeight="Medium" Foreground="{StaticResource TextMutedBrush}" />
+          </TextBlock>
+          <TextBlock Classes="subtle" Text="{Binding MetaLine}" TextWrapping="Wrap" />
+          <!-- Scores: IMDb, then TMDB, then AniList -->
+          <StackPanel Orientation="Horizontal" Spacing="18" IsVisible="{Binding HasScores}">
+            <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding ImdbRating, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        ToolTip.Tip="IMDb rating, from IMDb's ratings file. Update it in Settings.">
+              <Border Classes="pill imdb"><TextBlock Text="IMDb" /></Border>
+              <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" VerticalAlignment="Center" Text="{Binding ImdbRating}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding TmdbScore, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        ToolTip.Tip="TMDB user score, out of 10. Updated by Refresh details.">
+              <Border Classes="pill tmdb"><TextBlock FontWeight="Bold" Text="TMDB" /></Border>
+              <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" VerticalAlignment="Center" Text="{Binding TmdbScore}" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding AniListScore, Converter={x:Static ObjectConverters.IsNotNull}}"
+                        ToolTip.Tip="AniList average score. Updated by Refresh details.">
+              <Border Classes="pill anilist"><TextBlock FontWeight="Bold" Text="AniList" /></Border>
+              <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" VerticalAlignment="Center" Text="{Binding AniListScore}" />
+            </StackPanel>
+          </StackPanel>
+          <TextBlock Classes="subtle" IsVisible="{Binding DirectedBy, Converter={x:Static ObjectConverters.IsNotNull}}">
+            <Run Text="Directed by " />
+            <Run Text="{Binding DirectedBy}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />
+          </TextBlock>
+          <TextBlock FontSize="15" LineHeight="23" MaxWidth="680" HorizontalAlignment="Left" TextWrapping="Wrap"
+                     Foreground="{StaticResource TextNavBrush}" Text="{Binding Overview}" Margin="0,4,0,0"
+                     IsVisible="{Binding Overview, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        </StackPanel>
+
+        <!-- Actions -->
+        <Grid ColumnDefinitions="Auto,*,Auto">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <Button Classes="primary" Padding="20,0" Content="{Binding PrimaryActionLabel}" Command="{Binding LogWatchCommand}" />
+            <Button Classes="secondary" Height="40" FontSize="14" Content="Mark through episode..." Command="{Binding StartMarkThroughCommand}">
+              <Button.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="IsSeries" />
+                  <Binding Path="UsesMarkThrough" />
+                </MultiBinding>
+              </Button.IsVisible>
+            </Button>
+            <Button Classes="secondary" Height="40" FontSize="14" Content="{Binding MarkSeasonLabel}" Command="{Binding MarkSeasonCommand}">
+              <Button.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="IsSeries" />
+                  <Binding Path="!UsesMarkThrough" />
+                </MultiBinding>
+              </Button.IsVisible>
+            </Button>
+            <Button Classes="secondary" Height="40" FontSize="14" Content="Add to watchlist" IsEnabled="False"
+                    ToolTip.Tip="The watchlist arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
+            <Button Classes="secondary" Height="40" FontSize="14" Content="Put on ice" IsEnabled="False"
+                    ToolTip.Tip="On Ice arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <StackPanel.IsVisible>
+              <MultiBinding Converter="{x:Static BoolConverters.And}">
+                <Binding Path="IsMovie" />
+                <Binding Path="YourRating" Converter="{x:Static StringConverters.IsNotNullOrEmpty}" />
+              </MultiBinding>
+            </StackPanel.IsVisible>
+            <TextBlock Classes="brand" FontSize="26" Text="{Binding YourRating}" />
+            <TextBlock Classes="muted small" VerticalAlignment="Center" Text="your rating" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Spacing="4" VerticalAlignment="Center" IsVisible="{Binding IsSeries}">
+            <controls:StarRating Value="{Binding ShowRating}" StarSize="22" Fill="{StaticResource RatingBrush}" Empty="{StaticResource RatingEmptyBrush}"
+                                 ToolTip.Tip="Your rating for the whole show. Click again to clear." />
+            <TextBlock Classes="muted small" HorizontalAlignment="Right" Text="your rating for the show" />
+          </StackPanel>
+        </Grid>
+
+        <!-- Mark through episode -->
+        <Border Classes="inset" Padding="14,10" IsVisible="{Binding IsMarkingThrough}" HorizontalAlignment="Left">
+          <StackPanel Orientation="Horizontal" Spacing="10">
+            <TextBlock VerticalAlignment="Center" Text="Mark episodes 1 to" />
+            <TextBox Width="70" Text="{Binding MarkThroughText}" HorizontalContentAlignment="Center">
+              <TextBox.KeyBindings>
+                <KeyBinding Gesture="Enter" Command="{Binding ConfirmMarkThroughCommand}" />
+              </TextBox.KeyBindings>
+            </TextBox>
+            <TextBlock VerticalAlignment="Center" Text="as watched today" />
+            <Button Classes="primary" Height="36" Content="Mark watched" Command="{Binding ConfirmMarkThroughCommand}" />
+            <Button Classes="secondary" Content="Cancel" Command="{Binding CancelMarkThroughCommand}" />
+          </StackPanel>
+        </Border>
+
+        <TextBlock FontSize="13" Foreground="{StaticResource WatchedBrush}" TextWrapping="Wrap" Text="{Binding Message}"
+                   IsVisible="{Binding Message, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+        <!-- Movie: your watches -->
+        <Border Classes="box" IsVisible="{Binding IsMovie}">
+          <StackPanel Spacing="12">
+            <TextBlock Classes="cardTitle" Text="Your watches" />
+            <TextBlock Classes="muted" FontSize="13" Text="Not watched yet. Use Log a watch to add your first entry." IsVisible="{Binding !HasWatches}" />
+            <ItemsControl ItemsSource="{Binding Watches}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:TitleWatchRow">
+                  <Button Classes="row" Padding="0,12" BorderBrush="{StaticResource CardBorderBrush}" Command="{Binding OpenCommand}" ToolTip.Tip="Edit this entry">
+                    <Grid ColumnDefinitions="120,*,Auto" ColumnSpacing="16">
+                      <StackPanel Spacing="2">
+                        <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Date}" />
+                        <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" Text="{Binding Kind}" IsVisible="{Binding !IsRewatch}" />
+                        <TextBlock FontSize="12" Foreground="{StaticResource WatchlistBrush}" Text="{Binding Kind}" IsVisible="{Binding IsRewatch}" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Spacing="3">
+                        <TextBlock Foreground="{StaticResource TextStrongBrush}" Text="{Binding Where}" />
+                        <TextBlock Classes="subtle" FontSize="13" Text="{Binding Detail}" />
+                        <TextBlock FontSize="13" Foreground="{StaticResource TextNavBrush}" Margin="0,4,0,0" TextWrapping="Wrap"
+                                   Text="{Binding Note}" IsVisible="{Binding HasNote}" />
+                      </StackPanel>
+                      <TextBlock Grid.Column="2" Foreground="{StaticResource RatingBrush}" Text="{Binding RatingText}" />
+                    </Grid>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- Series: progress -->
+        <Border Classes="box" IsVisible="{Binding IsSeries}">
+          <StackPanel Spacing="14">
+            <ItemsControl ItemsSource="{Binding SeasonTabs}" IsVisible="{Binding HasSeasonTabs}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate><WrapPanel ItemSpacing="8" LineSpacing="8" /></ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:SeasonTab">
+                  <Button Classes="season" Classes.selected="{Binding IsSelected}" Command="{Binding SelectCommand}">
+                    <StackPanel Spacing="2">
+                      <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Label}" />
+                      <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" Text="{Binding Progress}" IsVisible="{Binding IsComplete}" />
+                      <TextBlock FontSize="12" Classes="muted" Text="{Binding Progress}" IsVisible="{Binding !IsComplete}" />
+                    </StackPanel>
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="12">
+              <TextBlock Classes="cardTitle" Text="{Binding SeasonHeading}" />
+              <TextBlock Grid.Column="1" Classes="subtle" FontSize="13" VerticalAlignment="Bottom" Text="{Binding SeasonProgressText}" />
+              <TextBlock Grid.Column="3" Classes="muted small" VerticalAlignment="Bottom"
+                         Text="Click an episode to mark it watched today, or a watched one to open its entry" />
+            </Grid>
+
+              <ItemsControl ItemsSource="{Binding EpisodeGrid}" IsVisible="{Binding ShowsGrid}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate><UniformGrid Columns="14" ColumnSpacing="6" RowSpacing="6" /></ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:EpisodeRow">
+                    <Button Classes="ep" Classes.watched="{Binding IsWatched}" Classes.next="{Binding IsNext}"
+                            Content="{Binding Number}" Command="{Binding ToggleCommand}" ToolTip.Tip="{Binding Tip}" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+
+            <ItemsControl ItemsSource="{Binding EpisodeList}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:EpisodeRow">
+                  <Border Classes="rowLine" Height="52">
+                    <Grid ColumnDefinitions="28,56,*,Auto,120" ColumnSpacing="16" VerticalAlignment="Center">
+                      <Button Classes="check" Classes.watched="{Binding IsWatched}" Classes.next="{Binding IsNext}"
+                              Command="{Binding ToggleCommand}" ToolTip.Tip="{Binding Tip}">
+                        <Viewbox Width="14" Height="14" IsVisible="{Binding IsWatched}">
+                          <Canvas Width="24" Height="24">
+                            <Path Classes="icon" Data="{x:Static app:Icons.Check}" Stroke="{StaticResource OnAccentBrush}" StrokeThickness="3" />
+                          </Canvas>
+                        </Viewbox>
+                      </Button>
+                      <TextBlock Grid.Column="1" Classes="muted" FontSize="13" VerticalAlignment="Center">
+                        <Run Text="Ep " /><Run Text="{Binding Number}" />
+                      </TextBlock>
+                      <TextBlock Grid.Column="2" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Text="{Binding Name}"
+                                 Foreground="{StaticResource TextNavBrush}" />
+                      <TextBlock Grid.Column="3" Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding RuntimeText}" />
+                      <TextBlock Grid.Column="4" Classes="epStatus" Classes.watched="{Binding IsWatched}" Classes.next="{Binding IsNext}"
+                                 FontSize="13" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding StatusText}" />
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+
+        <!-- Movie: cast grid -->
+        <StackPanel Spacing="12">
+          <StackPanel.IsVisible>
+            <MultiBinding Converter="{x:Static BoolConverters.And}">
+              <Binding Path="IsMovie" />
+              <Binding Path="HasCast" />
+            </MultiBinding>
+          </StackPanel.IsVisible>
+          <TextBlock Classes="cardTitle" Text="Cast" />
+          <ItemsControl ItemsSource="{Binding Cast}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate><UniformGrid Columns="8" ColumnSpacing="12" /></ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate x:DataType="vm:CastMember">
+                <StackPanel Spacing="8" HorizontalAlignment="Center">
+                  <Border Width="72" Height="72" CornerRadius="36" Classes="poster" HorizontalAlignment="Center">
+                    <Panel>
+                      <TextBlock Classes="brand" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Initials}" />
+                      <Image Source="{Binding Photo}" Stretch="UniformToFill" />
+                    </Panel>
+                  </Border>
+                  <StackPanel>
+                    <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" TextAlignment="Center" TextWrapping="Wrap" Text="{Binding Name}" />
+                    <TextBlock Classes="muted small" TextAlignment="Center" TextWrapping="Wrap" MaxLines="2" Text="{Binding Role}" />
+                    <TextBlock FontSize="11" TextAlignment="Center" Margin="0,3,0,0" Foreground="{StaticResource WatchedBrush}" Text="{Binding WatchedText}" IsVisible="{Binding HasWatched}" />
+                    <TextBlock FontSize="11" TextAlignment="Center" Margin="0,3,0,0" Classes="muted" Text="{Binding WatchedText}" IsVisible="{Binding !HasWatched}" />
+                  </StackPanel>
+                </StackPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </StackPanel>
+
+        <!-- Cast list (series), ratings (TV) and details -->
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="20">
+          <StackPanel Spacing="20">
+            <Border Classes="box">
+              <Border.IsVisible>
+                <MultiBinding Converter="{x:Static BoolConverters.And}">
+                  <Binding Path="IsSeries" />
+                  <Binding Path="HasCast" />
+                </MultiBinding>
+              </Border.IsVisible>
+              <StackPanel Spacing="12">
+                <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Classes="cardTitle" Text="Cast and staff" />
+                  <Border Grid.Column="1" Classes="pill anilist" IsVisible="{Binding FromAniList}"><TextBlock Text="AniList" /></Border>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding Cast}">
+                  <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate><StackPanel Spacing="12" /></ItemsPanelTemplate>
+                  </ItemsControl.ItemsPanel>
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:CastMember">
+                      <Grid ColumnDefinitions="40,*,Auto" ColumnSpacing="12">
+                        <Border Width="40" Height="40" CornerRadius="20" Classes="poster">
+                          <Panel>
+                            <TextBlock FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextStrongBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Initials}" />
+                            <Image Source="{Binding Photo}" Stretch="UniformToFill" />
+                          </Panel>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                          <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Classes="muted small" Text="{Binding Role}" TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                        <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center" Foreground="{StaticResource WatchedBrush}" Text="{Binding WatchedText}" IsVisible="{Binding HasWatched}" />
+                        <TextBlock Grid.Column="2" FontSize="12" VerticalAlignment="Center" Classes="muted" Text="{Binding WatchedText}" IsVisible="{Binding !HasWatched}" />
+                      </Grid>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+          </StackPanel>
+
+          <Border Grid.Column="{Binding DetailsColumn}" Grid.ColumnSpan="{Binding DetailsSpan}" Classes="box" VerticalAlignment="Top">
+            <StackPanel Spacing="6">
+              <Grid ColumnDefinitions="*,Auto" Margin="0,0,0,6">
+                <TextBlock Classes="cardTitle" Text="Details" />
+                <TextBlock Grid.Column="1" Classes="muted small" VerticalAlignment="Bottom" Text="Where each field came from" />
+              </Grid>
+              <ItemsControl ItemsSource="{Binding Details}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate x:DataType="vm:DetailSourceRow">
+                    <Border Classes="rowLine" MinHeight="36" Padding="0,6">
+                      <Grid ColumnDefinitions="96,*,Auto" ColumnSpacing="12">
+                        <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding Label}" />
+                        <TextBlock Grid.Column="1" Foreground="{StaticResource TextStrongBrush}" VerticalAlignment="Center" TextWrapping="Wrap" Text="{Binding Value}" />
+                        <Border Grid.Column="2" Classes="pill" Classes.tmdb="{Binding IsTmdb}" Classes.anilist="{Binding IsAniList}" Classes.user="{Binding IsUser}">
+                          <TextBlock Text="{Binding SourceText}" />
+                        </Border>
+                      </Grid>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </Border>
+        </Grid>
+      </StackPanel>
+    </Grid>
+  </StackPanel>
+</UserControl>

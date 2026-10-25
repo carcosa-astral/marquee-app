@@ -30,6 +30,21 @@
       </StackPanel>
     </Border>
 
+    <Border Classes="card" Padding="24,22">
+      <StackPanel Spacing="10">
+        <TextBlock Classes="h2" Text="IMDb ratings" />
+        <TextBlock Classes="subtle" FontSize="13" TextWrapping="Wrap"
+                   Text="Shows IMDb's rating on title pages. Marquee downloads IMDb's free ratings file (about 8 MB) into your Marquee folder and matches it to your titles. New titles use the saved file, so press update now and then for fresh numbers." />
+        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+          <Button Classes="primary" Content="{Binding ImdbButton}" Command="{Binding UpdateImdbCommand}" />
+          <TextBlock Grid.Column="1" Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding ImdbStatus}" />
+        </Grid>
+        <TextBlock FontSize="13" Foreground="{StaticResource WatchedBrush}" TextWrapping="Wrap" Text="{Binding ImdbMessage}"
+                   IsVisible="{Binding ImdbMessage, Converter={x:Static ObjectConverters.IsNotNull}}" />
+        <TextBlock Classes="muted small" TextWrapping="Wrap" Text="{Binding ImdbAttribution}" />
+      </StackPanel>
+    </Border>
+
     <Border Classes="card" Padding="24,18">
       <ItemsControl ItemsSource="{Binding Details}">
         <ItemsControl.ItemTemplate>

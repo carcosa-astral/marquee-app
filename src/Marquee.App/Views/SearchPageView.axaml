@@ -85,8 +85,8 @@
                     <Border Classes="pill tmdb" IsVisible="{Binding FromTmdb}"><TextBlock Text="TMDB" /></Border>
                     <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" VerticalAlignment="Center"
                                Text="Matched across both sources and merged" IsVisible="{Binding IsMerged}" />
-                    <TextBlock FontSize="12" Foreground="{StaticResource WatchedBrush}" VerticalAlignment="Center"
-                               Text="In your diary" IsVisible="{Binding InDiary}" />
+                    <Button Classes="segment" Height="22" Padding="6,0" FontSize="12" Foreground="{StaticResource WatchedBrush}"
+                            Content="In your diary · Open" Command="{Binding OpenTitleCommand}" IsVisible="{Binding InDiary}" />
                   </StackPanel>
                   <TextBlock FontSize="12" Foreground="{StaticResource ErrorBrush}" TextWrapping="Wrap" Text="{Binding Error}"
                              IsVisible="{Binding Error, Converter={x:Static ObjectConverters.IsNotNull}}" />

@@ -100,6 +100,12 @@ namespace Marquee.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("OriginalSource")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OriginalValue")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("TitleId")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -301,6 +307,9 @@ namespace Marquee.Data.Migrations
                     b.Property<int?>("AniListId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("AniListScore")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("BackdropPath")
                         .HasColumnType("TEXT");
 
@@ -310,6 +319,12 @@ namespace Marquee.Data.Migrations
 
                     b.Property<string>("ImdbId")
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("ImdbRating")
+                        .HasColumnType("REAL");
+
+                    b.Property<int?>("ImdbVotes")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Kind")
                         .IsRequired()
@@ -343,8 +358,14 @@ namespace Marquee.Data.Migrations
                     b.Property<int?>("TmdbId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<double?>("TmdbScore")
+                        .HasColumnType("REAL");
+
                     b.Property<string>("TmdbType")
                         .HasColumnType("TEXT");
+
+                    b.Property<double?>("UserRating")
+                        .HasColumnType("REAL");
 
                     b.Property<int?>("Year")
                         .HasColumnType("INTEGER");

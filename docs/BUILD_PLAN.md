@@ -76,6 +76,7 @@ Use string GUIDs as primary keys so exports can be merged cleanly.
 - **FieldOverride**: Title, field name, user value. Overrides always win.
 - **FieldSource**: Title, field name, source (`tmdb`, `anilist`, `user`). Drives the source tags in the UI.
 - **Setting**: key and value.
+- Titles also hold the user's rating for a whole show (`user_rating`, TV and anime series only; episodes are not rated) and IMDb's rating and vote count from IMDb's ratings file.
 
 ## 6. Rules
 
@@ -165,7 +166,7 @@ Define the palette once as theme resources and reference them from every view. D
 
 ## 10. Attribution
 
-The About screen and README must show: "This product uses the TMDB API but is not endorsed or certified by TMDB." Credit AniList too. Check both services' current terms before release.
+The About screen and README must show: "This product uses the TMDB API but is not endorsed or certified by TMDB." Credit AniList too. IMDb ratings come from IMDb's free ratings file (personal, non-commercial use), credited as "Information courtesy of IMDb (https://www.imdb.com). Used with permission." Check both services' current terms before release.
 
 ## 11. Milestones
 

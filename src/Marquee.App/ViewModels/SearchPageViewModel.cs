@@ -12,7 +12,7 @@ namespace Marquee.App.ViewModels;
 public enum SearchFilter { All, Movies, Tv, Anime }
 
 /// <summary>"Add a title": searches TMDB and AniList together. Adding a title always means logging a watch.</summary>
-public sealed partial class SearchPageViewModel(AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending) : PageViewModel
+public sealed partial class SearchPageViewModel(AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending, Action<string> openTitle) : PageViewModel
 {
     private static readonly TimeSpan TypingDelay = TimeSpan.FromMilliseconds(450);
 
@@ -109,7 +109,7 @@ public sealed partial class SearchPageViewModel(AppServices services, Action<str
             _searched = true;
             var library = services.Titles.GetLibraryIds();
             _all = outcome.Results
-                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, logSaved, logPending))
+                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, logSaved, logPending, openTitle))
                 .ToList();
             // A missing TMDB key is already explained next to the search box.
             var problems = new[] { outcome.AniListProblem, services.Metadata.HasTmdbKey ? outcome.TmdbProblem : null }.OfType<string>().ToList();
@@ -157,10 +157,12 @@ public sealed partial class SearchResultViewModel : ViewModelBase
     private readonly AppServices _services;
     private readonly Action<string> _logSaved;
     private readonly Action<FetchedTitle> _logPending;
+    private readonly Action<string> _openTitle;
     private bool _posterRequested;
 
-    public SearchResultViewModel(SearchResult result, bool inDiary, AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending)
+    public SearchResultViewModel(SearchResult result, bool inDiary, AppServices services, Action<string> logSaved, Action<FetchedTitle> logPending, Action<string> openTitle)
     {
+        _openTitle = openTitle;
         _result = result;
         _services = services;
         _logSaved = logSaved;
@@ -218,6 +220,13 @@ public sealed partial class SearchResultViewModel : ViewModelBase
 
     private bool CanLog() => !IsLoading;
 
+    [RelayCommand]
+    private void OpenTitle()
+    {
+        if (_services.Titles.FindId(_result) is { } id)
+            _openTitle(id);
+    }
+
     /// <summary>
     /// Opens the Log a watch dialog. A title that is not saved yet is only fetched here;
     /// it is saved together with the watch, so cancelling leaves nothing behind.
@@ -263,7 +272,7 @@ public sealed partial class SearchResultViewModel : ViewModelBase
             yield return string.Join(", ", genres.Take(3));
     }
 
-    private static string Label(TitleKind kind, TitleFormat format) => kind switch
+    internal static string Label(TitleKind kind, TitleFormat format) => kind switch
     {
         TitleKind.Movie => "Movie",
         TitleKind.Tv => "TV",

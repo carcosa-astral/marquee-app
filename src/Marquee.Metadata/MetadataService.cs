@@ -1,4 +1,5 @@
 using Marquee.Core.Metadata;
+using Marquee.Core.Model;
 
 namespace Marquee.Metadata;
 
@@ -41,6 +42,18 @@ public sealed class MetadataService(TmdbClient tmdb, AniListClient aniList)
         var tmdbTask = tmdb.HasKey ? FindTmdbFillAsync(result, ct) : Task.FromResult<FetchedTitle?>(null);
         var fill = await tmdbTask;
         return MetadataMerge.Combine(fill, await aniListTask);
+    }
+
+    /// <summary>Fetches a saved title again by the ids it already has, for a metadata refresh.</summary>
+    public Task<FetchedTitle> RefreshAsync(TmdbType? tmdbType, int? tmdbId, int? aniListId, CancellationToken ct = default)
+    {
+        var aniListHit = aniListId is { } al ? new SearchHit { Source = MetadataSource.AniList, Id = al, Kind = TitleKind.Anime } : null;
+        var tmdbHit = tmdbId is { } id && tmdbType is { } type ? new SearchHit { Source = MetadataSource.Tmdb, Id = id, TmdbType = type } : null;
+        if (aniListHit is null && tmdbHit is null)
+            throw new MetadataException("This title has no TMDB or AniList match to refresh from. Use Fix match first.");
+        if (aniListHit is null && !tmdb.HasKey)
+            throw new MetadataException("Add your TMDB key in Settings to refresh movies and TV.");
+        return FetchAsync(new SearchResult { AniList = aniListHit, Tmdb = tmdbHit }, ct);
     }
 
     private async Task<FetchedTitle?> FindTmdbFillAsync(SearchResult result, CancellationToken ct)

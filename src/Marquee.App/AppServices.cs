@@ -27,6 +27,20 @@ public sealed class AppServices
             new AniListClient(http));
         Downloader = new ImageDownloader(http, database.Folder);
         Images = new ImageLoader(http, database.Folder);
+        Imdb = new ImdbRatingsFile(http, database.Folder);
+    }
+
+    /// <summary>
+    /// Copies IMDb scores from the saved IMDb ratings file onto titles (one title, or all).
+    /// Does nothing when the file has not been downloaded. Returns how many titles were updated.
+    /// </summary>
+    public async Task<int> ApplyImdbRatingsAsync(string? titleId = null)
+    {
+        if (!Imdb.Exists)
+            return 0;
+        var ids = Titles.ImdbIds(titleId);
+        var scores = await Imdb.ReadAsync(ids);
+        return Titles.SetImdbRatings(scores);
     }
 
     public MarqueeFolder Folder => Database.Folder;
@@ -40,4 +54,5 @@ public sealed class AppServices
     public MetadataService Metadata { get; }
     public ImageDownloader Downloader { get; }
     public ImageLoader Images { get; }
+    public ImdbRatingsFile Imdb { get; }
 }

@@ -50,4 +50,4 @@ MIT. See [LICENSE](LICENSE).
 
 ## Credits
 
-This product uses the TMDB API but is not endorsed or certified by TMDB. Anime data from AniList.
+This product uses the TMDB API but is not endorsed or certified by TMDB. Anime data from AniList. IMDb ratings: Information courtesy of IMDb (https://www.imdb.com). Used with permission.
