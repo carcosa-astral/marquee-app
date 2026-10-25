@@ -233,6 +233,15 @@ public sealed class TitleStore(MarqueeDatabase database)
         db.SaveChanges();
     }
 
+    /// <summary>Sets (or clears) your rating for a whole show.</summary>
+    public void SetUserRating(string titleId, double? rating)
+    {
+        if (!Core.Rules.Rating.IsValid(rating))
+            throw new ArgumentException("Ratings run from 0.5 to 5 in half steps.");
+        using var db = database.CreateContext();
+        db.Titles.Where(t => t.Id == titleId).ExecuteUpdate(u => u.SetProperty(t => t.UserRating, rating));
+    }
+
     /// <summary>For each person, how many titles they are credited on that you have watched.</summary>
     public Dictionary<string, int> WatchedTitleCounts(IEnumerable<string> personIds)
     {

@@ -96,8 +96,17 @@ public sealed partial class TitlePageViewModel : PageViewModel
     public ObservableCollection<EpisodeRow> EpisodeList { get; } = [];
     [ObservableProperty] public partial bool ShowsGrid { get; set; }
     [ObservableProperty] public partial bool HasEpisodes { get; set; }
-    public ObservableCollection<SeasonRating> SeasonRatings { get; } = [];
-    [ObservableProperty] public partial bool HasSeasonRatings { get; set; }
+    /// <summary>Your rating for the whole show. Changing it here saves it right away.</summary>
+    [ObservableProperty] public partial double? ShowRating { get; set; }
+    private bool _settingShowRating;
+
+    partial void OnShowRatingChanged(double? value)
+    {
+        if (_settingShowRating)
+            return;
+        _services.Titles.SetUserRating(_titleId, value);
+        _actions.Changed();
+    }
 
     /// <summary>One main season: "Mark through episode". Several: "Mark season watched".</summary>
     [ObservableProperty] public partial bool UsesMarkThrough { get; set; }
@@ -228,9 +237,12 @@ public sealed partial class TitlePageViewModel : PageViewModel
         SeasonTabs.Clear();
         EpisodeGrid.Clear();
         EpisodeList.Clear();
-        SeasonRatings.Clear();
         if (!IsSeries)
             return;
+
+        _settingShowRating = true;
+        ShowRating = _title.UserRating;
+        _settingShowRating = false;
 
         _progress = SeriesProgress.For(_title.Seasons, _watchedEpisodes, _title.RuntimeMinutes);
         var p = _progress;
@@ -259,13 +271,6 @@ public sealed partial class TitlePageViewModel : PageViewModel
 
         var keep = SelectedSeason?.Number ?? nextSeason?.Number ?? SeasonTabs.FirstOrDefault()?.Number;
         SelectSeason(SeasonTabs.FirstOrDefault(s => s.Number == keep) ?? SeasonTabs.FirstOrDefault());
-
-        foreach (var s in mainSeasons)
-        {
-            var rated = _watches.Where(w => w.Rating is not null && s.Episodes.Any(e => e.Id == w.EpisodeId)).Select(w => w.Rating!.Value).ToList();
-            SeasonRatings.Add(new SeasonRating($"Season {s.Number}", rated.Count == 0 ? null : Rating.Snap(rated.Average())));
-        }
-        HasSeasonRatings = IsTv && SeasonRatings.Count > 0;
     }
 
     private void SelectSeason(SeasonTab? tab)
@@ -522,7 +527,6 @@ public sealed partial class EpisodeRow : ViewModelBase
         StatusText = latest is not null ? $"Watched {TheatersPageViewModel.ShortDate(latest.WatchedOn)}"
             : IsNext ? "Up next"
             : "Not watched";
-        RatingText = Rating.Format(latest?.Rating);
     }
 
     public string EpisodeId { get; }
@@ -534,17 +538,10 @@ public sealed partial class EpisodeRow : ViewModelBase
     public bool IsNext { get; }
     public bool IsPlain => !IsWatched && !IsNext;
     public string StatusText { get; }
-    public string RatingText { get; }
     public string Tip => IsWatched ? "Open this diary entry" : "Mark watched today";
 
     [RelayCommand]
     private void Toggle() => _toggle(this);
-}
-
-public sealed record SeasonRating(string Label, double? Value)
-{
-    public string ValueText => Rating.Format(Value);
-    public double Percent => (Value ?? 0) / Rating.Max * 100;
 }
 
 public sealed partial class CastMember(string name, string role, int watched) : ViewModelBase

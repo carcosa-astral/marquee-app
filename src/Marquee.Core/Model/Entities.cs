@@ -25,6 +25,12 @@ public class Title : Entity
     public int? MalId { get; set; }
     public string? ImdbId { get; set; }
 
+    /// <summary>
+    /// The user's rating for a whole TV show or anime series (0.5 to 5). Episodes are not rated.
+    /// Movies are rated per watch instead. Refreshing metadata never changes this.
+    /// </summary>
+    public double? UserRating { get; set; }
+
     public List<Season> Seasons { get; set; } = [];
     public List<Credit> Credits { get; set; } = [];
     public List<TitleGenre> Genres { get; set; } = [];

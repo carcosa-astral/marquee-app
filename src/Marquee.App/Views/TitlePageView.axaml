@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:Marquee.App.ViewModels"
              xmlns:app="using:Marquee.App"
+             xmlns:controls="using:Marquee.App.Controls"
              x:Class="Marquee.App.Views.TitlePageView"
              x:DataType="vm:TitlePageViewModel">
 
@@ -293,10 +294,20 @@
             <Button Classes="secondary" Height="40" FontSize="14" Content="Put on ice" IsEnabled="False"
                     ToolTip.Tip="On Ice arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
           </StackPanel>
-          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center"
-                      IsVisible="{Binding YourRating, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+          <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+            <StackPanel.IsVisible>
+              <MultiBinding Converter="{x:Static BoolConverters.And}">
+                <Binding Path="IsMovie" />
+                <Binding Path="YourRating" Converter="{x:Static StringConverters.IsNotNullOrEmpty}" />
+              </MultiBinding>
+            </StackPanel.IsVisible>
             <TextBlock Classes="brand" FontSize="26" Text="{Binding YourRating}" />
             <TextBlock Classes="muted small" VerticalAlignment="Center" Text="your rating" />
+          </StackPanel>
+          <StackPanel Grid.Column="2" Spacing="4" VerticalAlignment="Center" IsVisible="{Binding IsSeries}">
+            <controls:StarRating Value="{Binding ShowRating}" StarSize="22" Fill="{StaticResource RatingBrush}" Empty="{StaticResource RatingEmptyBrush}"
+                                 ToolTip.Tip="Your rating for the whole show. Click again to clear." />
+            <TextBlock Classes="muted small" HorizontalAlignment="Right" Text="your rating for the show" />
           </StackPanel>
         </Grid>
 
@@ -391,7 +402,7 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate x:DataType="vm:EpisodeRow">
                   <Border Classes="rowLine" Height="52">
-                    <Grid ColumnDefinitions="28,56,*,Auto,110,44" ColumnSpacing="16" VerticalAlignment="Center">
+                    <Grid ColumnDefinitions="28,56,*,Auto,120" ColumnSpacing="16" VerticalAlignment="Center">
                       <Button Classes="check" Classes.watched="{Binding IsWatched}" Classes.next="{Binding IsNext}"
                               Command="{Binding ToggleCommand}" ToolTip.Tip="{Binding Tip}">
                         <Viewbox Width="14" Height="14" IsVisible="{Binding IsWatched}">
@@ -408,8 +419,6 @@
                       <TextBlock Grid.Column="3" Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding RuntimeText}" />
                       <TextBlock Grid.Column="4" Classes="epStatus" Classes.watched="{Binding IsWatched}" Classes.next="{Binding IsNext}"
                                  FontSize="13" TextAlignment="Right" VerticalAlignment="Center" Text="{Binding StatusText}" />
-                      <TextBlock Grid.Column="5" FontSize="13" Foreground="{StaticResource RatingBrush}" TextAlignment="Right"
-                                 VerticalAlignment="Center" Text="{Binding RatingText}" />
                     </Grid>
                   </Border>
                 </DataTemplate>
@@ -493,26 +502,6 @@
               </StackPanel>
             </Border>
 
-            <Border Classes="box" IsVisible="{Binding HasSeasonRatings}">
-              <StackPanel Spacing="12">
-                <TextBlock Classes="cardTitle" Text="Your ratings" />
-                <ItemsControl ItemsSource="{Binding SeasonRatings}">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate><StackPanel Spacing="12" /></ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate x:DataType="vm:SeasonRating">
-                      <Grid ColumnDefinitions="80,*,36" ColumnSpacing="12">
-                        <TextBlock FontSize="13" Foreground="{StaticResource TextNavBrush}" Text="{Binding Label}" VerticalAlignment="Center" />
-                        <ProgressBar Grid.Column="1" Classes="track tv" Height="8" MinHeight="8" Value="{Binding Percent}" VerticalAlignment="Center" />
-                        <TextBlock Grid.Column="2" Foreground="{StaticResource RatingBrush}" TextAlignment="Right" Text="{Binding ValueText}" VerticalAlignment="Center" />
-                      </Grid>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <TextBlock Classes="muted small" TextWrapping="Wrap" Text="Season ratings average the ratings you gave its episodes." />
-              </StackPanel>
-            </Border>
           </StackPanel>
 
           <Border Grid.Column="{Binding DetailsColumn}" Grid.ColumnSpan="{Binding DetailsSpan}" Classes="box" VerticalAlignment="Top">

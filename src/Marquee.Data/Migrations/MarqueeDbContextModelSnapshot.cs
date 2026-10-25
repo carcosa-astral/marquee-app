@@ -352,6 +352,9 @@ namespace Marquee.Data.Migrations
                     b.Property<string>("TmdbType")
                         .HasColumnType("TEXT");
 
+                    b.Property<double?>("UserRating")
+                        .HasColumnType("REAL");
+
                     b.Property<int?>("Year")
                         .HasColumnType("INTEGER");
 

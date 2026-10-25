@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Refresh details fetches the latest data again without touching watches or edits.
 - Library posters open the title page, and search results already in your diary have an Open link.
 
+### Changed
+
+- TV shows and anime series are rated as a whole, not per episode. Set the rating in the log dialog or with the stars on the show's page. Existing episode ratings become one show rating (their average).
+- Logging a TV or anime episode no longer asks where you watched; episodes count as Home, and the service field stays.
+- The start time hint only mentions 12-hour times.
+
 ## [0.3.1] - 2026-10-24
 
 ### Fixed

@@ -161,7 +161,8 @@ public sealed class WatchStore(MarqueeDatabase database)
         watch.EpisodeId = input.EpisodeId;
         watch.WatchedOn = input.WatchedOn;
         watch.StartTime = input.StartTime;
-        watch.Rating = input.Rating;
+        // Episodes are not rated; a show is rated as a whole (Title.UserRating).
+        watch.Rating = input.EpisodeId is null ? input.Rating : null;
         watch.IsRewatch = input.IsRewatch;
         watch.Where = input.Where;
         // Theater details only belong to theater visits; a service only to the other places.

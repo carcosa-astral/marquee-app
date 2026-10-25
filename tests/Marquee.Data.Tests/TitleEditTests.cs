@@ -151,6 +151,25 @@ public sealed class TitleEditTests : IDisposable
     }
 
     [Fact]
+    public void Shows_are_rated_as_a_whole_and_episodes_are_not_rated()
+    {
+        var t = _titles.Save(Series(3), SavedImages.None);
+        var ep1 = _titles.FindEpisodeId(t.Id, 1, 1)!;
+
+        var w = _watches.Add(new WatchInput { TitleId = t.Id, EpisodeId = ep1, WatchedOn = new DateOnly(2026, 1, 1), Rating = 4 });
+        _titles.SetUserRating(t.Id, 4.5);
+
+        Assert.Null(_watches.Get(w.Id)!.Rating);
+        Assert.Equal(4.5, _titles.GetDetails(t.Id)!.Title.UserRating);
+        Assert.Throws<ArgumentException>(() => _titles.SetUserRating(t.Id, 4.2));
+
+        _titles.Save(Series(3), SavedImages.None);
+        Assert.Equal(4.5, _titles.GetDetails(t.Id)!.Title.UserRating);
+        _titles.SetUserRating(t.Id, null);
+        Assert.Null(_titles.GetDetails(t.Id)!.Title.UserRating);
+    }
+
+    [Fact]
     public void People_count_titles_you_have_watched()
     {
         var paprika = _titles.Save(Paprika(), SavedImages.None);

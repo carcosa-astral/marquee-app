@@ -106,6 +106,39 @@ public sealed class DatabaseTests : IDisposable
     }
 
     [Fact]
+    public void Old_episode_ratings_become_one_show_rating()
+    {
+        var database = new MarqueeDatabase(_folder);
+        _folder.EnsureCreated();
+        using (var db = database.CreateContext())
+            db.GetInfrastructure().GetRequiredService<IMigrator>().Migrate("20261024232505_DropStreamingPlace");
+
+        using (var raw = new SqliteConnection($"Data Source={_folder.Database}"))
+        {
+            raw.Open();
+            using var cmd = raw.CreateCommand();
+            cmd.CommandText = """
+                INSERT INTO Titles (Id, Kind, Format, Name) VALUES ('show', 'tv', 'series', 'Slow Horses'), ('film', 'movie', 'movie', 'Heat');
+                INSERT INTO Seasons (Id, TitleId, Number) VALUES ('s1', 'show', 1);
+                INSERT INTO Episodes (Id, SeasonId, Number) VALUES ('e1', 's1', 1), ('e2', 's1', 2);
+                INSERT INTO Watches (Id, TitleId, EpisodeId, WatchedOn, IsRewatch, "Where", Rating) VALUES
+                    ('w1', 'show', 'e1', '2026-10-01', 0, 'home', 4.0),
+                    ('w2', 'show', 'e2', '2026-10-02', 0, 'home', 4.5),
+                    ('w3', 'film', NULL, '2026-10-03', 0, 'home', 5.0);
+                """;
+            cmd.ExecuteNonQuery();
+        }
+
+        database.Initialize();
+
+        using var after = database.CreateContext();
+        Assert.Equal(4.5, after.Titles.Single(t => t.Id == "show").UserRating);
+        Assert.Null(after.Titles.Single(t => t.Id == "film").UserRating);
+        Assert.All(after.Watches.Where(w => w.EpisodeId != null), w => Assert.Null(w.Rating));
+        Assert.Equal(5.0, after.Watches.Single(w => w.Id == "w3").Rating);
+    }
+
+    [Fact]
     public void Ids_are_guid_strings()
     {
         var title = new Title { Name = "Test" };

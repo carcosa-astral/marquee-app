@@ -156,8 +156,19 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     public ObservableCollection<SeasonChoice> Seasons { get; } = [];
     public ObservableCollection<EpisodeChoice> Episodes { get; } = [];
 
+    /// <summary>
+    /// True for TV shows and anime series. Their episodes are always watched at home,
+    /// and the rating is for the whole show rather than the episode.
+    /// </summary>
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(ShowsWhere), nameof(ShowsService), nameof(RatingLabel), nameof(RatingTip))]
     public partial bool HasEpisodes { get; set; }
+
+    public bool ShowsWhere => !HasEpisodes;
+    public string RatingLabel => HasEpisodes ? "Your rating for the show" : "Rating";
+    public string RatingTip => HasEpisodes
+        ? "Rate the whole show. Episodes are not rated one by one."
+        : "Click the left half of a star for a half star. Click again to clear.";
 
     [ObservableProperty]
     public partial SeasonChoice? SelectedSeason { get; set; }
@@ -185,6 +196,11 @@ public sealed partial class LogWatchViewModel : ViewModelBase
         foreach (var s in title.Seasons.OrderBy(s => s.Number == 0 ? int.MaxValue : s.Number))
             Seasons.Add(new SeasonChoice(s.Number, SeasonLabel(s, title), s.Episodes));
         HasEpisodes = Seasons.Any(s => s.Episodes.Count > 0);
+        if (HasEpisodes)
+        {
+            Where = WatchPlace.Home;
+            Rating = title.UserRating;
+        }
 
         Episode? target = null;
         if (episodeId is not null)
@@ -219,7 +235,7 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     public partial string? TimeError { get; set; }
 
     partial void OnStartTimeChanged(string value) =>
-        TimeError = TimeInput.TryParse(value, out _) ? null : "Use a time like 7:30 PM or 19:30.";
+        TimeError = TimeInput.TryParse(value, out _) ? null : "Use a time like 7:30 PM.";
 
     [RelayCommand]
     private void Today() => Date = DateTime.Today;
@@ -261,7 +277,7 @@ public sealed partial class LogWatchViewModel : ViewModelBase
     public bool IsTheater => Where == WatchPlace.Theater;
     public bool IsHome => Where == WatchPlace.Home;
     public bool IsOther => Where == WatchPlace.Other;
-    public bool ShowsService => !IsTheater;
+    public bool ShowsService => !IsTheater || HasEpisodes;
 
     [RelayCommand]
     private void SetWhere(WatchPlace place) => Where = place;
@@ -417,9 +433,9 @@ public sealed partial class LogWatchViewModel : ViewModelBase
                 EpisodeId = episodeId,
                 WatchedOn = DateOnly.FromDateTime(Date!.Value),
                 StartTime = time,
-                Rating = Rating,
+                Rating = HasEpisodes ? null : Rating,
                 IsRewatch = IsRewatch,
-                Where = Where,
+                Where = HasEpisodes ? WatchPlace.Home : Where,
                 TheaterId = theater?.Id,
                 Screen = Screen,
                 Seat = Seat,
@@ -432,6 +448,8 @@ public sealed partial class LogWatchViewModel : ViewModelBase
                 _services.Watches.Add(input);
             else
                 _services.Watches.Update(_watchId, input);
+            if (HasEpisodes)
+                _services.Titles.SetUserRating(titleId, Rating);
             _close(true);
         }
         catch (Exception ex)
@@ -488,8 +506,8 @@ public sealed partial class LogWatchViewModel : ViewModelBase
 
         Date = w.WatchedOn.ToDateTime(TimeOnly.MinValue);
         StartTime = TimeInput.Format(w.StartTime);
-        Rating = w.Rating;
-        Where = w.Where;
+        Rating = HasEpisodes ? title.UserRating : w.Rating;
+        Where = HasEpisodes ? WatchPlace.Home : w.Where;
         TheaterName = w.Theater?.Name;
         Screen = w.Screen ?? "";
         Seat = w.Seat ?? "";
