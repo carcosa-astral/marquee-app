@@ -472,6 +472,7 @@ public sealed partial class LogWatchViewModel : ViewModelBase
         var images = await _services.Downloader.SaveAllAsync(pending);
         var saved = await Task.Run(() => _services.Titles.Save(pending, images));
         _pending = null;
+        await _services.ApplyImdbRatingsAsync(saved.Id);
         var episodeId = SelectedEpisode is { Season: { } season, Number: { } number }
             ? _services.Titles.FindEpisodeId(saved.Id, season, number)
             : null;

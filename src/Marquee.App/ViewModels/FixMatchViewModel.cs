@@ -108,6 +108,7 @@ public sealed partial class FixMatchViewModel : ViewModelBase
             var fetched = await _services.Metadata.FetchAsync(Selected!.Result);
             var images = await _services.Downloader.SaveAllAsync(fetched);
             await Task.Run(() => _services.Titles.Save(fetched, images, rematchTitleId: _titleId));
+            await _services.ApplyImdbRatingsAsync(_titleId);
             _close(true);
         }
         catch (Exception ex) when (ex is MetadataException or InvalidOperationException)

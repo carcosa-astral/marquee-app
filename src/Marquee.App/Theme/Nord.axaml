@@ -78,6 +78,7 @@
   </LinearGradientBrush>
 
   <!-- Title pages -->
+  <SolidColorBrush x:Key="ImdbBrush" Color="{StaticResource Nord13}" />
   <SolidColorBrush x:Key="EpisodeWatchedBrush" Color="#4C6A82" />
   <SolidColorBrush x:Key="WatchedSoftBrush" Color="#29A3BE8C" />
   <LinearGradientBrush x:Key="BackdropPlaceholderBrush" StartPoint="0%,0%" EndPoint="0%,100%">

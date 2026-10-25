@@ -317,6 +317,12 @@ namespace Marquee.Data.Migrations
                     b.Property<string>("ImdbId")
                         .HasColumnType("TEXT");
 
+                    b.Property<double?>("ImdbRating")
+                        .HasColumnType("REAL");
+
+                    b.Property<int?>("ImdbVotes")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Kind")
                         .IsRequired()
                         .HasColumnType("TEXT");

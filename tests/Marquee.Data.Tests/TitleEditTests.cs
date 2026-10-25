@@ -170,6 +170,24 @@ public sealed class TitleEditTests : IDisposable
     }
 
     [Fact]
+    public void Imdb_scores_attach_by_imdb_id_and_clear_when_the_match_changes()
+    {
+        var withId = Paprika();
+        withId.ImdbId = "tt0851578";
+        var t = _titles.Save(withId, SavedImages.None);
+
+        Assert.Equal(["tt0851578"], _titles.ImdbIds());
+        Assert.Equal(1, _titles.SetImdbRatings(new Dictionary<string, ImdbScore> { ["tt0851578"] = new(7.7, 95000), ["tt0000001"] = new(5, 10) }));
+        Assert.Equal((7.7, 95000), (_titles.GetDetails(t.Id)!.Title.ImdbRating!.Value, _titles.GetDetails(t.Id)!.Title.ImdbVotes!.Value));
+
+        _titles.Save(withId, SavedImages.None);
+        Assert.Equal(7.7, _titles.GetDetails(t.Id)!.Title.ImdbRating);
+
+        _titles.Save(Paprika(tmdbId: 999), SavedImages.None, rematchTitleId: t.Id);
+        Assert.Null(_titles.GetDetails(t.Id)!.Title.ImdbRating);
+    }
+
+    [Fact]
     public void People_count_titles_you_have_watched()
     {
         var paprika = _titles.Save(Paprika(), SavedImages.None);

@@ -42,8 +42,54 @@ public sealed partial class SettingsPageViewModel : PageViewModel
     [ObservableProperty]
     public partial string? KeyStatus { get; set; }
 
+    // ----- IMDb ratings -----
+
+    public string ImdbAttribution => "Information courtesy of IMDb (https://www.imdb.com). Used with permission.";
+
+    [ObservableProperty] public partial string ImdbStatus { get; set; } = "";
+    [ObservableProperty] public partial string ImdbButton { get; set; } = "Download IMDb ratings";
+    [ObservableProperty] public partial string? ImdbMessage { get; set; }
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(UpdateImdbCommand))]
+    public partial bool IsUpdatingImdb { get; set; }
+
+    private void ShowImdbStatus()
+    {
+        var at = _services.Imdb.DownloadedAt;
+        ImdbStatus = at is null ? "Not downloaded yet." : $"Last downloaded {at.Value.ToString("MMM d, yyyy", System.Globalization.CultureInfo.InvariantCulture)}.";
+        ImdbButton = at is null ? "Download IMDb ratings" : "Update IMDb ratings";
+    }
+
+    private bool CanUpdateImdb() => !IsUpdatingImdb;
+
+    /// <summary>Downloads IMDb's ratings file into data/imdb and applies it to every title.</summary>
+    [RelayCommand(CanExecute = nameof(CanUpdateImdb))]
+    private async Task UpdateImdb()
+    {
+        IsUpdatingImdb = true;
+        ImdbMessage = "Downloading IMDb ratings (about 8 MB)...";
+        try
+        {
+            await _services.Imdb.DownloadAsync();
+            ImdbMessage = "Matching your titles...";
+            var updated = await _services.ApplyImdbRatingsAsync();
+            ImdbMessage = updated == 1 ? "Done. 1 title has an IMDb rating." : $"Done. {updated} titles have an IMDb rating.";
+        }
+        catch (Exception ex)
+        {
+            ImdbMessage = ex is Metadata.MetadataException ? ex.Message : "Could not update IMDb ratings: " + ex.Message;
+        }
+        finally
+        {
+            IsUpdatingImdb = false;
+            ShowImdbStatus();
+        }
+    }
+
     public override void OnShown()
     {
+        ShowImdbStatus();
         TmdbKey = _settings.Get(SettingsStore.TmdbApiKey) ?? "";
         KeyStatus = null;
         EraseConfirm = "";

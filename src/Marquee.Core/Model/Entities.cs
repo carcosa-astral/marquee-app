@@ -31,6 +31,10 @@ public class Title : Entity
     /// </summary>
     public double? UserRating { get; set; }
 
+    /// <summary>IMDb's average rating (1 to 10) and vote count, from IMDb's ratings file. Needs an IMDb id.</summary>
+    public double? ImdbRating { get; set; }
+    public int? ImdbVotes { get; set; }
+
     public List<Season> Seasons { get; set; } = [];
     public List<Credit> Credits { get; set; } = [];
     public List<TitleGenre> Genres { get; set; } = [];

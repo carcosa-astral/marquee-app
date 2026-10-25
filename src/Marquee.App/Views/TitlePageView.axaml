@@ -131,6 +131,8 @@
       <Setter Property="BorderThickness" Value="2" />
     </Style>
 
+    <Style Selector="Border.pill.imdb"><Setter Property="Background" Value="{StaticResource ImdbBrush}" /></Style>
+    <Style Selector="Border.pill.imdb > TextBlock"><Setter Property="Foreground" Value="{StaticResource OnAccentBrush}" /><Setter Property="FontWeight" Value="Bold" /></Style>
     <Style Selector="Border.pill.user"><Setter Property="Background" Value="{StaticResource WatchedSoftBrush}" /></Style>
     <Style Selector="Border.pill.user > TextBlock"><Setter Property="Foreground" Value="{StaticResource WatchedBrush}" /></Style>
     <Style Selector="Border.pill.status"><Setter Property="Background" Value="{StaticResource WatchedSoftBrush}" /></Style>
@@ -260,6 +262,12 @@
             <Run Text="{Binding YearText}" FontSize="28" FontWeight="Medium" Foreground="{StaticResource TextMutedBrush}" />
           </TextBlock>
           <TextBlock Classes="subtle" Text="{Binding MetaLine}" TextWrapping="Wrap" />
+          <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding ImdbRating, Converter={x:Static ObjectConverters.IsNotNull}}"
+                      ToolTip.Tip="From IMDb's ratings file. Update it in Settings.">
+            <Border Classes="pill imdb"><TextBlock Text="IMDb" /></Border>
+            <TextBlock FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" VerticalAlignment="Center" Text="{Binding ImdbRating}" />
+            <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Center" Text="{Binding ImdbVotes}" />
+          </StackPanel>
           <TextBlock Classes="subtle" IsVisible="{Binding DirectedBy, Converter={x:Static ObjectConverters.IsNotNull}}">
             <Run Text="Directed by " />
             <Run Text="{Binding DirectedBy}" Foreground="{StaticResource AccentBrush}" FontWeight="SemiBold" />

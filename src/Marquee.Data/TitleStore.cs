@@ -88,6 +88,12 @@ public sealed class TitleStore(MarqueeDatabase database)
             title = db.Titles.Single(t => t.Id == rematchTitleId);
             if (FindExisting(db, fetched) is { } other && other.Id != title.Id)
                 throw new InvalidOperationException($"\"{other.Name}\" is already in your library with that match.");
+            if (title.ImdbId != fetched.ImdbId)
+            {
+                // The IMDb score belonged to the old match.
+                title.ImdbRating = null;
+                title.ImdbVotes = null;
+            }
             title.TmdbType = fetched.TmdbType;
             title.TmdbId = fetched.TmdbId;
             title.AniListId = fetched.AniListId;
@@ -231,6 +237,30 @@ public sealed class TitleStore(MarqueeDatabase database)
         }
         db.FieldOverrides.Remove(edit);
         db.SaveChanges();
+    }
+
+    /// <summary>Every IMDb id in the library, to look up in IMDb's ratings file.</summary>
+    public HashSet<string> ImdbIds(string? titleId = null)
+    {
+        using var db = database.CreateContext();
+        return db.Titles.Where(t => t.ImdbId != null && (titleId == null || t.Id == titleId)).Select(t => t.ImdbId!).ToHashSet();
+    }
+
+    /// <summary>Stores IMDb scores by IMDb id. Returns how many titles were updated.</summary>
+    public int SetImdbRatings(IReadOnlyDictionary<string, ImdbScore> scores)
+    {
+        using var db = database.CreateContext();
+        var updated = 0;
+        foreach (var title in db.Titles.Where(t => t.ImdbId != null).ToList())
+        {
+            if (!scores.TryGetValue(title.ImdbId!, out var score))
+                continue;
+            title.ImdbRating = score.Rating;
+            title.ImdbVotes = score.Votes;
+            updated++;
+        }
+        db.SaveChanges();
+        return updated;
     }
 
     /// <summary>Sets (or clears) your rating for a whole show.</summary>
