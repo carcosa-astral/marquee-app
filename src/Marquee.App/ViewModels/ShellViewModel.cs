@@ -23,8 +23,8 @@ public partial class ShellViewModel : ViewModelBase
         [
             Nav("Home", Icons.Home, null, Pages.Home()),
             Nav("Diary", Icons.Diary, db => db.Watches.Count(), new DiaryPageViewModel(services, watchId => OpenLog(null, watchId))),
-            Nav("Watchlist", Icons.Watchlist, db => db.Watchlist.Count(), Pages.Soon("Watchlist", "Titles coming soon and titles out now that you have not seen.", "0.5.0")),
-            Nav("On Ice", Icons.OnIce, db => db.OnIce.Count(), Pages.Soon("On Ice", "Things you paused or dropped, with where you stopped and why.", "0.5.0")),
+            Nav("Watchlist", Icons.Watchlist, db => db.Watchlist.Count(), new WatchlistPageViewModel(services, OpenTitle, RefreshCounts)),
+            Nav("On Ice", Icons.OnIce, db => db.OnIce.Count(), new OnIcePageViewModel(services, OpenTitle, RefreshCounts)),
             Nav("People", Icons.People, null, Pages.Soon("People", "Actors and directors you have watched, most watched first.", "0.6.0")),
             Nav("Recap", Icons.Recap, null, Pages.Soon("Recap", "Your year and all time, in one view.", "0.7.0")),
         ];

@@ -60,8 +60,12 @@ public sealed partial class SearchPageViewModel(AppServices services, Action<str
 
         // A watch may have just been saved from one of these results.
         var diary = services.Titles.GetLibraryIds();
+        var watchlist = services.Watchlist.TitleIds();
         foreach (var r in _all)
+        {
             r.InDiary = diary.Contains(r.Result);
+            r.OnWatchlist = services.Titles.FindId(r.Result) is { } id && watchlist.Contains(id);
+        }
     }
 
     /// <summary>Opens the page with a query typed elsewhere, such as the top bar.</summary>
@@ -108,8 +112,12 @@ public sealed partial class SearchPageViewModel(AppServices services, Action<str
 
             _searched = true;
             var library = services.Titles.GetLibraryIds();
+            var watchlist = services.Watchlist.TitleIds();
             _all = outcome.Results
-                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, logSaved, logPending, openTitle))
+                .Select(r => new SearchResultViewModel(r, library.Contains(r), services, logSaved, logPending, openTitle)
+                {
+                    OnWatchlist = services.Titles.FindId(r) is { } id && watchlist.Contains(id),
+                })
                 .ToList();
             // A missing TMDB key is already explained next to the search box.
             var problems = new[] { outcome.AniListProblem, services.Metadata.HasTmdbKey ? outcome.TmdbProblem : null }.OfType<string>().ToList();
@@ -196,13 +204,48 @@ public sealed partial class SearchResultViewModel : ViewModelBase
     [ObservableProperty]
     public partial Bitmap? Poster { get; set; }
 
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WatchlistLabel))]
+    [NotifyCanExecuteChangedFor(nameof(AddToWatchlistCommand))]
+    public partial bool OnWatchlist { get; set; }
+
+    public string WatchlistLabel => OnWatchlist ? "On your watchlist" : "Add to watchlist";
+
+    private bool CanAddToWatchlist() => !OnWatchlist && !IsLoading;
+
+    /// <summary>Saves the title (without a watch) and puts it on the watchlist.</summary>
+    [RelayCommand(CanExecute = nameof(CanAddToWatchlist))]
+    private async Task AddToWatchlist()
+    {
+        IsLoading = true;
+        Error = null;
+        try
+        {
+            var id = await _services.EnsureSavedAsync(_result);
+            _services.Watchlist.Add(id, DateOnly.FromDateTime(DateTime.Today));
+            OnWatchlist = true;
+        }
+        catch (MetadataException ex)
+        {
+            Error = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            Error = "Could not add to your watchlist: " + ex.Message;
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
     /// <summary>True when this title already has at least one diary entry.</summary>
     [ObservableProperty]
     public partial bool InDiary { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(LogLabel))]
-    [NotifyCanExecuteChangedFor(nameof(LogCommand))]
+    [NotifyCanExecuteChangedFor(nameof(LogCommand), nameof(AddToWatchlistCommand))]
     public partial bool IsLoading { get; set; }
 
     [ObservableProperty]

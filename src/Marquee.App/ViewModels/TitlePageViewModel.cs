@@ -74,6 +74,26 @@ public sealed partial class TitlePageViewModel : PageViewModel
     [ObservableProperty] public partial string? Message { get; set; }
     [ObservableProperty] public partial bool IsBusy { get; set; }
 
+    // ----- Watchlist and On Ice -----
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(WatchlistLabel))]
+    public partial bool OnWatchlist { get; set; }
+
+    public string WatchlistLabel => OnWatchlist ? "Remove from watchlist" : "Add to watchlist";
+
+    /// <summary>Paused or dropped, when this show is on ice.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsIced), nameof(IsPausedIce), nameof(IsDroppedIce), nameof(CanPutOnIce))]
+    public partial IceState? Ice { get; set; }
+
+    public bool IsIced => Ice is not null;
+    public bool IsPausedIce => Ice == IceState.Paused;
+    public bool IsDroppedIce => Ice == IceState.Dropped;
+    public bool CanPutOnIce => IsSeries && !IsIced;
+
+    partial void OnIsSeriesChanged(bool value) => OnPropertyChanged(nameof(CanPutOnIce));
+
     // ----- Data sources -----
 
     [ObservableProperty] public partial bool FromTmdb { get; set; }
@@ -175,6 +195,9 @@ public sealed partial class TitlePageViewModel : PageViewModel
         EditedText = details.Edits.Count == 1 ? "1 field edited" : $"{details.Edits.Count} fields edited";
         BackdropSource = details.Sources.TryGetValue(TitleFields.Backdrop, out var bs) ? $"Backdrop from {SourceName(bs)}" : null;
 
+        OnWatchlist = _services.Watchlist.Contains(_titleId);
+        Ice = _services.Ice.Get(_titleId)?.State;
+
         _ = LoadImagesAsync(t);
         BuildDetails(details);
         BuildWatches();
@@ -256,8 +279,13 @@ public sealed partial class TitlePageViewModel : PageViewModel
 
         _progress = SeriesProgress.For(_title.Seasons, _watchedEpisodes, _title.RuntimeMinutes);
         var p = _progress;
-        StatusLabel = p.State switch { SeriesState.Finished => "Finished", SeriesState.Watching => "Watching", _ => "Not started" };
-        StatusIsActive = p.State == SeriesState.Watching;
+        StatusLabel = Ice switch
+        {
+            IceState.Paused => "Paused",
+            IceState.Dropped => "Dropped",
+            _ => p.State switch { SeriesState.Finished => "Finished", SeriesState.Watching => "Watching", _ => "Not started" },
+        };
+        StatusIsActive = p.State == SeriesState.Watching && Ice is null;
         ProgressText = $"{p.Watched} of {p.Total} episodes";
         TimeLeftText = SeriesProgress.TimeLeftText(p.MinutesLeft);
         ProgressPercent = p.Fraction * 100;
@@ -408,6 +436,26 @@ public sealed partial class TitlePageViewModel : PageViewModel
             return;
         var added = _services.Watches.MarkEpisodesWatched(_titleId, season.Episodes.Select(e => e.Id), DateOnly.FromDateTime(DateTime.Today));
         AfterChange(added == 0 ? "That season was already watched." : $"Marked {added} episodes watched today.");
+    }
+
+    [RelayCommand]
+    private void ToggleWatchlist()
+    {
+        if (OnWatchlist)
+            _services.Watchlist.Remove(_titleId);
+        else
+            _services.Watchlist.Add(_titleId, DateOnly.FromDateTime(DateTime.Today));
+        AfterChange(OnWatchlist ? "Removed from your watchlist." : "Added to your watchlist.");
+    }
+
+    [RelayCommand]
+    private void PutOnIce() => _actions.OpenDialog(new PutOnIceViewModel(_services, _titleId, Closed));
+
+    [RelayCommand]
+    private void Resume()
+    {
+        _services.Ice.Resume(_titleId);
+        AfterChange("Back to watching. Your place and diary entries are kept.");
     }
 
     [RelayCommand]

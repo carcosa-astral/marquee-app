@@ -1,0 +1,90 @@
+<!-- On Ice. Matches docs/design/mocks/OnIce.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.OnIcePageView"
+             x:DataType="vm:OnIcePageViewModel">
+
+  <UserControl.Styles>
+    <Style Selector="ProgressBar.ice">
+      <Setter Property="Height" Value="5" />
+      <Setter Property="MinHeight" Value="5" />
+      <Setter Property="CornerRadius" Value="999" />
+      <Setter Property="Maximum" Value="100" />
+      <Setter Property="Background" Value="{StaticResource CardBorderBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource PausedBrush}" />
+    </Style>
+    <Style Selector="ProgressBar.ice.dropped">
+      <Setter Property="Foreground" Value="{StaticResource DroppedBrush}" />
+    </Style>
+  </UserControl.Styles>
+
+  <StackPanel Margin="32,28,32,32" Spacing="24">
+
+    <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="20">
+      <StackPanel Spacing="4" VerticalAlignment="Bottom">
+        <TextBlock Classes="section" Text="{Binding CountText}" />
+        <TextBlock Classes="h1" Text="On Ice" />
+      </StackPanel>
+      <TextBlock Grid.Column="1" Classes="subtle" FontSize="13" MaxWidth="420" TextWrapping="Wrap" VerticalAlignment="Bottom" Margin="0,0,0,4"
+                 Text="Anything you paused or gave up on. Marquee keeps your place and your reason so you can pick it up later or let it go." />
+      <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Bottom" IsVisible="{Binding !IsEmpty}">
+        <Button Classes="chip" Classes.active="{Binding IsAll}" Content="{Binding AllLabel}" Command="{Binding ShowAllCommand}" />
+        <Button Classes="chip" Classes.active="{Binding IsPaused}" Content="{Binding PausedLabel}" Command="{Binding ShowPausedCommand}" />
+        <Button Classes="chip" Classes.active="{Binding IsDropped}" Content="{Binding DroppedLabel}" Command="{Binding ShowDroppedCommand}" />
+      </StackPanel>
+    </Grid>
+
+    <Border Classes="card" Padding="24,22" MaxWidth="720" HorizontalAlignment="Left" IsVisible="{Binding IsEmpty}">
+      <TextBlock Classes="subtle" TextWrapping="Wrap"
+                 Text="Nothing on ice. Use Put on ice on a TV or anime page when you pause or drop a show." />
+    </Border>
+
+    <ItemsControl ItemsSource="{Binding Items}">
+      <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+          <UniformGrid Columns="2" ColumnSpacing="18" RowSpacing="18" VerticalAlignment="Top" />
+        </ItemsPanelTemplate>
+      </ItemsControl.ItemsPanel>
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="vm:IceEntry">
+          <Border Classes="card" CornerRadius="14" Padding="18" VerticalAlignment="Top">
+            <Grid ColumnDefinitions="96,*" ColumnSpacing="20">
+              <Button Classes="segment" Padding="0" Width="96" Height="144" CornerRadius="7" Background="Transparent" VerticalAlignment="Top"
+                      Command="{Binding OpenCommand}" ToolTip.Tip="Open">
+                <Border Classes="poster" Width="96" Height="144" CornerRadius="7">
+                  <Panel>
+                    <TextBlock Classes="brand" FontSize="12" Margin="8" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                    <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                  </Panel>
+                </Border>
+              </Button>
+              <StackPanel Grid.Column="1" Spacing="10">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Border Classes="pill" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}"><TextBlock Text="{Binding KindLabel}" /></Border>
+                  <Border Classes="pill" Classes.paused="{Binding IsPaused}" Classes.dropped="{Binding IsDropped}"><TextBlock Text="{Binding StateLabel}" /></Border>
+                </StackPanel>
+                <TextBlock Classes="brand" FontSize="20" TextWrapping="Wrap" Text="{Binding Name}" />
+                <StackPanel Spacing="6">
+                  <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Classes="subtle small">
+                      <Run Text="Stopped at " /><Run Text="{Binding StoppedAt}" />
+                    </TextBlock>
+                    <TextBlock Grid.Column="1" Classes="subtle small" Text="{Binding PercentText}" />
+                  </Grid>
+                  <ProgressBar Classes="ice" Classes.dropped="{Binding IsDropped}" Value="{Binding Percent}" />
+                </StackPanel>
+                <TextBlock FontSize="13" Foreground="{StaticResource TextNavBrush}" TextWrapping="Wrap" Text="{Binding Reason}" IsVisible="{Binding HasReason}" />
+                <TextBlock Classes="muted small" Text="{Binding IcedText}" />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                  <Button Classes="primary" Height="32" FontSize="13" Padding="14,0" Content="Resume" Command="{Binding ResumeCommand}" />
+                  <Button Classes="secondary" Height="32" Content="{Binding ToggleLabel}" Command="{Binding ToggleCommand}" />
+                </StackPanel>
+              </StackPanel>
+            </Grid>
+          </Border>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</UserControl>

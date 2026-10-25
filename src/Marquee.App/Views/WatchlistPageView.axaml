@@ -1,0 +1,111 @@
+<!-- Watchlist. Matches docs/design/mocks/Watchlist.dc.html. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Marquee.App.ViewModels"
+             x:Class="Marquee.App.Views.WatchlistPageView"
+             x:DataType="vm:WatchlistPageViewModel">
+
+  <StackPanel Margin="32,28,32,32" Spacing="26">
+
+    <Grid ColumnDefinitions="Auto,*,Auto">
+      <StackPanel Spacing="4" VerticalAlignment="Bottom">
+        <TextBlock Classes="section" Text="{Binding CountText}" />
+        <TextBlock Classes="h1" Text="Watchlist" />
+      </StackPanel>
+      <Button Grid.Column="2" Classes="accentOutline" VerticalAlignment="Bottom" Content="Pick something for me"
+              Command="{Binding PickForMeCommand}" IsVisible="{Binding HasOutNow}"
+              ToolTip.Tip="Opens a random title from Out now" />
+    </Grid>
+
+    <Border Classes="card" Padding="24,22" MaxWidth="720" HorizontalAlignment="Left" IsVisible="{Binding IsEmpty}">
+      <TextBlock Classes="subtle" TextWrapping="Wrap"
+                 Text="Your watchlist is empty. Use Add to watchlist on a search result or a title's page." />
+    </Border>
+
+    <!-- Coming soon -->
+    <StackPanel Spacing="12" IsVisible="{Binding HasComingSoon}">
+      <StackPanel Orientation="Horizontal" Spacing="12">
+        <TextBlock Classes="brand" FontSize="20" Text="Coming soon" />
+        <TextBlock Classes="muted" FontSize="13" VerticalAlignment="Bottom" Margin="0,0,0,2" Text="{Binding ComingSoonSummary}" />
+      </StackPanel>
+      <Border Classes="card" CornerRadius="14" ClipToBounds="True">
+        <ItemsControl ItemsSource="{Binding ComingSoon}">
+          <ItemsControl.ItemTemplate>
+            <DataTemplate x:DataType="vm:WatchlistEntry">
+              <Button Classes="row" Height="68" Padding="18,0" BorderBrush="{StaticResource CardBorderBrush}" Command="{Binding OpenCommand}">
+                <Grid ColumnDefinitions="52,34,*,Auto,110,Auto" ColumnSpacing="16">
+                  <Border Background="{StaticResource AppBackgroundBrush}" BorderBrush="{StaticResource CardBorderBrush}" BorderThickness="1"
+                          CornerRadius="8" Padding="0,5" VerticalAlignment="Center">
+                    <StackPanel HorizontalAlignment="Center">
+                      <TextBlock FontSize="10" LetterSpacing="0.8" Foreground="{StaticResource AccentBrush}" HorizontalAlignment="Center" Text="{Binding Month}" />
+                      <TextBlock Classes="brand" FontSize="20" LineHeight="22" HorizontalAlignment="Center" Text="{Binding Day}" />
+                    </StackPanel>
+                  </Border>
+                  <Border Grid.Column="1" Classes="poster" Width="34" Height="50" CornerRadius="4">
+                    <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                  </Border>
+                  <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                    <TextBlock FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                    <TextBlock Classes="muted small" Text="{Binding Meta}" />
+                  </StackPanel>
+                  <Border Grid.Column="3" Classes="pill" Classes.movie="{Binding IsMovie}" Classes.tv="{Binding IsTv}" Classes.anime="{Binding IsAnime}">
+                    <TextBlock Text="{Binding KindLabel}" />
+                  </Border>
+                  <TextBlock Grid.Column="4" FontSize="13" TextAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource WatchedBrush}"
+                             Text="{Binding Countdown}" IsVisible="{Binding HasDate}" />
+                  <TextBlock Grid.Column="4" FontSize="13" TextAlignment="Right" VerticalAlignment="Center" Classes="muted"
+                             Text="{Binding Countdown}" IsVisible="{Binding !HasDate}" />
+                  <Button Grid.Column="5" Classes="secondary" Height="32" Padding="12,0" FontSize="12" Content="Remove" Command="{Binding RemoveCommand}" />
+                </Grid>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Border>
+    </StackPanel>
+
+    <!-- Out now -->
+    <StackPanel Spacing="14" IsVisible="{Binding !IsEmpty}">
+      <Grid ColumnDefinitions="Auto,Auto,*,Auto" ColumnSpacing="16">
+        <TextBlock Classes="brand" FontSize="20" VerticalAlignment="Center" Text="Out now, not yet seen" />
+        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+          <Button Classes="chip" Height="28" Classes.active="{Binding IsAll}" Content="All" Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:WatchlistFilter.All}" />
+          <Button Classes="chip" Height="28" Classes.active="{Binding IsMovies}" Content="Movies" Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:WatchlistFilter.Movies}" />
+          <Button Classes="chip" Height="28" Classes.active="{Binding IsTv}" Content="TV" Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:WatchlistFilter.Tv}" />
+          <Button Classes="chip" Height="28" Classes.active="{Binding IsAnime}" Content="Anime" Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:WatchlistFilter.Anime}" />
+          <Button Classes="chip" Height="28" Classes.active="{Binding IsShort}" Content="Under 2 hours" Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:WatchlistFilter.UnderTwoHours}" />
+        </StackPanel>
+        <TextBlock Grid.Column="3" Classes="muted" FontSize="13" VerticalAlignment="Center" Text="Sorted by date added" />
+      </Grid>
+
+      <TextBlock Classes="muted" FontSize="13" Text="{Binding OutNowEmptyText}"
+                 IsVisible="{Binding OutNowEmptyText, Converter={x:Static ObjectConverters.IsNotNull}}" />
+
+      <ItemsControl ItemsSource="{Binding OutNow}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <WrapPanel ItemSpacing="16" LineSpacing="20" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate x:DataType="vm:WatchlistEntry">
+            <StackPanel Width="174" Spacing="8">
+              <Button Classes="segment" Padding="0" Width="174" Height="261" CornerRadius="8" Background="Transparent"
+                      Command="{Binding OpenCommand}" ToolTip.Tip="{Binding Name}">
+                <Border Classes="poster" Width="174" Height="261" CornerRadius="8">
+                  <Panel>
+                    <TextBlock Classes="brand" FontSize="15" Margin="12" TextWrapping="Wrap" VerticalAlignment="Bottom" Text="{Binding Name}" />
+                    <Image Source="{Binding Poster}" Stretch="UniformToFill" />
+                  </Panel>
+                </Border>
+              </Button>
+              <TextBlock FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextStrongBrush}" Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Classes="muted small" Margin="0,-4,0,0" Text="{Binding Meta}" TextTrimming="CharacterEllipsis" />
+              <TextBlock Classes="subtle small" Margin="0,-4,0,0" Text="{Binding Added}" />
+            </StackPanel>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+    </StackPanel>
+  </StackPanel>
+</UserControl>

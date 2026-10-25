@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Watchlist page: "Coming soon" with release dates and a countdown, and "Out now, not yet seen" as a poster grid with Movies, TV, Anime and Under 2 hours filters. Titles move from coming soon to out now on their release day by themselves.
+- "Pick something for me" opens a random title from Out now.
+- Add to watchlist from search results and title pages. Titles you add are saved (with images) but stay out of your library until you watch them.
+- On Ice page for paused and dropped shows, with where you stopped, how far you got, your reason and when you iced it. Resume, or move between paused and dropped.
+- Put on ice dialog: paused or dropped, where you stopped (filled in from your diary), date, a quick reason or your own, and a note.
+- Title pages show Paused or Dropped for shows on ice, with a Resume button.
+
+### Changed
+
+- Watching something takes it off your watchlist, and logging an episode of a show on ice takes it off ice.
+
 ## [0.4.0] - 2026-10-24
 
 ### Added

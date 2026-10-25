@@ -33,7 +33,18 @@ public sealed class WatchStore(MarqueeDatabase database)
         Apply(db, watch, input);
         db.Watches.Add(watch);
         db.SaveChanges();
+        AfterWatching(db, input.TitleId);
         return watch;
+    }
+
+    /// <summary>
+    /// Once you watch something it leaves the watchlist, and a show you watch again
+    /// comes off ice (On Ice and Watching never overlap).
+    /// </summary>
+    private static void AfterWatching(MarqueeDbContext db, string titleId)
+    {
+        db.Watchlist.Where(w => w.TitleId == titleId).ExecuteDelete();
+        db.OnIce.Where(i => i.TitleId == titleId).ExecuteDelete();
     }
 
     public void Update(string watchId, WatchInput input)
@@ -90,6 +101,8 @@ public sealed class WatchStore(MarqueeDatabase database)
             added++;
         }
         db.SaveChanges();
+        if (added > 0)
+            AfterWatching(db, titleId);
         return added;
     }
 

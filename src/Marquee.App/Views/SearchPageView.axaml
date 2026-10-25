@@ -95,8 +95,7 @@
                 <StackPanel Grid.Column="2" Spacing="8" VerticalAlignment="Center" MinWidth="140">
                   <Button Classes="primary" Height="36" FontSize="13" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
                           Content="{Binding LogLabel}" Command="{Binding LogCommand}" />
-                  <Button Classes="secondary" HorizontalAlignment="Stretch" Content="Add to watchlist" IsEnabled="False"
-                          ToolTip.Tip="The watchlist arrives in 0.5.0" ToolTip.ShowOnDisabled="True" />
+                  <Button Classes="secondary" HorizontalAlignment="Stretch" Content="{Binding WatchlistLabel}" Command="{Binding AddToWatchlistCommand}" />
                 </StackPanel>
               </Grid>
             </Border>

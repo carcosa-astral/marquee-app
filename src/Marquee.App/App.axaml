@@ -62,6 +62,15 @@
     <DataTemplate DataType="vm:FixMatchViewModel">
       <views:FixMatchView />
     </DataTemplate>
+    <DataTemplate DataType="vm:WatchlistPageViewModel">
+      <views:WatchlistPageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:OnIcePageViewModel">
+      <views:OnIcePageView />
+    </DataTemplate>
+    <DataTemplate DataType="vm:PutOnIceViewModel">
+      <views:PutOnIceView />
+    </DataTemplate>
     <DataTemplate DataType="vm:StartupErrorViewModel">
       <views:StartupErrorView />
     </DataTemplate>
